@@ -51,5 +51,5 @@ func main() {
 		logging.Log(core.LL_INFO, "Connect to Databases \t\t\t\t[Failed]")
 	}
 	logging.Log(core.LL_INFO, "Connect to Databases \t\t\t\t[Success]")
-	
+
 }
