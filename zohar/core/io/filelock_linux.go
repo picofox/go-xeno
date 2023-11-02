@@ -22,7 +22,7 @@ func (ego *FileLock) LockShare() int32 {
 }
 
 func (ego *FileLock) TryLockShare() int32 {
-	unix.Flock(int(ego._fileHandler.Fd()), unix.LOCK_SH|unix.LOCK_NB)
+	err := unix.Flock(int(ego._fileHandler.Fd()), unix.LOCK_SH|unix.LOCK_NB)
 	if err != nil {
 		return core.MkErr(core.EC_TRY_LOCK_FILE_FAILED, 1)
 	}
