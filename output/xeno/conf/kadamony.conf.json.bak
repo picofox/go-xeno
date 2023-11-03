@@ -24,30 +24,6 @@
 						"Tables": ["loot", "task"]
 					}
 				]
-			},
-			"DBP1": {
-				"type":0,
-				"MaxTries":0,
-				"IPV4Addr": "192.168.0.151",
-				"TcpPort": 3306,
-				"KeepAlive": 60,
-				"DB": "maindb",
-				"Username": "fox",
-				"Password": "nopass",
-				"ConnParam": "charset=utf8mb4",
-				"Connections": [{
-						"Tables": ["account", "role"]
-					},
-					{
-						"Tables": ["weapon", "wears"]
-					},
-					{
-						"Tables": ["accessory", "summon"]
-					},
-					{
-						"Tables": ["loot", "task"]
-					}
-				]
 			}
 		}
 	}

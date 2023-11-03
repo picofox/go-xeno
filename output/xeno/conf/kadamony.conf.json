@@ -5,7 +5,7 @@
 				"type":0,
 				"MaxTries":0,
 				"IPV4Addr": "192.168.0.151",
-				"TcpPort": 3306,
+				"TcpPort": 7336,
 				"KeepAlive": 60,
 				"DB": "gamedb",
 				"Username": "fox",
@@ -22,24 +22,6 @@
 					},
 					{
 						"Tables": ["loot", "task"]
-					}
-				]
-			},
-			"DBP1": {
-				"type":0,
-				"MaxTries":0,
-				"IPV4Addr": "127.0.0.1",
-				"TcpPort": 3306,
-				"KeepAlive": 60,
-				"DB": "carclash0",
-				"Username": "racer",
-				"Password": "nopass",
-				"ConnParam": "charset=utf8mb4",
-				"Connections": [{
-						"Tables": ["account", "car"]
-					},
-					{
-						"Tables": ["garage", "tourneyinfo"]
 					}
 				]
 			}

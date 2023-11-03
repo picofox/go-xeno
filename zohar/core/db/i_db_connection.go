@@ -17,6 +17,9 @@ type IDBConnection interface {
 	Index() int
 	TableNames() []string
 	Connect() int32
+	ConnectionTest() int32
+
+	CreateDataBase(name string, chaset string, ci string) int32
 }
 
 func ParseTableNameConfig(tableStr string) ([]string, int32) {
