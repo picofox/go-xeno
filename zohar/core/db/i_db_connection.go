@@ -23,7 +23,7 @@ type IDBConnection interface {
 	CommitTransaction() int32
 	RollbackTransaction() int32
 	ConnectionTest() int32
-	
+	Create(sqlTable *SQLTable, sqlString string, arg ...any) (int64, int32)
 	Retrieve(sqlString string, arg ...any) ([]*datatype.TLV, int32)
 	RetrieveRecord(desc *RecordDesc, sqlString string, arg ...any) (*datatype.TLV, int32)
 	RetrieveField(dbt uint8, nullable bool, isUnsigned bool, sqlString string, arg ...any) (*datatype.TLV, int32)

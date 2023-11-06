@@ -57,41 +57,20 @@ func main() {
 	}
 	logging.Log(core.LL_INFO, "Connect to Databases \t\t\t\t[Success]")
 
-	db.GetPoolManager().GetPool("DBP0").GetConnection(0).BeginTransaction()
+	table := db.NeoSQLTable("gamedb", "car", 0, true)
+	table.AddFieldDesc("carId", 0, db.DBF_TYPE_BIGINT, false, false)
+	table.AddFieldDesc("uid", 1, db.DBF_TYPE_BIGINT, false, false)
+	table.AddFieldDesc("nftId", 2, db.DBF_TYPE_BLOB, false, true)
+	table.AddFieldDesc("type_id", 3, db.DBF_TYPE_SMALLINT, false, false)
+	table.AddFieldDesc("level", 4, db.DBF_TYPE_TINYINT, false, false)
+	table.AddFieldDesc("part_level", 5, db.DBF_TYPE_BIGINT, false, false)
 
-	tlv1, ret := db.GetPoolManager().GetPool("DBP0").GetConnection(0).RetrieveField(db.DBF_TYPE_VARCHAR, true, false, "select token from account where uid=1")
-	fmt.Println(ret)
-	fmt.Println(tlv1)
+	var idx int64 = 0
+	for idx = 0; idx < 1000; idx++ {
+		table.AddRow([]any{100 + idx, idx + 1, nil, idx % 3, 1, 1122334455667788})
+	}
 
-	rd := db.NeoRecordDesc(0, false)
-	rd.AddFieldDesc("uid", 11, db.DBF_TYPE_TIME, false, true)
-	rd.AddFieldDesc("time", 11, db.DBF_TYPE_TIME, false, true)
-	rd.AddFieldDesc("dt", 18, db.DBF_TYPE_DATE, false, true)
-	rd.AddFieldDesc("ts", 18, db.DBF_TYPE_TIMESTAMP, false, false)
-	rd.AddFieldDesc("creation_ts", 18, db.DBF_TYPE_DATETIME, false, true)
-	rd.AddFieldDesc("nickname", 19, db.DBF_TYPE_VARCHAR, false, false)
-	rd.AddFieldDesc("token", 20, db.DBF_TYPE_VARCHAR, false, true)
-	tlv, rc := db.GetPoolManager().GetPool("DBP0").GetConnection(0).RetrieveRecord(rd, "select uid, time, dt, ts, creation_ts, nickname, token from account where uid = 2")
+	ps, rc := db.GetPoolManager().GetPool("DBP0").GetConnection(0).Create(table, "insert into car values(?,?,?,?,?,?)")
+	fmt.Println(ps)
 	fmt.Println(rc)
-	fmt.Println(tlv.String())
-
-	db.GetPoolManager().GetPool("DBP0").GetConnection(0).CommitTransaction()
-
-	rData, _ := db.GetPoolManager().GetPool("DBP0").GetConnection(0).Retrieve("select dt from account limit 10")
-	fmt.Printf("total %d lines", len(rData))
-	for i := 0; i < len(rData); i++ {
-		for j := uint32(0); j < rData[i].Length(); j++ {
-			v, _ := rData[i].GetListValue(j)
-			fmt.Print(v)
-			fmt.Print(" - ")
-		}
-
-		fmt.Println("\n")
-	}
-
-	ra, rc := db.GetPoolManager().GetPool("DBP0").GetConnection(0).Delete("delete from account where uid = 10000")
-	if rc != 0 {
-		fmt.Println("delete failed")
-	}
-	fmt.Printf("delete %d \n", ra)
 }

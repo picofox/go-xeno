@@ -27,6 +27,71 @@ type MysqlConnection struct {
 	_tableNames []string
 }
 
+func (ego *MysqlConnection) _Insert(sqlString string, arg ...any) (int64, int32) {
+	var err error
+	var result sql.Result
+	if ego._goContext == nil {
+		if ego._transcation == nil {
+			result, err = ego._conn.Exec(sqlString, arg...)
+		} else {
+			result, err = ego._transcation.Exec(sqlString, arg...)
+		}
+	} else {
+		if ego._transcation == nil {
+			result, err = ego._conn.ExecContext(ego._goContext, sqlString, arg...)
+		} else {
+			result, err = ego._transcation.ExecContext(ego._goContext, sqlString, arg...)
+		}
+	}
+	if err != nil {
+		return 0, core.MkErr(core.EC_DIR_ALREADY_EXIST, 1)
+	}
+	ra, err := result.RowsAffected()
+	if err != nil {
+		ra = -1
+	}
+	return ra, core.MkSuccess(0)
+}
+
+func (ego *MysqlConnection) Create(sqlTable *SQLTable, sqlString string, arg ...any) (int64, int32) {
+	if sqlTable == nil {
+		return ego._Insert(sqlString, arg)
+	}
+
+	var stmt *sql.Stmt
+	var err error
+	if ego._goContext == nil {
+		if ego._transcation == nil {
+			stmt, err = ego._conn.Prepare(sqlString)
+		} else {
+			stmt, err = ego._transcation.Prepare(sqlString)
+		}
+	} else {
+		if ego._transcation == nil {
+			stmt, err = ego._conn.PrepareContext(ego._goContext, sqlString)
+		} else {
+			stmt, err = ego._transcation.PrepareContext(ego._goContext, sqlString)
+		}
+	}
+	if err != nil {
+		return 0, core.MkErr(core.EC_DB_PREPARE_FAILED, 1)
+	}
+
+	defer stmt.Close()
+
+	var totalCount int64 = 0
+	for rowIdx := int64(0); rowIdx < int64(len(sqlTable.Data())); rowIdx++ {
+		result, err := stmt.Exec(sqlTable.RowAt(rowIdx)...)
+		if err != nil {
+			return 0, core.MkErr(core.EC_DB_INSERT_FAILED, 1)
+		}
+		cnt, _ := result.RowsAffected()
+		totalCount = totalCount + cnt
+	}
+
+	return totalCount, core.MkSuccess(0)
+}
+
 func (ego *MysqlConnection) Update(sqlString string, arg ...any) (int64, int32) {
 	var err error
 	var result sql.Result
