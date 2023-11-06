@@ -1,0 +1,5 @@
+2023-11-03	16:26:09.34916400	1698999969034	[INFO]	1520	1	Connect_0 to db 				[Failed:(fox:nopass@tcp(192.168.0.151:3306)/gamedb?charset=utf8mb4)]
+2023-11-03	16:26:11.47967700	1698999971047	[INFO]	1520	1	Connect_0 to db 				[Failed:(fox:nopass@tcp(192.168.0.151:3306)/gamedb?charset=utf8mb4)]
+2023-11-03	16:26:11.47967700	1698999971047	[INFO]	1520	1	Connect_0 to db 				[Failed:(fox:nopass@tcp(192.168.0.151:3306)/gamedb?charset=utf8mb4)]
+2023-11-03	16:26:13.54701100	1698999973054	[INFO]	1520	1	Connect_0 to db 				[Failed:(fox:nopass@tcp(192.168.0.151:3306)/gamedb?charset=utf8mb4)]
+2023-11-03	16:26:13.54701100	1698999973054	[INFO]	1520	1	Connect_0 to db 				[Failed:(fox:nopass@tcp(192.168.0.151:3306)/gamedb?charset=utf8mb4)]

@@ -25,6 +25,14 @@ func GetPoolManager() *PoolManager {
 	return poolManagerInstance
 }
 
+func (ego *PoolManager) GetPool(name string) *ConnectionPool {
+	p, ok := ego._pools[name]
+	if ok {
+		return p
+	}
+	return nil
+}
+
 func (ego *PoolManager) Initialize(cfgDB *config.DBConfig) (int32, string) {
 	ego._config = *cfgDB
 	for k, v := range ego._config.Pools {

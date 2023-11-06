@@ -13,6 +13,11 @@ import (
 	_ "xeno/zohar/core/initialization"
 )
 
+func SetValues(f string, args ...any) {
+	fmt.Println(f)
+	fmt.Println(args)
+}
+
 func main() {
 	defer finalization.GetGlobalFinalizer().Finalize()
 
@@ -52,4 +57,41 @@ func main() {
 	}
 	logging.Log(core.LL_INFO, "Connect to Databases \t\t\t\t[Success]")
 
+	db.GetPoolManager().GetPool("DBP0").GetConnection(0).BeginTransaction()
+
+	tlv1, ret := db.GetPoolManager().GetPool("DBP0").GetConnection(0).RetrieveField(db.DBF_TYPE_VARCHAR, true, false, "select token from account where uid=1")
+	fmt.Println(ret)
+	fmt.Println(tlv1)
+
+	rd := db.NeoRecordDesc(0, false)
+	rd.AddFieldDesc("uid", 11, db.DBF_TYPE_TIME, false, true)
+	rd.AddFieldDesc("time", 11, db.DBF_TYPE_TIME, false, true)
+	rd.AddFieldDesc("dt", 18, db.DBF_TYPE_DATE, false, true)
+	rd.AddFieldDesc("ts", 18, db.DBF_TYPE_TIMESTAMP, false, false)
+	rd.AddFieldDesc("creation_ts", 18, db.DBF_TYPE_DATETIME, false, true)
+	rd.AddFieldDesc("nickname", 19, db.DBF_TYPE_VARCHAR, false, false)
+	rd.AddFieldDesc("token", 20, db.DBF_TYPE_VARCHAR, false, true)
+	tlv, rc := db.GetPoolManager().GetPool("DBP0").GetConnection(0).RetrieveRecord(rd, "select uid, time, dt, ts, creation_ts, nickname, token from account where uid = 2")
+	fmt.Println(rc)
+	fmt.Println(tlv.String())
+
+	db.GetPoolManager().GetPool("DBP0").GetConnection(0).CommitTransaction()
+
+	rData, _ := db.GetPoolManager().GetPool("DBP0").GetConnection(0).Retrieve("select dt from account limit 10")
+	fmt.Printf("total %d lines", len(rData))
+	for i := 0; i < len(rData); i++ {
+		for j := uint32(0); j < rData[i].Length(); j++ {
+			v, _ := rData[i].GetListValue(j)
+			fmt.Print(v)
+			fmt.Print(" - ")
+		}
+
+		fmt.Println("\n")
+	}
+
+	ra, rc := db.GetPoolManager().GetPool("DBP0").GetConnection(0).Delete("delete from account where uid = 10000")
+	if rc != 0 {
+		fmt.Println("delete failed")
+	}
+	fmt.Printf("delete %d \n", ra)
 }

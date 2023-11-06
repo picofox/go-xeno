@@ -12,6 +12,13 @@ type ConnectionPool struct {
 	_table2Connections map[string]uint16
 }
 
+func (ego *ConnectionPool) GetConnection(idx int) IDBConnection {
+	if idx >= len(ego._dbConnections) {
+		return nil
+	}
+	return ego._dbConnections[idx]
+}
+
 func (ego *ConnectionPool) ConnectDatabase() int32 {
 	for i := 0; i < len(ego._dbConnections); i++ {
 		rc := ego._dbConnections[i].Connect()

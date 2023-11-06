@@ -335,6 +335,10 @@ func (ego *TLV) GetOrCreateTLVPath(path string) (*TLV, int32, string, uint32) {
 
 }
 
+func (ego *TLV) AsList() []any {
+	return ego._value.([]any)
+}
+
 func (ego *TLV) GetTLVPath(path string) *TLV {
 	if len(path) <= 0 {
 		return ego
@@ -470,11 +474,20 @@ func (ego *TLV) stringOfSingleType(indent int) string {
 
 	if ego.IsNumeric() {
 		sb.WriteString(", \"v\":")
-		sb.WriteString(ego.AsStringNoRet())
+		if ego._value == nil {
+			sb.WriteString("null")
+		} else {
+			sb.WriteString(ego.AsStringNoRet())
+		}
 		sb.WriteString("}")
 	} else {
 		sb.WriteString(", \"v\":\"")
-		sb.WriteString(ego.AsStringNoRet())
+		if ego._value == nil {
+			sb.WriteString("null")
+		} else {
+			sb.WriteString(ego.AsStringNoRet())
+		}
+
 		sb.WriteString("\"}")
 	}
 
@@ -580,7 +593,13 @@ func (ego *TLV) stringOfListType(indent int) string {
 					sb.WriteString(val)
 					sb.WriteString("\"")
 				} else if st == T_NULL {
-					sb.WriteString("\"null\"")
+					if rr == nil {
+						sb.WriteString("null")
+					} else {
+						sb.WriteString("\"")
+						sb.WriteString(val)
+						sb.WriteString("\"")
+					}
 				} else if st == T_TLV {
 					sb.WriteString(val)
 				} else {
