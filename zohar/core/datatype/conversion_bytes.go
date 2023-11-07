@@ -72,11 +72,11 @@ func UInt64IntoBytesBE(i uint64, ba *[]byte, off int64) {
 }
 
 func BytesToInt16BE(ba *[]byte, off int64) int16 {
-	return int16((*ba)[0]&0xff)<<8 | int16((*ba)[1]&0xff)
+	return int16((*ba)[off]&0xff)<<8 | int16((*ba)[off+1]&0xff)
 }
 
 func BytesToUInt16BE(ba *[]byte, off int64) uint16 {
-	return uint16((*ba)[0]&0xff)<<8 | uint16((*ba)[1]&0xff)
+	return uint16((*ba)[off]&0xff)<<8 | uint16((*ba)[off+1]&0xff)
 }
 
 func BytesToInt32BE(ba *[]byte, off int64) int32 {

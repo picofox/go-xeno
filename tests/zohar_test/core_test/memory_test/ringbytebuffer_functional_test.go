@@ -196,6 +196,109 @@ func Test_RingByteBuffer_Functional_String(t *testing.T) {
 
 }
 
+func Test_RingByteBuffer_Functional_Int8(t *testing.T) {
+	var buf *memory.RingBuffer
+	buf = memory.NeoByteBuffer(5)
+
+	for i := 0; i < 10000; i++ {
+		rc := buf.WriteInt8(int8(i % 127 * -1))
+		if core.Err(rc) {
+			t.Errorf("case1 (Write I8): Write  failed")
+		}
+	}
+
+	for i := 0; i < 10000; i++ {
+		v, rc := buf.ReadInt8()
+		if core.Err(rc) {
+			t.Errorf("case1 (Write I8): Read  failed")
+		}
+
+		if v != int8(i%127*-1) {
+			t.Errorf("case1 (Write I8): Validate Failed")
+		}
+	}
+
+	//buf.Clear()
+	for i := 0; i < 10000; i++ {
+		rc := buf.WriteUInt8(uint8(i % 127))
+		if core.Err(rc) {
+			t.Errorf("case2 (Write U8): Write  failed")
+		}
+	}
+
+	for i := 0; i < 10000; i++ {
+		v, rc := buf.ReadUInt8()
+		if core.Err(rc) {
+			t.Errorf("case2 (Write U8): Read  failed")
+		}
+
+		if v != uint8(i%127) {
+			t.Errorf("case2 (Write U8): Validate Failed")
+		}
+	}
+
+}
+
+func Test_RingByteBuffer_Functional_Int16(t *testing.T) {
+	var buf *memory.RingBuffer
+	buf = memory.NeoByteBuffer(5)
+
+	rc := buf.WriteInt16(-32768)
+	if core.Err(rc) {
+		t.Errorf("case1 (Normal Write): Write  failed")
+	}
+	rc = buf.WriteInt16(32767)
+	if core.Err(rc) {
+		t.Errorf("case1 (Normal Write): Write  failed")
+	}
+	rc = buf.WriteInt16(0)
+	if core.Err(rc) {
+		t.Errorf("case1 (Normal Write): Write  failed")
+	}
+
+	iv, rc := buf.ReadInt16()
+	if core.Err(rc) || iv != -32768 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+	iv, rc = buf.ReadInt16()
+	if core.Err(rc) || iv != 32767 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+	iv, rc = buf.ReadInt16()
+	if core.Err(rc) || iv != 0 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+	rc = buf.WriteUInt16(0xFFFF)
+	if core.Err(rc) {
+		t.Errorf("case1 (UInt64 Write): Write  failed")
+	}
+	rc = buf.WriteUInt16(60035)
+	if core.Err(rc) {
+		t.Errorf("case1 (UInt64 Write): Write  failed")
+	}
+	rc = buf.WriteUInt16(0)
+	if core.Err(rc) {
+		t.Errorf("case1 (UInt64 Write): Write  failed")
+	}
+
+	uv, rc := buf.ReadUInt16()
+	if core.Err(rc) || uv != 0xFFFF {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+	uv, rc = buf.ReadUInt16()
+	if core.Err(rc) || uv != 60035 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+	uv, rc = buf.ReadUInt16()
+	if core.Err(rc) || uv != 0 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+}
+
 func Test_RingByteBuffer_Functional_Int32(t *testing.T) {
 	var buf *memory.RingBuffer
 	buf = memory.NeoByteBuffer(11)

@@ -234,6 +234,187 @@ func (ego *RingBuffer) WriteBytes(ba []byte, srcOff int64, srcLength int64) int3
 	return core.MkSuccess(0)
 }
 
+func (ego *RingBuffer) PeekInt8() (int8, int32, int64, int64) {
+	readable := ego.ReadAvailable()
+	if readable < 1 {
+		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
+	}
+	rc := int8(ego._data[ego._beginPos])
+	beg := ego._beginPos + 1
+	if beg == ego._capacity {
+		beg = 0
+	}
+	return rc, core.MkSuccess(0), beg, ego._length - 1
+}
+
+func (ego *RingBuffer) ReadInt8() (int8, int32) {
+	readable := ego.ReadAvailable()
+	if readable < 1 {
+		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+	}
+	rc := int8(ego._data[ego._beginPos])
+	ego._beginPos++
+	if ego._beginPos == ego._capacity {
+		ego._beginPos = 0
+	}
+	ego._length--
+	return rc, core.MkSuccess(0)
+}
+
+func (ego *RingBuffer) WriteInt8(iv int8) int32 {
+	if ego.checkSpace(1) < 0 {
+		return core.MkErr(core.EC_RESPACE_FAILED, 1)
+	}
+	wp := ego.WritePos()
+	ego._data[wp] = byte(iv)
+	ego._length++
+	return core.MkSuccess(0)
+}
+
+func (ego *RingBuffer) PeekUInt8() (uint8, int32, int64, int64) {
+	readable := ego.ReadAvailable()
+	if readable < 1 {
+		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
+	}
+	rc := uint8(ego._data[ego._beginPos])
+	beg := ego._beginPos + 1
+	if beg == ego._capacity {
+		beg = 0
+	}
+	return rc, core.MkSuccess(0), beg, ego._length - 1
+}
+
+func (ego *RingBuffer) ReadUInt8() (uint8, int32) {
+	readable := ego.ReadAvailable()
+	if readable < 1 {
+		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+	}
+	rc := uint8(ego._data[ego._beginPos])
+	ego._beginPos++
+	if ego._beginPos == ego._capacity {
+		ego._beginPos = 0
+	}
+	return rc, core.MkSuccess(0)
+}
+
+func (ego *RingBuffer) WriteUInt8(iv uint8) int32 {
+	if ego.checkSpace(1) < 0 {
+		return core.MkErr(core.EC_RESPACE_FAILED, 1)
+	}
+	wp := ego.WritePos()
+	ego._data[wp] = byte(iv)
+	ego._length++
+	return core.MkSuccess(0)
+}
+
+func (ego *RingBuffer) PeekInt16() (int16, int32, int64, int64) {
+	readable := ego.ReadAvailable()
+	if readable < 2 {
+		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
+	}
+	lenToEnd := ego._capacity - ego._beginPos
+	if lenToEnd < 2 {
+		beg, rlen := ego.fillCachePeek(lenToEnd, 2)
+		return datatype.BytesToInt16BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
+	} else {
+		rc := datatype.BytesToInt16BE(&ego._data, ego._beginPos)
+		beg := ego._beginPos + 2
+		if beg == ego._capacity {
+			beg = 0
+		}
+		return rc, core.MkSuccess(0), beg, ego._length - 2
+	}
+}
+
+func (ego *RingBuffer) ReadInt16() (int16, int32) {
+	readable := ego.ReadAvailable()
+	if readable < 2 {
+		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+	}
+	lenToEnd := ego._capacity - ego._beginPos
+	if lenToEnd < 2 {
+		ego.fillCache(lenToEnd, 2)
+		return datatype.BytesToInt16BE(&ego._b8Cache, 0), core.MkSuccess(0)
+	} else {
+		rc := datatype.BytesToInt16BE(&ego._data, ego._beginPos)
+		ego._beginPos += 2
+		if ego._beginPos == ego._capacity {
+			ego._beginPos = 0
+		}
+		ego._length -= 2
+		return rc, core.MkSuccess(0)
+	}
+}
+
+func (ego *RingBuffer) WriteInt16(iv int16) int32 {
+	if ego.checkSpace(2) < 0 {
+		return core.MkErr(core.EC_RESPACE_FAILED, 1)
+	}
+	wp := ego.WritePos()
+	if wp+2 <= ego._capacity {
+		datatype.Int16IntoBytesBE(iv, &ego._data, wp)
+		ego._length += 2
+	} else {
+		datatype.Int16IntoBytesBE(iv, &ego._b8Cache, 0)
+		ego.loadFromCache(wp, 2)
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *RingBuffer) PeekUInt16() (uint16, int32, int64, int64) {
+	readable := ego.ReadAvailable()
+	if readable < 2 {
+		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
+	}
+	lenToEnd := ego._capacity - ego._beginPos
+	if lenToEnd < 2 {
+		beg, rlen := ego.fillCachePeek(lenToEnd, 2)
+		return datatype.BytesToUInt16BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
+	} else {
+		rc := datatype.BytesToUInt16BE(&ego._data, ego._beginPos)
+		beg := ego._beginPos + 2
+		if beg == ego._capacity {
+			beg = 0
+		}
+		return rc, core.MkSuccess(0), beg, ego._length - 2
+	}
+}
+
+func (ego *RingBuffer) ReadUInt16() (uint16, int32) {
+	readable := ego.ReadAvailable()
+	if readable < 2 {
+		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+	}
+	lenToEnd := ego._capacity - ego._beginPos
+	if lenToEnd < 2 {
+		ego.fillCache(lenToEnd, 2)
+		return datatype.BytesToUInt16BE(&ego._b8Cache, 0), core.MkSuccess(0)
+	} else {
+		rc := datatype.BytesToUInt16BE(&ego._data, ego._beginPos)
+		ego._beginPos += 2
+		if ego._beginPos == ego._capacity {
+			ego._beginPos = 0
+		}
+		ego._length -= 2
+		return rc, core.MkSuccess(0)
+	}
+}
+
+func (ego *RingBuffer) WriteUInt16(iv uint16) int32 {
+	if ego.checkSpace(2) < 0 {
+		return core.MkErr(core.EC_RESPACE_FAILED, 1)
+	}
+	wp := ego.WritePos()
+	if wp+2 <= ego._capacity {
+		datatype.UInt16IntoBytesBE(iv, &ego._data, wp)
+		ego._length += 2
+	} else {
+		datatype.UInt16IntoBytesBE(iv, &ego._b8Cache, 0)
+		ego.loadFromCache(wp, 2)
+	}
+	return core.MkSuccess(0)
+}
+
 func (ego *RingBuffer) PeekInt32() (int32, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 4 {
