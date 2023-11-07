@@ -14,7 +14,7 @@ func Test_RingByteBuffer_Functional_Basic(t *testing.T) {
 	}
 	dstBa := make([]byte, 128)
 
-	var buf *memory.RingByteBuffer
+	var buf *memory.RingBuffer
 	buf = memory.NeoByteBuffer(10)
 	buf.WriteBytes(srcBa, 0, 10)
 
@@ -78,7 +78,7 @@ func Test_RingByteBuffer_Functional_Basic(t *testing.T) {
 
 func Test_RingByteBuffer_Functional_ReSpace(t *testing.T) {
 	dstBa := make([]byte, 1024)
-	var buf *memory.RingByteBuffer
+	var buf *memory.RingBuffer
 	buf = memory.NeoByteBuffer(10)
 	rc := buf.WriteBytes([]byte("01234567890123456789"), 0, 20)
 	if core.Err(rc) {
@@ -116,7 +116,7 @@ func Test_RingByteBuffer_Functional_ReSpace(t *testing.T) {
 }
 
 func Test_RingByteBuffer_Functional_String(t *testing.T) {
-	var buf *memory.RingByteBuffer
+	var buf *memory.RingBuffer
 	buf = memory.NeoByteBuffer(28)
 
 	rc := buf.WriteString("0123456789")
@@ -192,6 +192,126 @@ func Test_RingByteBuffer_Functional_String(t *testing.T) {
 	}
 	if str != "fox" {
 		t.Errorf("case1 (Half Write): validation Failed")
+	}
+
+}
+
+func Test_RingByteBuffer_Functional_Int32(t *testing.T) {
+	var buf *memory.RingBuffer
+	buf = memory.NeoByteBuffer(11)
+
+	rc := buf.WriteInt32(-3242342)
+	if core.Err(rc) {
+		t.Errorf("case1 (Normal Write): Write  failed")
+	}
+	rc = buf.WriteInt32(459783498)
+	if core.Err(rc) {
+		t.Errorf("case1 (Normal Write): Write  failed")
+	}
+	rc = buf.WriteInt32(-1)
+	if core.Err(rc) {
+		t.Errorf("case1 (Normal Write): Write  failed")
+	}
+
+	iv, rc := buf.ReadInt32()
+	if core.Err(rc) || iv != -3242342 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+	iv, rc = buf.ReadInt32()
+	if core.Err(rc) || iv != 459783498 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+	iv, rc = buf.ReadInt32()
+	if core.Err(rc) || iv != -1 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+	rc = buf.WriteUInt32(0xFFFFFFFF)
+	if core.Err(rc) {
+		t.Errorf("case1 (UInt64 Write): Write  failed")
+	}
+	rc = buf.WriteUInt32(3345235)
+	if core.Err(rc) {
+		t.Errorf("case1 (UInt64 Write): Write  failed")
+	}
+	rc = buf.WriteUInt32(0)
+	if core.Err(rc) {
+		t.Errorf("case1 (UInt64 Write): Write  failed")
+	}
+
+	uv, rc := buf.ReadUInt32()
+	if core.Err(rc) || uv != 0xFFFFFFFF {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+	uv, rc = buf.ReadUInt32()
+	if core.Err(rc) || uv != 3345235 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+	uv, rc = buf.ReadUInt32()
+	if core.Err(rc) || uv != 0 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+}
+
+func Test_RingByteBuffer_Functional_Int64(t *testing.T) {
+	var buf *memory.RingBuffer
+	buf = memory.NeoByteBuffer(19)
+
+	rc := buf.WriteInt64(-3242342)
+	if core.Err(rc) {
+		t.Errorf("case1 (Normal Write): Write  failed")
+	}
+	rc = buf.WriteInt64(4597834573498)
+	if core.Err(rc) {
+		t.Errorf("case1 (Normal Write): Write  failed")
+	}
+	rc = buf.WriteInt64(0)
+	if core.Err(rc) {
+		t.Errorf("case1 (Normal Write): Write  failed")
+	}
+
+	iv, rc := buf.ReadInt64()
+	if core.Err(rc) || iv != -3242342 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+	iv, rc = buf.ReadInt64()
+	if core.Err(rc) || iv != 4597834573498 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+	iv, rc = buf.ReadInt64()
+	if core.Err(rc) || iv != 0 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+	rc = buf.WriteUInt64(0xFFFFFFFFFFFFFFFF)
+	if core.Err(rc) {
+		t.Errorf("case1 (UInt64 Write): Write  failed")
+	}
+	rc = buf.WriteUInt64(124597834573498)
+	if core.Err(rc) {
+		t.Errorf("case1 (UInt64 Write): Write  failed")
+	}
+	rc = buf.WriteUInt64(47802343242342)
+	if core.Err(rc) {
+		t.Errorf("case1 (UInt64 Write): Write  failed")
+	}
+
+	uv, rc := buf.ReadUInt64()
+	if core.Err(rc) || uv != 0xFFFFFFFFFFFFFFFF {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+
+	uv, rc = buf.ReadUInt64()
+	if core.Err(rc) || uv != 124597834573498 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
+	}
+	uv, rc = buf.ReadUInt64()
+	if core.Err(rc) || uv != 47802343242342 {
+		t.Errorf("case1 (Normal Write): Read or Validate failed")
 	}
 
 }
