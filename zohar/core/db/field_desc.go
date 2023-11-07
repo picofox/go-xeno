@@ -10,6 +10,12 @@ const (
 )
 
 const (
+	DBK_NONE  = 0
+	DBK_PK    = 1
+	DBK_INDEX = 2
+)
+
+const (
 	DBF_TYPE_NA         = uint8(0)
 	DBF_TYPE_TINYINT    = uint8(1)
 	DBF_TYPE_SMALLINT   = uint8(2)
@@ -117,11 +123,12 @@ type FieldDesc struct {
 	_dbType     uint8
 	_localType  uint8
 	_flags      uint8
+	_keyType    uint8
 	_pos        uint16
 	_posInTable uint16
 }
 
-func NeoFieldDesc(name string, pos uint16, posInTable uint16, dbType uint8, isUnsigned bool, nullable bool) *FieldDesc {
+func NeoFieldDesc(name string, pos uint16, posInTable uint16, dbType uint8, isUnsigned bool, nullable bool, keyType uint8) *FieldDesc {
 	f := uint8(0)
 	if isUnsigned {
 		f = f | DBF_UNSIGNNED
@@ -138,8 +145,23 @@ func NeoFieldDesc(name string, pos uint16, posInTable uint16, dbType uint8, isUn
 		_dbType:     dbType,
 		_localType:  lt,
 		_flags:      f,
+		_keyType:    keyType,
 	}
 	return fd
+}
+
+func (ego *FieldDesc) IsPK() bool {
+	if ego._keyType == DBK_PK {
+		return true
+	}
+	return false
+}
+
+func (ego *FieldDesc) IsIndex() bool {
+	if ego._keyType == DBK_INDEX {
+		return true
+	}
+	return false
 }
 
 func (ego *FieldDesc) Name() string {

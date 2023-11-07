@@ -30,6 +30,7 @@ type IDBConnection interface {
 	Update(sqlString string, arg ...any) (int64, int32)
 	Delete(sqlString string, arg ...any) (int64, int32)
 	CreateDataBase(name string, chaset string, ci string) int32
+	TruncateTable(name string) int32
 }
 
 func ParseTableNameConfig(tableStr string) ([]string, int32) {

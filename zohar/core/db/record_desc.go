@@ -18,15 +18,15 @@ func NeoRecordDesc(fieldCnt int, bOrig bool) *RecordDesc {
 	}
 }
 
-func (ego *RecordDesc) AddFieldDesc(name string, posInTable uint16, dbType uint8, isUnsigned bool, nullable bool) int32 {
-	return ego.SetFieldDesc(name, 0xFFFF, posInTable, dbType, isUnsigned, nullable)
+func (ego *RecordDesc) AddFieldDesc(name string, posInTable uint16, dbType uint8, isUnsigned bool, nullable bool, keyType uint8) int32 {
+	return ego.SetFieldDesc(name, 0xFFFF, posInTable, dbType, isUnsigned, nullable, keyType)
 }
 
-func (ego *RecordDesc) SetFieldDesc(name string, pos uint16, posInTable uint16, dbType uint8, isUnsigned bool, nullable bool) int32 {
+func (ego *RecordDesc) SetFieldDesc(name string, pos uint16, posInTable uint16, dbType uint8, isUnsigned bool, nullable bool, keyType uint8) int32 {
 	flen := uint16(len(ego._fieldDesc))
 	if pos >= flen {
 		if pos == 0xFFFF {
-			pFD := NeoFieldDesc(name, flen, posInTable, dbType, isUnsigned, nullable)
+			pFD := NeoFieldDesc(name, flen, posInTable, dbType, isUnsigned, nullable, keyType)
 			ego._filedDescByName[name] = pFD
 			ego._fieldDesc = append(ego._fieldDesc, pFD)
 			return core.MkSuccess(0)
@@ -35,7 +35,7 @@ func (ego *RecordDesc) SetFieldDesc(name string, pos uint16, posInTable uint16, 
 		}
 	}
 
-	pFD := NeoFieldDesc(name, flen, posInTable, dbType, isUnsigned, nullable)
+	pFD := NeoFieldDesc(name, flen, posInTable, dbType, isUnsigned, nullable, keyType)
 	ego._fieldDesc[pos] = pFD
 	ego._filedDescByName[name] = pFD
 	return core.MkSuccess(0)

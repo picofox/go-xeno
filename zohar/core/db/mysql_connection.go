@@ -27,6 +27,11 @@ type MysqlConnection struct {
 	_tableNames []string
 }
 
+func (ego *MysqlConnection) TruncateTable(name string) int32 {
+	_, rc := ego.Delete("TRUNCATE " + name)
+	return rc
+}
+
 func (ego *MysqlConnection) _Insert(sqlString string, arg ...any) (int64, int32) {
 	var err error
 	var result sql.Result

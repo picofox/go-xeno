@@ -25,6 +25,60 @@ func Int16ToBytesLE(i int16) *[]byte {
 	return &ret
 }
 
+func Int32IntoBytesBE(i int32, ba *[]byte, off int64) {
+	(*ba)[off] = byte((i >> 24) & 0xFF)
+	(*ba)[off+1] = byte((i >> 16) & 0xFF)
+	(*ba)[off+2] = byte((i >> 8) & 0xFF)
+	(*ba)[off+3] = byte(i & 0xFF)
+}
+
+func UInt32IntoBytesBE(i uint32, ba *[]byte, off int64) {
+	(*ba)[off] = byte((i >> 24) & 0xFF)
+	(*ba)[off+1] = byte((i >> 16) & 0xFF)
+	(*ba)[off+2] = byte((i >> 8) & 0xFF)
+	(*ba)[off+3] = byte(i & 0xFF)
+}
+
+func Int64IntoBytesBE(i int64, ba *[]byte, off int64) {
+	(*ba)[off] = byte((i >> 56) & 0xFF)
+	(*ba)[off+1] = byte((i >> 48) & 0xFF)
+	(*ba)[off+2] = byte((i >> 40) & 0xFF)
+	(*ba)[off+3] = byte((i >> 32) & 0xFF)
+	(*ba)[off+4] = byte((i >> 24) & 0xFF)
+	(*ba)[off+5] = byte((i >> 16) & 0xFF)
+	(*ba)[off+6] = byte((i >> 8) & 0xFF)
+	(*ba)[off+7] = byte(i & 0xFF)
+}
+
+func UInt64IntoBytesBE(i uint64, ba *[]byte, off int64) {
+	(*ba)[off] = byte((i >> 56) & 0xFF)
+	(*ba)[off+1] = byte((i >> 48) & 0xFF)
+	(*ba)[off+2] = byte((i >> 40) & 0xFF)
+	(*ba)[off+3] = byte((i >> 32) & 0xFF)
+	(*ba)[off+4] = byte((i >> 24) & 0xFF)
+	(*ba)[off+5] = byte((i >> 16) & 0xFF)
+	(*ba)[off+6] = byte((i >> 8) & 0xFF)
+	(*ba)[off+7] = byte(i & 0xFF)
+}
+
+func BytesToInt32BE(ba *[]byte, off int64) int32 {
+	return (int32)(((*ba)[off]&0xff)<<24 | ((*ba)[off+1]&0xff)<<16 | ((*ba)[off+2]&0xff)<<8 | ((*ba)[off+3] & 0xff))
+}
+
+func BytesToUInt32BE(ba *[]byte, off int64) uint32 {
+	return (uint32)(((*ba)[off]&0xff)<<24 | ((*ba)[off+1]&0xff)<<16 | ((*ba)[off+2]&0xff)<<8 | ((*ba)[off+3] & 0xff))
+}
+
+func BytesToInt64BE(ba *[]byte, off int64) int64 {
+	return (int64)(((*ba)[0]&0xff)<<56 | ((*ba)[1]&0xff)<<48 | ((*ba)[2]&0xff)<<40 | ((*ba)[3]&0xff)<<32 |
+		((*ba)[4]&0xff)<<24 | ((*ba)[5]&0xff)<<16 | ((*ba)[6]&0xff)<<8 | ((*ba)[7] & 0xff))
+}
+
+func BytesToUInt64BE(ba *[]byte, off int64) uint64 {
+	return (uint64)(((*ba)[0]&0xff)<<56 | ((*ba)[1]&0xff)<<48 | ((*ba)[2]&0xff)<<40 | ((*ba)[3]&0xff)<<32 |
+		((*ba)[4]&0xff)<<24 | ((*ba)[5]&0xff)<<16 | ((*ba)[6]&0xff)<<8 | ((*ba)[7] & 0xff))
+}
+
 func Int32ToBytesBE(i int32) *[]byte {
 	b0 := byte((i >> 24) & 0xFF)
 	b1 := byte((i >> 16) & 0xFF)

@@ -58,12 +58,12 @@ func main() {
 	logging.Log(core.LL_INFO, "Connect to Databases \t\t\t\t[Success]")
 
 	table := db.NeoSQLTable("gamedb", "car", 0, true)
-	table.AddFieldDesc("carId", 0, db.DBF_TYPE_BIGINT, false, false)
-	table.AddFieldDesc("uid", 1, db.DBF_TYPE_BIGINT, false, false)
-	table.AddFieldDesc("nftId", 2, db.DBF_TYPE_BLOB, false, true)
-	table.AddFieldDesc("type_id", 3, db.DBF_TYPE_SMALLINT, false, false)
-	table.AddFieldDesc("level", 4, db.DBF_TYPE_TINYINT, false, false)
-	table.AddFieldDesc("part_level", 5, db.DBF_TYPE_BIGINT, false, false)
+	table.AddFieldDesc("carId", 0, db.DBF_TYPE_BIGINT, false, false, db.DBK_PK)
+	table.AddFieldDesc("uid", 1, db.DBF_TYPE_BIGINT, false, false, db.DBK_NONE)
+	table.AddFieldDesc("nftId", 2, db.DBF_TYPE_BLOB, false, true, db.DBK_NONE)
+	table.AddFieldDesc("type_id", 3, db.DBF_TYPE_SMALLINT, false, false, db.DBK_NONE)
+	table.AddFieldDesc("level", 4, db.DBF_TYPE_TINYINT, false, false, db.DBK_NONE)
+	table.AddFieldDesc("part_level", 5, db.DBF_TYPE_BIGINT, false, false, db.DBK_NONE)
 
 	var idx int64 = 0
 	for idx = 0; idx < 1000; idx++ {

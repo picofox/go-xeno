@@ -46,3 +46,9 @@
 2023-11-07	02:19:47.687037000	1699294787687	[INFO]	3084	1	Connect_2 to db 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]
 2023-11-07	02:19:47.704584000	1699294787704	[INFO]	3084	1	Connect_3 to db 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]
 2023-11-07	02:19:47.704584000	1699294787704	[INFO]	3084	1	Connect to Databases 				[Success]
+2023-11-07	02:43:40.378280000	1699296220378	[INFO]	37940	1	Connecting Database For Pool: DBP0
+2023-11-07	02:43:40.409361900	1699296220409	[INFO]	37940	1	Connect_0 to db 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]
+2023-11-07	02:43:40.423400900	1699296220423	[INFO]	37940	1	Connect_1 to db 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]
+2023-11-07	02:43:40.434431500	1699296220434	[INFO]	37940	1	Connect_2 to db 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]
+2023-11-07	02:43:40.444456100	1699296220444	[INFO]	37940	1	Connect_3 to db 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]
+2023-11-07	02:43:40.444456100	1699296220444	[INFO]	37940	1	Connect to Databases 				[Success]
