@@ -62,6 +62,27 @@ func (ego *ConcurrentRingBuffer) WriteBytes(ba []byte, srcOff int64, srcLength i
 	return ret
 }
 
+func (ego *ConcurrentRingBuffer) PeekBool() (bool, int32, int64, int64) {
+	ego._lock.RLock()
+	defer ego._lock.RUnlock()
+	v, rc, beg, rlen := ego._ringBuffer.PeekBool()
+	return v, rc, beg, rlen
+}
+
+func (ego *ConcurrentRingBuffer) ReadBool() (bool, int32) {
+	ego._lock.RLock()
+	defer ego._lock.RUnlock()
+	v, rc := ego._ringBuffer.ReadBool()
+	return v, rc
+}
+
+func (ego *ConcurrentRingBuffer) WriteBool(iv bool) int32 {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+	rc := ego._ringBuffer.WriteBool(iv)
+	return rc
+}
+
 func (ego *ConcurrentRingBuffer) PeekInt8() (int8, int32, int64, int64) {
 	ego._lock.RLock()
 	defer ego._lock.RUnlock()

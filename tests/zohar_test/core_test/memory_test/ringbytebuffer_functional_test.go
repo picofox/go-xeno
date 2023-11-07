@@ -196,6 +196,44 @@ func Test_RingByteBuffer_Functional_String(t *testing.T) {
 
 }
 
+func Test_RingByteBuffer_Functional_Bool(t *testing.T) {
+	var buf *memory.RingBuffer
+	buf = memory.NeoByteBuffer(5)
+
+	rc := int32(0)
+	for i := 0; i < 10000; i++ {
+		if i%2 == 0 {
+			rc = buf.WriteBool(true)
+		} else {
+			rc = buf.WriteBool(false)
+		}
+
+		if core.Err(rc) {
+			t.Errorf("case1 (Write Bool): Write  failed")
+		}
+	}
+
+	for i := 0; i < 10000; i++ {
+		v, rc := buf.ReadBool()
+		if core.Err(rc) {
+			t.Errorf("case1 (Write Bool): Read  failed")
+		}
+
+		if i%2 == 0 {
+			if !v {
+				t.Errorf("case1 (Write Bool): Read  failed")
+			}
+		} else {
+			rc = buf.WriteBool(false)
+			if v {
+				t.Errorf("case1 (Write Bool): Read  failed")
+			}
+		}
+
+	}
+
+}
+
 func Test_RingByteBuffer_Functional_Int8(t *testing.T) {
 	var buf *memory.RingBuffer
 	buf = memory.NeoByteBuffer(5)

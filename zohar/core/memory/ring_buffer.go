@@ -234,6 +234,42 @@ func (ego *RingBuffer) WriteBytes(ba []byte, srcOff int64, srcLength int64) int3
 	return core.MkSuccess(0)
 }
 
+func (ego *RingBuffer) PeekBool() (bool, int32, int64, int64) {
+	iv, rc, beg, rLen := ego.PeekInt8()
+	if core.Err(rc) {
+		return false, rc, beg, rLen
+	}
+	if iv != 0 {
+		return true, rc, beg, rLen
+	}
+	return false, rc, beg, rLen
+}
+
+func (ego *RingBuffer) ReadBool() (bool, int32) {
+	iv, rc := ego.ReadInt8()
+	if core.Err(rc) {
+		return false, rc
+	}
+	if iv != 0 {
+		return true, rc
+	}
+	return false, rc
+}
+
+func (ego *RingBuffer) WriteBool(b bool) int32 {
+	if ego.checkSpace(1) < 0 {
+		return core.MkErr(core.EC_RESPACE_FAILED, 1)
+	}
+	wp := ego.WritePos()
+	if b {
+		ego._data[wp] = uint8(1)
+	} else {
+		ego._data[wp] = uint8(0)
+	}
+	ego._length++
+	return core.MkSuccess(0)
+}
+
 func (ego *RingBuffer) PeekInt8() (int8, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 1 {
