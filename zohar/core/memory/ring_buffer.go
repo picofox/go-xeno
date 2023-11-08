@@ -800,16 +800,21 @@ func (ego *RingBuffer) PeekBytes() ([]byte, int32, int64, int64) {
 	if bLen > 0 {
 		rBA := make([]byte, bLen)
 		pLen, beg, rLen := ego.PeekRawBytes(rBA, 0, int64(bLen), true)
+		ego._beginPos = saveBeg
+		ego._length = saveLen
 		if pLen != int64(bLen) {
-			ego._beginPos = saveBeg
-			ego._length = saveLen
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2), -1, -1
 		}
+
 		return rBA, core.MkSuccess(0), beg, rLen
 	} else if bLen == 0 {
+		ego._beginPos = saveBeg
+		ego._length = saveLen
 		return make([]byte, 0), core.MkSuccess(0), updateBeg, updateLen
 	}
 
+	ego._beginPos = saveBeg
+	ego._length = saveLen
 	return nil, core.MkSuccess(0), updateBeg, updateLen
 }
 

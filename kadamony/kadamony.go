@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/db"
 	"xeno/zohar/core/finalization"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/process"
 
-	"xeno/zohar/core/datatype"
 	_ "xeno/zohar/core/initialization"
 )
 
