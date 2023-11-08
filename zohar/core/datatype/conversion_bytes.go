@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"math"
 	"strings"
 	"unsafe"
 )
@@ -205,6 +206,26 @@ func BoolToBytes(i bool) *[]byte {
 	return &([]byte{byte(1)})
 }
 
+func BytesToFloat32BE(ba *[]byte, off int64) float32 {
+	u32 := binary.BigEndian.Uint32((*ba)[off : off+4])
+	return math.Float32frombits(u32)
+}
+
+func BytesToFloat64BE(ba *[]byte, off int64) float64 {
+	u64 := binary.BigEndian.Uint64((*ba)[off : off+8])
+	return math.Float64frombits(u64)
+}
+
+func Float32IntoBytesBE(f32 float32, ba *[]byte, off int64) {
+	bits := math.Float32bits(f32)
+	binary.BigEndian.PutUint32((*ba)[off:], bits)
+}
+
+func Float64IntoBytesBE(f64 float64, ba *[]byte, off int64) {
+	bits := math.Float64bits(f64)
+	binary.BigEndian.PutUint64((*ba)[off:], bits)
+}
+
 func F32ToBytesBE(i float32) *[]byte {
 	bytebuf := bytes.NewBuffer([]byte{})
 	binary.Write(bytebuf, binary.BigEndian, i)
@@ -238,7 +259,6 @@ func StrToBytes(i string) *[]byte {
 }
 
 func IntToBytesBE(i int) *[]byte {
-
 	if unsafe.Sizeof(i) == 4 {
 		return Int32ToBytesBE(int32(i))
 	} else {

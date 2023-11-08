@@ -62,6 +62,48 @@ func (ego *ConcurrentRingBuffer) WriteBytes(ba []byte, srcOff int64, srcLength i
 	return ret
 }
 
+func (ego *ConcurrentRingBuffer) PeekFloat32() (float32, int32, int64, int64) {
+	ego._lock.RLock()
+	defer ego._lock.RUnlock()
+	v, rc, beg, rlen := ego._ringBuffer.PeekFloat32()
+	return v, rc, beg, rlen
+}
+
+func (ego *ConcurrentRingBuffer) ReadFloat32() (float32, int32) {
+	ego._lock.RLock()
+	defer ego._lock.RUnlock()
+	v, rc := ego._ringBuffer.ReadFloat32()
+	return v, rc
+}
+
+func (ego *ConcurrentRingBuffer) WriteFloat32(iv float32) int32 {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+	rc := ego._ringBuffer.WriteFloat32(iv)
+	return rc
+}
+
+func (ego *ConcurrentRingBuffer) PeekFloat64() (float64, int32, int64, int64) {
+	ego._lock.RLock()
+	defer ego._lock.RUnlock()
+	v, rc, beg, rlen := ego._ringBuffer.PeekFloat64()
+	return v, rc, beg, rlen
+}
+
+func (ego *ConcurrentRingBuffer) ReadFloat64() (float64, int32) {
+	ego._lock.RLock()
+	defer ego._lock.RUnlock()
+	v, rc := ego._ringBuffer.ReadFloat64()
+	return v, rc
+}
+
+func (ego *ConcurrentRingBuffer) WriteFloat64(iv float64) int32 {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+	rc := ego._ringBuffer.WriteFloat64(iv)
+	return rc
+}
+
 func (ego *ConcurrentRingBuffer) PeekBool() (bool, int32, int64, int64) {
 	ego._lock.RLock()
 	defer ego._lock.RUnlock()
