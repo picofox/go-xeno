@@ -123,6 +123,15 @@ func Test_RingByteBuffer_Functional_String(t *testing.T) {
 	if core.Err(rc) {
 		t.Errorf("case0 (Normal Write): WriteSimpleString failed")
 	}
+
+	pStr, rc, beg, rLen := buf.PeekString()
+	if core.Err(rc) {
+		t.Errorf("case0 (Normal Write): PeekString failed")
+	}
+	if pStr != "0123456789" || beg != 14 || rLen != 0 {
+		t.Errorf("case0 (Normal Write): Peek Validation failed")
+	}
+
 	str, rc := buf.ReadString()
 	if core.Err(rc) {
 		t.Errorf("case0 (Normal Write): ReadSimpleString failed")
