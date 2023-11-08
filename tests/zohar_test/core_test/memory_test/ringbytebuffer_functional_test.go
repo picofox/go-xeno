@@ -16,7 +16,7 @@ func Test_RingByteBuffer_Functional_Basic(t *testing.T) {
 
 	var buf *memory.RingBuffer
 	buf = memory.NeoByteBuffer(10)
-	buf.WriteBytes(srcBa, 0, 10)
+	buf.WriteRawBytes(srcBa, 0, 10)
 
 	r0, r1 := buf.BytesRef()
 	if r1 != nil {
@@ -26,7 +26,7 @@ func Test_RingByteBuffer_Functional_Basic(t *testing.T) {
 		t.Errorf("Simple 1st Write 10bs Failed")
 	}
 
-	nbRead := buf.ReadBytes(dstBa, 0, 5, true)
+	nbRead := buf.ReadRawBytes(dstBa, 0, 5, true)
 	if nbRead != 5 {
 		t.Errorf("Simple 1st Read 5bs Failed got %d", nbRead)
 	}
@@ -37,11 +37,11 @@ func Test_RingByteBuffer_Functional_Basic(t *testing.T) {
 		}
 	}
 
-	nbRead = buf.ReadBytes(dstBa, 0, 6, true)
+	nbRead = buf.ReadRawBytes(dstBa, 0, 6, true)
 	if nbRead != 0 {
 		t.Errorf("Strict mode should not do this")
 	}
-	nbRead = buf.ReadBytes(dstBa, 0, 6, false)
+	nbRead = buf.ReadRawBytes(dstBa, 0, 6, false)
 	if nbRead != 5 {
 		t.Errorf("Simple 1st Read 5bs Failed got %d", nbRead)
 	}
@@ -51,14 +51,14 @@ func Test_RingByteBuffer_Functional_Basic(t *testing.T) {
 		}
 	}
 
-	buf.WriteBytes(srcBa, 0, 7)
-	buf.ReadBytes(dstBa, 0, 5, true)
+	buf.WriteRawBytes(srcBa, 0, 7)
+	buf.ReadRawBytes(dstBa, 0, 5, true)
 	lenForW := buf.WriteAvailable()
 	if lenForW != 8 {
 		t.Errorf("WriteAvai should be 8, but got %d", lenForW)
 	}
 
-	buf.WriteBytes(srcBa, 2, 8)
+	buf.WriteRawBytes(srcBa, 2, 8)
 	r0, r1 = buf.BytesRef()
 	if r1 == nil {
 		t.Errorf("Simple 2st Write 10bs Failed")
@@ -80,11 +80,11 @@ func Test_RingByteBuffer_Functional_ReSpace(t *testing.T) {
 	dstBa := make([]byte, 1024)
 	var buf *memory.RingBuffer
 	buf = memory.NeoByteBuffer(10)
-	rc := buf.WriteBytes([]byte("01234567890123456789"), 0, 20)
+	rc := buf.WriteRawBytes([]byte("01234567890123456789"), 0, 20)
 	if core.Err(rc) {
 		t.Errorf("Write 20 bytes to 10 bytes ringbuffer failed")
 	}
-	nbRead := buf.ReadBytes(dstBa, 0, int64(len(dstBa)), false)
+	nbRead := buf.ReadRawBytes(dstBa, 0, int64(len(dstBa)), false)
 	if nbRead != 20 {
 		t.Errorf("ReadBytes Failed: should 20, but got %d", rc)
 	}
@@ -93,17 +93,17 @@ func Test_RingByteBuffer_Functional_ReSpace(t *testing.T) {
 		t.Errorf("Data Validate Failed")
 	}
 
-	rc = buf.WriteBytes([]byte("abcdefghijklmnopqrst"), 0, 20)
+	rc = buf.WriteRawBytes([]byte("abcdefghijklmnopqrst"), 0, 20)
 	if core.Err(rc) {
 		t.Errorf("wp < rp case : Write 20 bytes to 10 bytes ringbuffer failed")
 	}
 
-	rc = buf.WriteBytes([]byte("ABCDEFGHIJKLMNOPARST"), 0, 20)
+	rc = buf.WriteRawBytes([]byte("ABCDEFGHIJKLMNOPARST"), 0, 20)
 	if core.Err(rc) {
 		t.Errorf("wp < rp case : ReSpace by 20 bytes failed")
 	}
 
-	nbRead = buf.ReadBytes(dstBa, 0, int64(len(dstBa)), false)
+	nbRead = buf.ReadRawBytes(dstBa, 0, int64(len(dstBa)), false)
 	if nbRead != 40 {
 		t.Errorf("\"wp < rp case :ReadBytes Failed: should 20, but got %d", rc)
 	}

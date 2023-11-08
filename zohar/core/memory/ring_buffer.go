@@ -159,10 +159,10 @@ func (ego *RingBuffer) WritePos() int64 {
 	return wp
 }
 
-func (ego *RingBuffer) PeekBytes(ba []byte, baOff int64, peekLength int64, isStrict bool) int64 {
+func (ego *RingBuffer) PeekRawBytes(ba []byte, baOff int64, peekLength int64, isStrict bool) (int64, int64, int64) {
 	if ego._length < peekLength {
 		if isStrict {
-			return 0
+			return 0, -1, -1
 		} else {
 			peekLength = ego._length
 		}
@@ -174,14 +174,18 @@ func (ego *RingBuffer) PeekBytes(ba []byte, baOff int64, peekLength int64, isStr
 		}
 		part2len := peekLength - lenToEnd
 		copy(ba[baOff+lenToEnd:], ego._data[0:part2len])
-		return peekLength
+		return peekLength, part2len, ego._length - peekLength
 	} else {
 		copy(ba[baOff:], ego._data[ego._beginPos:ego._beginPos+peekLength])
-		return peekLength
+		beginPos := ego._beginPos + peekLength
+		if beginPos == ego._capacity {
+			beginPos = 0
+		}
+		return peekLength, beginPos, ego._length - peekLength
 	}
 }
 
-func (ego *RingBuffer) ReadBytes(ba []byte, baOff int64, readLength int64, isStrict bool) int64 {
+func (ego *RingBuffer) ReadRawBytes(ba []byte, baOff int64, readLength int64, isStrict bool) int64 {
 	if ego._length < readLength {
 		if isStrict {
 			return 0
@@ -211,7 +215,7 @@ func (ego *RingBuffer) ReadBytes(ba []byte, baOff int64, readLength int64, isStr
 	}
 }
 
-func (ego *RingBuffer) WriteBytes(ba []byte, srcOff int64, srcLength int64) int32 {
+func (ego *RingBuffer) WriteRawBytes(ba []byte, srcOff int64, srcLength int64) int32 {
 	if srcLength < 0 {
 		srcLength = int64(len(ba))
 	}
@@ -777,34 +781,67 @@ func (ego *RingBuffer) WriteUInt64(iv uint64) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *RingBuffer) ReadString() (string, int32) {
+func (ego *RingBuffer) PeekBytes() ([]byte, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 4 {
-		return "", core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+		return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
 	}
 	bLen, rc, updateBeg, updateLen := ego.PeekInt32()
 	if core.Err(rc) {
-		return "", rc
+		return nil, rc, -1, -1
 	}
 	if readable < int64(4+bLen) {
-		return "", core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+		return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
+	}
+	saveBeg := ego._beginPos
+	saveLen := ego._length
+	ego._beginPos = updateBeg
+	ego._length = updateLen
+	if bLen > 0 {
+		rBA := make([]byte, bLen)
+		pLen, beg, rLen := ego.PeekRawBytes(rBA, 0, int64(bLen), true)
+		if pLen != int64(bLen) {
+			ego._beginPos = saveBeg
+			ego._length = saveLen
+			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2), -1, -1
+		}
+		return rBA, core.MkSuccess(0), beg, rLen
+	} else if bLen == 0 {
+		return make([]byte, 0), core.MkSuccess(0), updateBeg, updateLen
+	}
+
+	return nil, core.MkSuccess(0), updateBeg, updateLen
+}
+
+func (ego *RingBuffer) ReadBytes() ([]byte, int32) {
+	readable := ego.ReadAvailable()
+	if readable < 4 {
+		return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+	}
+	bLen, rc, updateBeg, updateLen := ego.PeekInt32()
+	if core.Err(rc) {
+		return nil, rc
+	}
+	if readable < int64(4+bLen) {
+		return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 	}
 	ego._beginPos = updateBeg
 	ego._length = updateLen
 	if bLen > 0 {
 		rBA := make([]byte, bLen)
-		if ego.ReadBytes(rBA, 0, int64(bLen), true) != int64(bLen) {
-			return "", core.MkErr(core.EC_INCOMPLETE_DATA, 2)
+		if ego.ReadRawBytes(rBA, 0, int64(bLen), true) != int64(bLen) {
+			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
-		return string(rBA), core.MkSuccess(0)
+		return rBA, core.MkSuccess(0)
+	} else if bLen == 0 {
+		return make([]byte, 0), core.MkSuccess(0)
 	}
 
-	return "", core.MkSuccess(0)
+	return nil, core.MkSuccess(0)
 }
 
-func (ego *RingBuffer) WriteString(str string) int32 {
-	ba := []byte(str)
-	blen := len(ba)
+func (ego *RingBuffer) WriteBytes(srcBA []byte) int32 {
+	blen := len(srcBA)
 	if blen > datatype.INT32_MAX {
 		return core.MkErr(core.EC_INDEX_OOB, 0)
 	}
@@ -813,9 +850,45 @@ func (ego *RingBuffer) WriteString(str string) int32 {
 	}
 	ego.WriteInt32(int32(blen))
 	if blen > 0 {
-		ego.WriteBytes(ba, 0, int64(blen))
+		ego.WriteRawBytes(srcBA, 0, int64(blen))
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *RingBuffer) PeekString() (string, int32, int64, int64) {
+	rBA, rc, beg, rLen := ego.PeekBytes()
+	if core.Err(rc) {
+		return "", rc, -1, -1
+	}
+	if rBA == nil {
+		return "", core.MkSuccess(0), beg, rLen
+	} else if len(rBA) == 0 {
+		return "", core.MkSuccess(0), beg, rLen
+	}
+	return string(rBA), core.MkSuccess(0), beg, rLen
+
+}
+
+func (ego *RingBuffer) ReadString() (string, int32) {
+	rBA, rc := ego.ReadBytes()
+	if core.Err(rc) {
+		return "", rc
 	}
 
+	if rBA == nil {
+		return "", core.MkSuccess(0)
+	} else if len(rBA) == 0 {
+		return "", core.MkSuccess(0)
+	}
+	return string(rBA), core.MkSuccess(0)
+}
+
+func (ego *RingBuffer) WriteString(str string) int32 {
+	ba := []byte(str)
+	rc := ego.WriteBytes(ba)
+	if core.Err(rc) {
+		return rc
+	}
 	return core.MkSuccess(0)
 }
 
@@ -825,6 +898,17 @@ func NeoByteBuffer(capacity int64) *RingBuffer {
 		_beginPos: 0,
 		_length:   0,
 		_data:     make([]byte, capacity),
+		_b8Cache:  make([]byte, 8),
+	}
+	return bf
+}
+
+func ByteBufferAttach(ba *[]byte, off int64, length int64) *RingBuffer {
+	bf := &RingBuffer{
+		_capacity: int64(len(*ba)),
+		_beginPos: off,
+		_length:   length,
+		_data:     *ba,
 		_b8Cache:  make([]byte, 8),
 	}
 	return bf

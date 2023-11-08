@@ -41,24 +41,23 @@ func (ego *ConcurrentRingBuffer) WritePos() int64 {
 	return ret
 }
 
-func (ego *ConcurrentRingBuffer) PeekBytes(ba []byte, baOff int64, peekLength int64, isStrict bool) int64 {
+func (ego *ConcurrentRingBuffer) PeekRawBytes(ba []byte, baOff int64, peekLength int64, isStrict bool) (int64, int64, int64) {
 	ego._lock.RLock()
 	defer ego._lock.RUnlock()
-	ret := ego._ringBuffer.PeekBytes(ba, baOff, peekLength, isStrict)
+	return ego._ringBuffer.PeekRawBytes(ba, baOff, peekLength, isStrict)
+}
+
+func (ego *ConcurrentRingBuffer) ReadRawBytes(ba []byte, baOff int64, readLength int64, isStrict bool) int64 {
+	ego._lock.RLock()
+	defer ego._lock.RUnlock()
+	ret := ego._ringBuffer.ReadRawBytes(ba, baOff, readLength, isStrict)
 	return ret
 }
 
-func (ego *ConcurrentRingBuffer) ReadBytes(ba []byte, baOff int64, readLength int64, isStrict bool) int64 {
-	ego._lock.RLock()
-	defer ego._lock.RUnlock()
-	ret := ego._ringBuffer.ReadBytes(ba, baOff, readLength, isStrict)
-	return ret
-}
-
-func (ego *ConcurrentRingBuffer) WriteBytes(ba []byte, srcOff int64, srcLength int64) int32 {
+func (ego *ConcurrentRingBuffer) WriteRawBytes(ba []byte, srcOff int64, srcLength int64) int32 {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
-	ret := ego._ringBuffer.WriteBytes(ba, srcOff, srcLength)
+	ret := ego._ringBuffer.WriteRawBytes(ba, srcOff, srcLength)
 	return ret
 }
 
@@ -228,6 +227,18 @@ func (ego *ConcurrentRingBuffer) WriteInt32(iv int32) int32 {
 	defer ego._lock.Unlock()
 	rc := ego._ringBuffer.WriteInt32(iv)
 	return rc
+}
+
+func (ego *ConcurrentRingBuffer) ReadBytes() ([]byte, int32) {
+	ego._lock.RLock()
+	defer ego._lock.RUnlock()
+	return ego._ringBuffer.ReadBytes()
+}
+
+func (ego *ConcurrentRingBuffer) WriteBytes(srcBA []byte) int32 {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+	return ego._ringBuffer.WriteBytes(srcBA)
 }
 
 func (ego *ConcurrentRingBuffer) PeekUInt32() (uint32, int32, int64, int64) {
