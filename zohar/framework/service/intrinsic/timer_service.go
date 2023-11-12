@@ -42,7 +42,7 @@ func (ego *TimerService) _onRunning() {
 	}
 }
 
-func (ego *TimerService) AddTimer(duration uint32, repCount int32, cb func(any) int32, obj any) int32 {
+func (ego *TimerService) AddTimer(duration uint32, repCount int64, cb func(*sched.Timer) int32, obj any) *sched.Timer {
 	return ego._timewheel.AddTimer(duration, repCount, cb, obj)
 }
 
@@ -75,5 +75,6 @@ func NeoTimerService(sm *ServiceManager) *TimerService {
 		_channel:        make(chan cms.ICMS, 4096),
 		_shuttingDown:   false,
 	}
+
 	return &s
 }

@@ -1,22 +1,14 @@
 package sched
 
 type TimerLinkedListNode struct {
-	_next        *TimerLinkedListNode
-	_repeatCount int32
-	_duration    uint32
-	_expire      uint32
-	_eventFunc   func(any) int32
-	_eventObject any
+	_next *TimerLinkedListNode
+	_data *Timer
 }
 
-func NeoTimerLinkedListNode(dura uint32, rcnt int32, f func(any) int32, obj any) *TimerLinkedListNode {
+func NeoTimerLinkedListNode(data *Timer) *TimerLinkedListNode {
 	return &TimerLinkedListNode{
-		_next:        nil,
-		_repeatCount: rcnt,
-		_duration:    dura,
-		_expire:      0,
-		_eventFunc:   f,
-		_eventObject: obj,
+		_next: nil,
+		_data: data,
 	}
 }
 

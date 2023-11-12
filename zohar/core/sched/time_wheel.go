@@ -3,7 +3,6 @@ package sched
 import (
 	"fmt"
 	"sync"
-	"xeno/zohar/core"
 	"xeno/zohar/core/datetime"
 )
 
@@ -43,19 +42,16 @@ func (ego *TimeWheel) systime(sec *uint32, cs *uint32) {
 
 func (ego *TimeWheel) dispatchList(nodeList *TimerLinkedListNode) {
 	for {
-		if nodeList._eventFunc != nil {
-			go nodeList._eventFunc(nodeList._eventObject)
-			if nodeList._repeatCount < 0 {
-				ego.AddTimer(nodeList._duration, nodeList._repeatCount, nodeList._eventFunc, nodeList._eventObject)
-			} else {
-				nodeList._repeatCount--
-				if nodeList._repeatCount > 0 {
-					ego.AddTimer(nodeList._duration, nodeList._repeatCount, nodeList._eventFunc, nodeList._eventObject)
-				}
+		if nodeList._data != nil {
+			nodeList._data.Execute() //<-fix
+			bResched := nodeList._data.reSchedCheck(ego._time)
+			if bResched {
+				node := NeoTimerLinkedListNode(nodeList._data)
+				ego._lock.Lock()
+				ego.AddNode(node)
+				ego._lock.Unlock()
 			}
-
 		}
-
 		nodeList = nodeList._next
 		if nodeList == nil {
 			break
@@ -139,7 +135,7 @@ func (ego *TimeWheel) Initialize() {
 }
 
 func (ego *TimeWheel) AddNode(node *TimerLinkedListNode) {
-	var time uint32 = node._expire
+	var time uint32 = node._data._expire
 	var currentTime uint32 = ego._time
 
 	if (time | TIME_NEAR_MASK) == (currentTime | TIME_NEAR_MASK) {
@@ -158,13 +154,14 @@ func (ego *TimeWheel) AddNode(node *TimerLinkedListNode) {
 	}
 }
 
-func (ego *TimeWheel) AddTimer(duration uint32, repCount int32, cb func(any) int32, obj any) int32 {
-	node := NeoTimerLinkedListNode(duration, repCount, cb, obj)
+func (ego *TimeWheel) AddTimer(duration uint32, repCount int64, cb func(*Timer) int32, obj any) *Timer {
+	timer := NeoTimer(duration, repCount, cb, obj)
+	node := NeoTimerLinkedListNode(timer)
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
-	node._expire = duration + ego._time
+	node._data._expire = duration + ego._time
 	ego.AddNode(node)
-	return core.MkSuccess(0)
+	return timer
 }
 
 func NeoTimerWheel() *TimeWheel {
