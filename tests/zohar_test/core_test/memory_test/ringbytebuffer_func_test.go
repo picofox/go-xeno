@@ -15,7 +15,7 @@ func Test_RingByteBuffer_Functional_Basic(t *testing.T) {
 	dstBa := make([]byte, 128)
 
 	var buf *memory.RingBuffer
-	buf = memory.NeoByteBuffer(10)
+	buf = memory.NeoRingBuffer(10)
 	buf.WriteRawBytes(srcBa, 0, 10)
 
 	r0, r1 := buf.BytesRef()
@@ -79,7 +79,7 @@ func Test_RingByteBuffer_Functional_Basic(t *testing.T) {
 func Test_RingByteBuffer_Functional_ReSpace(t *testing.T) {
 	dstBa := make([]byte, 1024)
 	var buf *memory.RingBuffer
-	buf = memory.NeoByteBuffer(10)
+	buf = memory.NeoRingBuffer(10)
 	rc := buf.WriteRawBytes([]byte("01234567890123456789"), 0, 20)
 	if core.Err(rc) {
 		t.Errorf("Write 20 bytes to 10 bytes ringbuffer failed")
@@ -117,7 +117,7 @@ func Test_RingByteBuffer_Functional_ReSpace(t *testing.T) {
 
 func Test_RingByteBuffer_Functional_String(t *testing.T) {
 	var buf *memory.RingBuffer
-	buf = memory.NeoByteBuffer(28)
+	buf = memory.NeoRingBuffer(28)
 
 	rc := buf.WriteString("0123456789")
 	if core.Err(rc) {
@@ -207,7 +207,7 @@ func Test_RingByteBuffer_Functional_String(t *testing.T) {
 
 func Test_RingByteBuffer_Functional_Float64(t *testing.T) {
 	var buf *memory.RingBuffer
-	buf = memory.NeoByteBuffer(11)
+	buf = memory.NeoRingBuffer(11)
 	var i int64 = 0
 	for ; i < 10000; i++ {
 		rc := buf.WriteFloat64(float64(i) / 3)
@@ -231,7 +231,7 @@ func Test_RingByteBuffer_Functional_Float64(t *testing.T) {
 
 func Test_RingByteBuffer_Functional_Float32(t *testing.T) {
 	var buf *memory.RingBuffer
-	buf = memory.NeoByteBuffer(11)
+	buf = memory.NeoRingBuffer(11)
 
 	rc := buf.WriteFloat32(3.1415)
 	if core.Err(rc) {
@@ -263,7 +263,7 @@ func Test_RingByteBuffer_Functional_Float32(t *testing.T) {
 
 func Test_RingByteBuffer_Functional_Bool(t *testing.T) {
 	var buf *memory.RingBuffer
-	buf = memory.NeoByteBuffer(5)
+	buf = memory.NeoRingBuffer(5)
 
 	rc := int32(0)
 	for i := 0; i < 10000; i++ {
@@ -301,7 +301,7 @@ func Test_RingByteBuffer_Functional_Bool(t *testing.T) {
 
 func Test_RingByteBuffer_Functional_Int8(t *testing.T) {
 	var buf *memory.RingBuffer
-	buf = memory.NeoByteBuffer(5)
+	buf = memory.NeoRingBuffer(5)
 
 	for i := 0; i < 10000; i++ {
 		rc := buf.WriteInt8(int8(i % 127 * -1))
@@ -344,7 +344,7 @@ func Test_RingByteBuffer_Functional_Int8(t *testing.T) {
 
 func Test_RingByteBuffer_Functional_Int16(t *testing.T) {
 	var buf *memory.RingBuffer
-	buf = memory.NeoByteBuffer(5)
+	buf = memory.NeoRingBuffer(5)
 
 	rc := buf.WriteInt16(-32768)
 	if core.Err(rc) {
@@ -404,7 +404,7 @@ func Test_RingByteBuffer_Functional_Int16(t *testing.T) {
 
 func Test_RingByteBuffer_Functional_Int32(t *testing.T) {
 	var buf *memory.RingBuffer
-	buf = memory.NeoByteBuffer(11)
+	buf = memory.NeoRingBuffer(11)
 
 	rc := buf.WriteInt32(-3242342)
 	if core.Err(rc) {
@@ -464,7 +464,7 @@ func Test_RingByteBuffer_Functional_Int32(t *testing.T) {
 
 func Test_RingByteBuffer_Functional_Int64(t *testing.T) {
 	var buf *memory.RingBuffer
-	buf = memory.NeoByteBuffer(19)
+	buf = memory.NeoRingBuffer(19)
 
 	rc := buf.WriteInt64(-3242342)
 	if core.Err(rc) {

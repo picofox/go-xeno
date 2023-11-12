@@ -1,4 +1,4 @@
-package datatype
+package memory
 
 import (
 	"bytes"

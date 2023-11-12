@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"xeno/zohar/core"
-	"xeno/zohar/core/datatype"
+	"xeno/zohar/core/memory"
 	"xeno/zohar/core/strs"
 )
 
@@ -24,9 +24,9 @@ type IDBConnection interface {
 	RollbackTransaction() int32
 	ConnectionTest() int32
 	Create(sqlTable *SQLTable, sqlString string, arg ...any) (int64, int32)
-	Retrieve(sqlString string, arg ...any) ([]*datatype.TLV, int32)
-	RetrieveRecord(desc *RecordDesc, sqlString string, arg ...any) (*datatype.TLV, int32)
-	RetrieveField(dbt uint8, nullable bool, isUnsigned bool, sqlString string, arg ...any) (*datatype.TLV, int32)
+	Retrieve(sqlString string, arg ...any) ([]*memory.TLV, int32)
+	RetrieveRecord(desc *RecordDesc, sqlString string, arg ...any) (*memory.TLV, int32)
+	RetrieveField(dbt uint8, nullable bool, isUnsigned bool, sqlString string, arg ...any) (*memory.TLV, int32)
 	Update(sqlString string, arg ...any) (int64, int32)
 	Delete(sqlString string, arg ...any) (int64, int32)
 	CreateDataBase(name string, chaset string, ci string) int32

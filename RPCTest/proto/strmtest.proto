@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+
+option go_package = "generated/strmtest";
+
+
+service StreamTest {
+  rpc ServerStream(StreamRequest) returns (stream StreamReply);
+  rpc ClientStream(stream StreamRequest) returns (StreamReply);
+  rpc DualStream(stream StreamRequest) returns (stream StreamReply);
+}
+
+message StreamRequest {
+  int64 id = 1;
+}
+
+
+message StreamReply {
+  string data = 1;
+}

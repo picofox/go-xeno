@@ -10,8 +10,8 @@ import (
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config"
-	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/logging"
+	"xeno/zohar/core/memory"
 )
 
 type MysqlConnection struct {
@@ -224,99 +224,99 @@ func isBinType(name string) bool {
 var mysqldatebaseTypeNames2LocalType = map[string]func(int32) (any, uint8){
 	"TINYINT": func(int32) (any, uint8) {
 		var p sql.NullByte
-		return &p, datatype.T_I8
+		return &p, memory.T_I8
 	},
 	"UNSIGNED TINYINT": func(int32) (any, uint8) {
 		var p sql.NullByte
-		return &p, datatype.T_U8
+		return &p, memory.T_U8
 	},
 	"SMALLINT": func(int32) (any, uint8) {
 		var p sql.NullInt16
-		return &p, datatype.T_I16
+		return &p, memory.T_I16
 	},
 	"UNSIGNED SMALLINT": func(int32) (any, uint8) {
 		var p sql.NullInt16
-		return &p, datatype.T_U16
+		return &p, memory.T_U16
 	},
 	"MEDIUNINT": func(int32) (any, uint8) {
 		var p sql.NullInt32
-		return &p, datatype.T_I32
+		return &p, memory.T_I32
 	},
 	"UNSIGNED MEDIUNINT": func(int32) (any, uint8) {
 		var p sql.NullInt32
-		return &p, datatype.T_U32
+		return &p, memory.T_U32
 	},
 	"INT": func(int32) (any, uint8) {
 		var p sql.NullInt32
-		return &p, datatype.T_I32
+		return &p, memory.T_I32
 	},
 	"UNSIGNED INT": func(int32) (any, uint8) {
 		var p sql.NullInt32
-		return &p, datatype.T_U32
+		return &p, memory.T_U32
 	},
 	"BIGINT": func(int32) (any, uint8) {
 		var p sql.NullInt64
-		return &p, datatype.T_I64
+		return &p, memory.T_I64
 	},
 	"UNSIGNED BIGINT": func(int32) (any, uint8) {
 		var p sql.NullInt64
-		return &p, datatype.T_U64
+		return &p, memory.T_U64
 	},
 
 	"VARCHAR": func(int32) (any, uint8) {
 		var p sql.NullString
-		return &p, datatype.T_STR
+		return &p, memory.T_STR
 	},
 	"CHAR": func(int32) (any, uint8) {
 		var p sql.NullString
-		return &p, datatype.T_STR
+		return &p, memory.T_STR
 	},
 	"TEXT": func(int32) (any, uint8) {
 		var p sql.NullString
-		return &p, datatype.T_STR
+		return &p, memory.T_STR
 	},
 	"SMALLTEXT": func(int32) (any, uint8) {
 		var p sql.NullString
-		return &p, datatype.T_STR
+		return &p, memory.T_STR
 	},
 	"LONGTEXT": func(int32) (any, uint8) {
 		var p sql.NullString
-		return &p, datatype.T_STR
+		return &p, memory.T_STR
 	},
 	"DATETIME": func(flags int32) (any, uint8) {
 		if flags == 0 {
 			var p time.Time
-			return &p, datatype.T_I64
+			return &p, memory.T_I64
 		} else {
 			var p sql.NullTime
-			return &p, datatype.T_I64
+			return &p, memory.T_I64
 		}
 	},
 	"TIMESTAMP": func(flags int32) (any, uint8) {
 		if flags == 0 {
 			var p time.Time
-			return &p, datatype.T_I64
+			return &p, memory.T_I64
 		} else {
 			var p sql.NullTime
-			return &p, datatype.T_I64
+			return &p, memory.T_I64
 		}
 	},
 	"DATE": func(flags int32) (any, uint8) {
 		if flags == 0 {
 			var p time.Time
-			return &p, datatype.T_I64
+			return &p, memory.T_I64
 		} else {
 			var p sql.NullTime
-			return &p, datatype.T_I64
+			return &p, memory.T_I64
 		}
 	},
 	"FLOAT": func(int32) (any, uint8) {
 		var p sql.NullFloat64
-		return &p, datatype.T_F32
+		return &p, memory.T_F32
 	},
 	"DOUBLE": func(int32) (any, uint8) {
 		var p sql.NullFloat64
-		return &p, datatype.T_F64
+		return &p, memory.T_F64
 	},
 }
 
@@ -428,7 +428,7 @@ func calcColTypes(rows *sql.Rows) ([]any, []uint8) {
 	return values, dirtyField
 }
 
-var ROneLocal2ToValueArr [datatype.T_TLV]func(dbt uint8, nullable bool) any = [datatype.T_TLV]func(dbt uint8, nullable bool) any{
+var ROneLocal2ToValueArr [memory.T_TLV]func(dbt uint8, nullable bool) any = [memory.T_TLV]func(dbt uint8, nullable bool) any{
 	nil,
 	func(dbt uint8, nullable bool) any {
 		if nullable {
@@ -546,7 +546,7 @@ var ROneLocal2ToValueArr [datatype.T_TLV]func(dbt uint8, nullable bool) any = [d
 	},
 }
 
-var ROneLocalResultParseArr [datatype.T_TLV]func(v any, dt uint8, nullable bool) any = [datatype.T_TLV]func(v any, dt uint8, nullable bool) any{
+var ROneLocalResultParseArr [memory.T_TLV]func(v any, dt uint8, nullable bool) any = [memory.T_TLV]func(v any, dt uint8, nullable bool) any{
 	nil,
 	func(v any, dt uint8, nullable bool) any {
 		if nullable {
@@ -700,7 +700,7 @@ var ROneLocalResultParseArr [datatype.T_TLV]func(v any, dt uint8, nullable bool)
 	},
 }
 
-func (ego *MysqlConnection) RetrieveField(dbt uint8, nullable bool, isUnsigned bool, sqlString string, arg ...any) (*datatype.TLV, int32) {
+func (ego *MysqlConnection) RetrieveField(dbt uint8, nullable bool, isUnsigned bool, sqlString string, arg ...any) (*memory.TLV, int32) {
 	var row *sql.Row
 	//	var err error
 	if ego._goContext == nil {
@@ -735,17 +735,17 @@ func (ego *MysqlConnection) RetrieveField(dbt uint8, nullable bool, isUnsigned b
 		return nil, core.MkErr(core.EC_TYPE_MISMATCH, 1)
 	}
 	fld := f2(value, dbt, nullable)
-	var tlv *datatype.TLV = nil
+	var tlv *memory.TLV = nil
 	if fld == nil {
-		tlv = datatype.CreateTLV(datatype.DT_SINGLE, datatype.T_NULL, datatype.T_NULL, nil)
+		tlv = memory.CreateTLV(memory.DT_SINGLE, memory.T_NULL, memory.T_NULL, nil)
 	} else {
-		tlv = datatype.CreateTLV(datatype.DT_SINGLE, localType, datatype.T_NULL, fld)
+		tlv = memory.CreateTLV(memory.DT_SINGLE, localType, memory.T_NULL, fld)
 	}
 
 	return tlv, core.MkSuccess(0)
 }
 
-func (ego *MysqlConnection) RetrieveRecord(rd *RecordDesc, sqlString string, arg ...any) (*datatype.TLV, int32) {
+func (ego *MysqlConnection) RetrieveRecord(rd *RecordDesc, sqlString string, arg ...any) (*memory.TLV, int32) {
 	var row *sql.Row
 	//	var err error
 	if ego._goContext == nil {
@@ -790,13 +790,13 @@ func (ego *MysqlConnection) RetrieveRecord(rd *RecordDesc, sqlString string, arg
 		recordData[i] = f(values[i], fd.DataBaseFieldType(), fd.Nullable())
 	}
 
-	tlv := datatype.CreateTLV(datatype.DT_LIST, datatype.T_NULL, datatype.T_NULL, recordData)
+	tlv := memory.CreateTLV(memory.DT_LIST, memory.T_NULL, memory.T_NULL, recordData)
 
 	return tlv, core.MkSuccess(0)
 }
 
-func (ego *MysqlConnection) Retrieve(sqlString string, arg ...any) ([]*datatype.TLV, int32) {
-	var rData []*datatype.TLV = make([]*datatype.TLV, 0)
+func (ego *MysqlConnection) Retrieve(sqlString string, arg ...any) ([]*memory.TLV, int32) {
+	var rData []*memory.TLV = make([]*memory.TLV, 0)
 
 	var rows *sql.Rows
 	var err error
@@ -880,9 +880,9 @@ func (ego *MysqlConnection) Retrieve(sqlString string, arg ...any) ([]*datatype.
 					if dirtyFields[i] == 0 {
 						recordData[i] = v.Int64
 					} else {
-						if dirtyFields[i] == datatype.T_I64 {
+						if dirtyFields[i] == memory.T_I64 {
 							recordData[i] = int64(v.Int64)
-						} else if dirtyFields[i] == datatype.T_U64 {
+						} else if dirtyFields[i] == memory.T_U64 {
 							recordData[i] = uint32(v.Int64)
 						} else {
 							panic("invalid byte sub type")
@@ -897,9 +897,9 @@ func (ego *MysqlConnection) Retrieve(sqlString string, arg ...any) ([]*datatype.
 					if dirtyFields[i] == 0 {
 						recordData[i] = v.Int32
 					} else {
-						if dirtyFields[i] == datatype.T_I32 {
+						if dirtyFields[i] == memory.T_I32 {
 							recordData[i] = int32(v.Int32)
-						} else if dirtyFields[i] == datatype.T_U32 {
+						} else if dirtyFields[i] == memory.T_U32 {
 							recordData[i] = uint32(v.Int32)
 						} else {
 							panic("invalid byte sub type")
@@ -914,9 +914,9 @@ func (ego *MysqlConnection) Retrieve(sqlString string, arg ...any) ([]*datatype.
 					if dirtyFields[i] == 0 {
 						recordData[i] = v.Int16
 					} else {
-						if dirtyFields[i] == datatype.T_I16 {
+						if dirtyFields[i] == memory.T_I16 {
 							recordData[i] = int16(v.Int16)
-						} else if dirtyFields[i] == datatype.T_U16 {
+						} else if dirtyFields[i] == memory.T_U16 {
 							recordData[i] = uint16(v.Int16)
 						} else {
 							panic("invalid byte sub type")
@@ -928,9 +928,9 @@ func (ego *MysqlConnection) Retrieve(sqlString string, arg ...any) ([]*datatype.
 			case *sql.NullFloat64:
 				v := *values[i].(*sql.NullFloat64)
 				if v.Valid {
-					if dirtyFields[i] == datatype.T_F32 {
+					if dirtyFields[i] == memory.T_F32 {
 						recordData[i] = float32(v.Float64)
-					} else if dirtyFields[i] == datatype.T_F64 {
+					} else if dirtyFields[i] == memory.T_F64 {
 						recordData[i] = v.Float64
 					}
 				} else {
@@ -946,9 +946,9 @@ func (ego *MysqlConnection) Retrieve(sqlString string, arg ...any) ([]*datatype.
 					if dirtyFields[i] == 0 {
 						recordData[i] = v.Byte
 					} else {
-						if dirtyFields[i] == datatype.T_I8 {
+						if dirtyFields[i] == memory.T_I8 {
 							recordData[i] = int8(v.Byte)
-						} else if dirtyFields[i] == datatype.T_U8 {
+						} else if dirtyFields[i] == memory.T_U8 {
 							recordData[i] = uint8(v.Byte)
 						} else {
 							panic("invalid byte sub type")
@@ -965,7 +965,7 @@ func (ego *MysqlConnection) Retrieve(sqlString string, arg ...any) ([]*datatype.
 			}
 		}
 
-		tlv := datatype.CreateTLV(datatype.DT_LIST, datatype.T_NULL, datatype.T_NULL, recordData)
+		tlv := memory.CreateTLV(memory.DT_LIST, memory.T_NULL, memory.T_NULL, recordData)
 		rData = append(rData, tlv)
 
 		//var rawValue = *(values[0].(*interface{}))

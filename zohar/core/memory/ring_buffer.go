@@ -34,6 +34,39 @@ func (ego *RingBuffer) ExpandTo(neoCapacity int64) int64 {
 	}
 }
 
+func (ego *RingBuffer) ResizeTo(newSize int64) int64 {
+	if ego._capacity < newSize {
+		wp := ego.WritePos()
+		neoData := make([]byte, newSize)
+		if wp >= ego._beginPos {
+			copy(neoData, ego._data[ego._beginPos:ego._length])
+		} else {
+			lenToEnd := ego._capacity - ego._beginPos
+			copy(neoData, ego._data[ego._beginPos:ego._capacity])
+			copy(neoData[lenToEnd:], ego._data[0:wp])
+		}
+		ego._beginPos = 0
+		ego._capacity = newSize
+		ego._data = neoData
+	} else if ego._capacity > newSize {
+		if newSize > ego._length {
+			wp := ego.WritePos()
+			neoData := make([]byte, newSize)
+			if wp >= ego._beginPos {
+				copy(neoData, ego._data[ego._beginPos:ego._length])
+			} else {
+				lenToEnd := ego._capacity - ego._beginPos
+				copy(neoData, ego._data[ego._beginPos:ego._capacity])
+				copy(neoData[lenToEnd:], ego._data[0:wp])
+			}
+			ego._beginPos = 0
+			ego._capacity = newSize
+			ego._data = neoData
+		}
+	}
+	return 0
+}
+
 func (ego *RingBuffer) checkSpace(extraLength int64) int64 {
 	wa := ego.WriteAvailable()
 	if wa >= extraLength {
@@ -246,10 +279,10 @@ func (ego *RingBuffer) PeekFloat32() (float32, int32, int64, int64) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 4 {
 		beg, rlen := ego.fillCachePeek(lenToEnd, 4)
-		f32 := datatype.BytesToFloat32BE(&ego._b8Cache, 0)
+		f32 := BytesToFloat32BE(&ego._b8Cache, 0)
 		return f32, core.MkSuccess(0), beg, rlen
 	} else {
-		f32 := datatype.BytesToFloat32BE(&ego._data, ego._beginPos)
+		f32 := BytesToFloat32BE(&ego._data, ego._beginPos)
 		beg := ego._beginPos + 4
 		if beg == ego._capacity {
 			beg = 0
@@ -266,9 +299,9 @@ func (ego *RingBuffer) ReadFloat32() (float32, int32) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 4 {
 		ego.fillCache(lenToEnd, 4)
-		return datatype.BytesToFloat32BE(&ego._b8Cache, 0), core.MkSuccess(0)
+		return BytesToFloat32BE(&ego._b8Cache, 0), core.MkSuccess(0)
 	} else {
-		rc := datatype.BytesToFloat32BE(&ego._data, ego._beginPos)
+		rc := BytesToFloat32BE(&ego._data, ego._beginPos)
 		ego._beginPos += 4
 		if ego._beginPos == ego._capacity {
 			ego._beginPos = 0
@@ -284,10 +317,10 @@ func (ego *RingBuffer) WriteFloat32(fv float32) int32 {
 	}
 	wp := ego.WritePos()
 	if wp+4 <= ego._capacity {
-		datatype.Float32IntoBytesBE(fv, &ego._data, wp)
+		Float32IntoBytesBE(fv, &ego._data, wp)
 		ego._length += 4
 	} else {
-		datatype.Float32IntoBytesBE(fv, &ego._b8Cache, 0)
+		Float32IntoBytesBE(fv, &ego._b8Cache, 0)
 		ego.loadFromCache(wp, 4)
 	}
 	return core.MkSuccess(0)
@@ -301,10 +334,10 @@ func (ego *RingBuffer) PeekFloat64() (float64, int32, int64, int64) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 8 {
 		beg, rlen := ego.fillCachePeek(lenToEnd, 8)
-		f64 := datatype.BytesToFloat64BE(&ego._b8Cache, 0)
+		f64 := BytesToFloat64BE(&ego._b8Cache, 0)
 		return f64, core.MkSuccess(0), beg, rlen
 	} else {
-		f64 := datatype.BytesToFloat64BE(&ego._data, ego._beginPos)
+		f64 := BytesToFloat64BE(&ego._data, ego._beginPos)
 		beg := ego._beginPos + 8
 		if beg == ego._capacity {
 			beg = 0
@@ -321,9 +354,9 @@ func (ego *RingBuffer) ReadFloat64() (float64, int32) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 8 {
 		ego.fillCache(lenToEnd, 8)
-		return datatype.BytesToFloat64BE(&ego._b8Cache, 0), core.MkSuccess(0)
+		return BytesToFloat64BE(&ego._b8Cache, 0), core.MkSuccess(0)
 	} else {
-		rc := datatype.BytesToFloat64BE(&ego._data, ego._beginPos)
+		rc := BytesToFloat64BE(&ego._data, ego._beginPos)
 		ego._beginPos += 8
 		if ego._beginPos == ego._capacity {
 			ego._beginPos = 0
@@ -339,10 +372,10 @@ func (ego *RingBuffer) WriteFloat64(fv float64) int32 {
 	}
 	wp := ego.WritePos()
 	if wp+8 <= ego._capacity {
-		datatype.Float64IntoBytesBE(fv, &ego._data, wp)
+		Float64IntoBytesBE(fv, &ego._data, wp)
 		ego._length += 8
 	} else {
-		datatype.Float64IntoBytesBE(fv, &ego._b8Cache, 0)
+		Float64IntoBytesBE(fv, &ego._b8Cache, 0)
 		ego.loadFromCache(wp, 8)
 	}
 	return core.MkSuccess(0)
@@ -465,9 +498,9 @@ func (ego *RingBuffer) PeekInt16() (int16, int32, int64, int64) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 2 {
 		beg, rlen := ego.fillCachePeek(lenToEnd, 2)
-		return datatype.BytesToInt16BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
+		return BytesToInt16BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
 	} else {
-		rc := datatype.BytesToInt16BE(&ego._data, ego._beginPos)
+		rc := BytesToInt16BE(&ego._data, ego._beginPos)
 		beg := ego._beginPos + 2
 		if beg == ego._capacity {
 			beg = 0
@@ -484,9 +517,9 @@ func (ego *RingBuffer) ReadInt16() (int16, int32) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 2 {
 		ego.fillCache(lenToEnd, 2)
-		return datatype.BytesToInt16BE(&ego._b8Cache, 0), core.MkSuccess(0)
+		return BytesToInt16BE(&ego._b8Cache, 0), core.MkSuccess(0)
 	} else {
-		rc := datatype.BytesToInt16BE(&ego._data, ego._beginPos)
+		rc := BytesToInt16BE(&ego._data, ego._beginPos)
 		ego._beginPos += 2
 		if ego._beginPos == ego._capacity {
 			ego._beginPos = 0
@@ -502,10 +535,10 @@ func (ego *RingBuffer) WriteInt16(iv int16) int32 {
 	}
 	wp := ego.WritePos()
 	if wp+2 <= ego._capacity {
-		datatype.Int16IntoBytesBE(iv, &ego._data, wp)
+		Int16IntoBytesBE(iv, &ego._data, wp)
 		ego._length += 2
 	} else {
-		datatype.Int16IntoBytesBE(iv, &ego._b8Cache, 0)
+		Int16IntoBytesBE(iv, &ego._b8Cache, 0)
 		ego.loadFromCache(wp, 2)
 	}
 	return core.MkSuccess(0)
@@ -519,9 +552,9 @@ func (ego *RingBuffer) PeekUInt16() (uint16, int32, int64, int64) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 2 {
 		beg, rlen := ego.fillCachePeek(lenToEnd, 2)
-		return datatype.BytesToUInt16BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
+		return BytesToUInt16BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
 	} else {
-		rc := datatype.BytesToUInt16BE(&ego._data, ego._beginPos)
+		rc := BytesToUInt16BE(&ego._data, ego._beginPos)
 		beg := ego._beginPos + 2
 		if beg == ego._capacity {
 			beg = 0
@@ -538,9 +571,9 @@ func (ego *RingBuffer) ReadUInt16() (uint16, int32) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 2 {
 		ego.fillCache(lenToEnd, 2)
-		return datatype.BytesToUInt16BE(&ego._b8Cache, 0), core.MkSuccess(0)
+		return BytesToUInt16BE(&ego._b8Cache, 0), core.MkSuccess(0)
 	} else {
-		rc := datatype.BytesToUInt16BE(&ego._data, ego._beginPos)
+		rc := BytesToUInt16BE(&ego._data, ego._beginPos)
 		ego._beginPos += 2
 		if ego._beginPos == ego._capacity {
 			ego._beginPos = 0
@@ -556,10 +589,10 @@ func (ego *RingBuffer) WriteUInt16(iv uint16) int32 {
 	}
 	wp := ego.WritePos()
 	if wp+2 <= ego._capacity {
-		datatype.UInt16IntoBytesBE(iv, &ego._data, wp)
+		UInt16IntoBytesBE(iv, &ego._data, wp)
 		ego._length += 2
 	} else {
-		datatype.UInt16IntoBytesBE(iv, &ego._b8Cache, 0)
+		UInt16IntoBytesBE(iv, &ego._b8Cache, 0)
 		ego.loadFromCache(wp, 2)
 	}
 	return core.MkSuccess(0)
@@ -573,9 +606,9 @@ func (ego *RingBuffer) PeekInt32() (int32, int32, int64, int64) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 4 {
 		beg, rlen := ego.fillCachePeek(lenToEnd, 4)
-		return datatype.BytesToInt32BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
+		return BytesToInt32BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
 	} else {
-		rc := datatype.BytesToInt32BE(&ego._data, ego._beginPos)
+		rc := BytesToInt32BE(&ego._data, ego._beginPos)
 		beg := ego._beginPos + 4
 		if beg == ego._capacity {
 			beg = 0
@@ -592,9 +625,9 @@ func (ego *RingBuffer) ReadInt32() (int32, int32) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 4 {
 		ego.fillCache(lenToEnd, 4)
-		return datatype.BytesToInt32BE(&ego._b8Cache, 0), core.MkSuccess(0)
+		return BytesToInt32BE(&ego._b8Cache, 0), core.MkSuccess(0)
 	} else {
-		rc := datatype.BytesToInt32BE(&ego._data, ego._beginPos)
+		rc := BytesToInt32BE(&ego._data, ego._beginPos)
 		ego._beginPos += 4
 		if ego._beginPos == ego._capacity {
 			ego._beginPos = 0
@@ -610,10 +643,10 @@ func (ego *RingBuffer) WriteInt32(iv int32) int32 {
 	}
 	wp := ego.WritePos()
 	if wp+4 <= ego._capacity {
-		datatype.Int32IntoBytesBE(iv, &ego._data, wp)
+		Int32IntoBytesBE(iv, &ego._data, wp)
 		ego._length += 4
 	} else {
-		datatype.Int32IntoBytesBE(iv, &ego._b8Cache, 0)
+		Int32IntoBytesBE(iv, &ego._b8Cache, 0)
 		ego.loadFromCache(wp, 4)
 	}
 	return core.MkSuccess(0)
@@ -627,9 +660,9 @@ func (ego *RingBuffer) PeekUInt32() (uint32, int32, int64, int64) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 4 {
 		beg, rlen := ego.fillCachePeek(lenToEnd, 4)
-		return datatype.BytesToUInt32BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
+		return BytesToUInt32BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
 	} else {
-		rc := datatype.BytesToUInt32BE(&ego._data, ego._beginPos)
+		rc := BytesToUInt32BE(&ego._data, ego._beginPos)
 		beg := ego._beginPos + 4
 		if beg == ego._capacity {
 			beg = 0
@@ -646,9 +679,9 @@ func (ego *RingBuffer) ReadUInt32() (uint32, int32) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 4 {
 		ego.fillCache(lenToEnd, 4)
-		return datatype.BytesToUInt32BE(&ego._b8Cache, 0), core.MkSuccess(0)
+		return BytesToUInt32BE(&ego._b8Cache, 0), core.MkSuccess(0)
 	} else {
-		rc := datatype.BytesToUInt32BE(&ego._data, ego._beginPos)
+		rc := BytesToUInt32BE(&ego._data, ego._beginPos)
 		ego._beginPos += 4
 		if ego._beginPos == ego._capacity {
 			ego._beginPos = 0
@@ -664,10 +697,10 @@ func (ego *RingBuffer) WriteUInt32(iv uint32) int32 {
 	}
 	wp := ego.WritePos()
 	if wp+4 <= ego._capacity {
-		datatype.UInt32IntoBytesBE(iv, &ego._data, wp)
+		UInt32IntoBytesBE(iv, &ego._data, wp)
 		ego._length += 4
 	} else {
-		datatype.UInt32IntoBytesBE(iv, &ego._b8Cache, 0)
+		UInt32IntoBytesBE(iv, &ego._b8Cache, 0)
 		ego.loadFromCache(wp, 4)
 	}
 	return core.MkSuccess(0)
@@ -681,9 +714,9 @@ func (ego *RingBuffer) PeekInt64() (int64, int32, int64, int64) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 8 {
 		beg, rlen := ego.fillCachePeek(lenToEnd, 8)
-		return datatype.BytesToInt64BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
+		return BytesToInt64BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
 	} else {
-		rc := datatype.BytesToInt64BE(&ego._data, ego._beginPos)
+		rc := BytesToInt64BE(&ego._data, ego._beginPos)
 		beg := ego._beginPos + 8
 		if beg == ego._capacity {
 			beg = 0
@@ -700,9 +733,9 @@ func (ego *RingBuffer) ReadInt64() (int64, int32) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 8 {
 		ego.fillCache(lenToEnd, 8)
-		return datatype.BytesToInt64BE(&ego._b8Cache, 0), core.MkSuccess(0)
+		return BytesToInt64BE(&ego._b8Cache, 0), core.MkSuccess(0)
 	} else {
-		rc := datatype.BytesToInt64BE(&ego._data, ego._beginPos)
+		rc := BytesToInt64BE(&ego._data, ego._beginPos)
 		ego._beginPos += 8
 		if ego._beginPos == ego._capacity {
 			ego._beginPos = 0
@@ -718,10 +751,10 @@ func (ego *RingBuffer) WriteInt64(iv int64) int32 {
 	}
 	wp := ego.WritePos()
 	if wp+8 <= ego._capacity {
-		datatype.Int64IntoBytesBE(iv, &ego._data, wp)
+		Int64IntoBytesBE(iv, &ego._data, wp)
 		ego._length += 8
 	} else {
-		datatype.Int64IntoBytesBE(iv, &ego._b8Cache, 0)
+		Int64IntoBytesBE(iv, &ego._b8Cache, 0)
 		ego.loadFromCache(wp, 8)
 	}
 	return core.MkSuccess(0)
@@ -735,9 +768,9 @@ func (ego *RingBuffer) PeekUInt64() (uint64, int32, int64, int64) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 8 {
 		beg, rlen := ego.fillCachePeek(lenToEnd, 8)
-		return datatype.BytesToUInt64BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
+		return BytesToUInt64BE(&ego._b8Cache, 0), core.MkSuccess(0), beg, rlen
 	} else {
-		rc := datatype.BytesToUInt64BE(&ego._data, ego._beginPos)
+		rc := BytesToUInt64BE(&ego._data, ego._beginPos)
 		beg := ego._beginPos + 8
 		if beg == ego._capacity {
 			beg = 0
@@ -754,9 +787,9 @@ func (ego *RingBuffer) ReadUInt64() (uint64, int32) {
 	lenToEnd := ego._capacity - ego._beginPos
 	if lenToEnd < 8 {
 		ego.fillCache(lenToEnd, 8)
-		return datatype.BytesToUInt64BE(&ego._b8Cache, 0), core.MkSuccess(0)
+		return BytesToUInt64BE(&ego._b8Cache, 0), core.MkSuccess(0)
 	} else {
-		rc := datatype.BytesToUInt64BE(&ego._data, ego._beginPos)
+		rc := BytesToUInt64BE(&ego._data, ego._beginPos)
 		ego._beginPos += 8
 		if ego._beginPos == ego._capacity {
 			ego._beginPos = 0
@@ -772,10 +805,10 @@ func (ego *RingBuffer) WriteUInt64(iv uint64) int32 {
 	}
 	wp := ego.WritePos()
 	if wp+8 <= ego._capacity {
-		datatype.UInt64IntoBytesBE(iv, &ego._data, wp)
+		UInt64IntoBytesBE(iv, &ego._data, wp)
 		ego._length += 8
 	} else {
-		datatype.UInt64IntoBytesBE(iv, &ego._b8Cache, 0)
+		UInt64IntoBytesBE(iv, &ego._b8Cache, 0)
 		ego.loadFromCache(wp, 8)
 	}
 	return core.MkSuccess(0)
@@ -897,7 +930,7 @@ func (ego *RingBuffer) WriteString(str string) int32 {
 	return core.MkSuccess(0)
 }
 
-func NeoByteBuffer(capacity int64) *RingBuffer {
+func NeoRingBuffer(capacity int64) *RingBuffer {
 	bf := &RingBuffer{
 		_capacity: capacity,
 		_beginPos: 0,

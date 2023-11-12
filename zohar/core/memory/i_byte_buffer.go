@@ -2,6 +2,7 @@ package memory
 
 type IByteBuffer interface {
 	Capacity() int64
+	ResizeTo(int64) int64
 	ReadAvailable() int64
 	WriteAvailable() int64
 	Clear()
@@ -46,6 +47,6 @@ type IByteBuffer interface {
 	WriteBytes([]byte) int32
 	PeekString() (string, int32, int64, int64)
 	ReadString() (string, int32)
-	WriteString(str string) int32
+	WriteString(string) int32
 	BytesRef() ([]byte, []byte)
 }

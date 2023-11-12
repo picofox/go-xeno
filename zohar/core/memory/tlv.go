@@ -1,4 +1,4 @@
-package datatype
+package memory
 
 import (
 	"fmt"
@@ -61,6 +61,10 @@ type TLV struct {
 	_keyType uint8
 	_value   any
 }
+
+//func (ego *TLV) Serialize(bb IByteBuffer) int32 {
+//
+//}
 
 const (
 	PST_ERR   = -1

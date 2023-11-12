@@ -8,7 +8,7 @@ import (
 	"sync"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config"
-	"xeno/zohar/core/datatype"
+	"xeno/zohar/core/memory"
 )
 
 type Arguments struct {
@@ -16,13 +16,13 @@ type Arguments struct {
 	_program     string
 	_targetSpec  *ArgumentSpec
 	_shortSpecs  [128]*ArgumentSpec
-	_shortValues [128]*datatype.TLV
-	_targets     []*datatype.TLV
+	_shortValues [128]*memory.TLV
+	_targets     []*memory.TLV
 	_specs       map[string]*ArgumentSpec
-	_values      map[string]*datatype.TLV
+	_values      map[string]*memory.TLV
 }
 
-func (ego *Arguments) GetLongParam(lcmd string) *datatype.TLV {
+func (ego *Arguments) GetLongParam(lcmd string) *memory.TLV {
 	tlv, ok := ego._values[lcmd]
 	if ok {
 		return tlv
@@ -70,7 +70,7 @@ func (ego *Arguments) GetLongParamValue(lcmd string) any {
 	return nil
 }
 
-func (ego *Arguments) GetShortParam(scmd uint8) *datatype.TLV {
+func (ego *Arguments) GetShortParam(scmd uint8) *memory.TLV {
 	if scmd < 128 {
 		return ego._shortValues[scmd]
 	}
@@ -146,10 +146,10 @@ func Initialize() (*Arguments, string) {
 		_program:     os.Args[0],
 		_targetSpec:  nil,
 		_shortSpecs:  [128]*ArgumentSpec{},
-		_shortValues: [128]*datatype.TLV{},
-		_targets:     make([]*datatype.TLV, 0),
+		_shortValues: [128]*memory.TLV{},
+		_targets:     make([]*memory.TLV, 0),
 		_specs:       make(map[string]*ArgumentSpec),
-		_values:      make(map[string]*datatype.TLV),
+		_values:      make(map[string]*memory.TLV),
 	}
 
 	if len(config.GetIntrinsicConfig().CmdTargetSpec) > 1 {
@@ -356,20 +356,20 @@ func (ego *Arguments) addNeoTarget(target string) string {
 		return fmt.Sprintf("Can't add Target (%s), Too Many Targets: %u", target, curCount)
 	}
 
-	tlv := datatype.CreateTLV(datatype.DT_SINGLE, ego._targetSpec.SingleType(), datatype.T_NULL, target)
+	tlv := memory.CreateTLV(memory.DT_SINGLE, ego._targetSpec.SingleType(), memory.T_NULL, target)
 	ego._targets = append(ego._targets, tlv)
 	return ""
 }
 
-func (ego *Arguments) updateNeoValueBase(scmd uint8, lcmd string) (*datatype.TLV, string) {
-	var tlv *datatype.TLV = nil
+func (ego *Arguments) updateNeoValueBase(scmd uint8, lcmd string) (*memory.TLV, string) {
+	var tlv *memory.TLV = nil
 	if len(lcmd) > 0 {
 		asp := ego.findSpecByLong(lcmd)
 		if asp == nil {
 			return nil, fmt.Sprintf("No Spec is found for ARG: %s\n", lcmd)
 		}
 
-		tlv = datatype.CreateTLV(asp.ContainerType(), asp.SingleType(), asp.keyType(), nil)
+		tlv = memory.CreateTLV(asp.ContainerType(), asp.SingleType(), asp.keyType(), nil)
 		if tlv == nil {
 			return nil, fmt.Sprintf("Value allocate failed for ARG: %s\n", lcmd)
 		}
@@ -385,7 +385,7 @@ func (ego *Arguments) updateNeoValueBase(scmd uint8, lcmd string) (*datatype.TLV
 		}
 		if !asp.HasLong() {
 			str := asp.ShortCommandString()
-			tlv = datatype.CreateTLV(asp.ContainerType(), asp.SingleType(), asp.keyType(), nil)
+			tlv = memory.CreateTLV(asp.ContainerType(), asp.SingleType(), asp.keyType(), nil)
 			if tlv == nil {
 				return nil, fmt.Sprintf("Value allocate failed for ARG: %s\n", lcmd)
 			}
@@ -397,7 +397,7 @@ func (ego *Arguments) updateNeoValueBase(scmd uint8, lcmd string) (*datatype.TLV
 			ego._values[str] = tlv
 
 		} else {
-			tlv = datatype.CreateTLV(asp.ContainerType(), asp.SingleType(), asp.keyType(), nil)
+			tlv = memory.CreateTLV(asp.ContainerType(), asp.SingleType(), asp.keyType(), nil)
 			if tlv == nil {
 				return nil, fmt.Sprintf("Value allocate failed for ARG: %s\n", lcmd)
 			}
@@ -415,7 +415,7 @@ func (ego *Arguments) updateNeoValueBase(scmd uint8, lcmd string) (*datatype.TLV
 	return tlv, ""
 }
 
-func (ego *Arguments) updateNeoValue(scmd uint8, lcmd string, val string) (*datatype.TLV, string) {
+func (ego *Arguments) updateNeoValue(scmd uint8, lcmd string, val string) (*memory.TLV, string) {
 	asp := ego.findSpec(scmd, lcmd)
 	if asp == nil {
 		return nil, fmt.Sprintf("No value is given to ARG: %c or %s\n", scmd, lcmd)
@@ -475,7 +475,7 @@ func (ego *Arguments) ParseArgs(av []string) string {
 	}
 
 	ac := len(av)
-	var tlv *datatype.TLV = nil
+	var tlv *memory.TLV = nil
 
 	for i := 1; i < len(av); i++ {
 		oneArg := strings.Trim(av[i], " \t\r\n")

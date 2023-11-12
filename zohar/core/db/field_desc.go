@@ -1,7 +1,7 @@
 package db
 
 import (
-	"xeno/zohar/core/datatype"
+	"xeno/zohar/core/memory"
 )
 
 const (
@@ -40,81 +40,81 @@ const (
 
 var DBType2LocalType [DBF_TYPE_COUNT]func(u bool) uint8 = [DBF_TYPE_COUNT]func(u bool) uint8{
 	func(bool) uint8 {
-		return datatype.T_NULL
+		return memory.T_NULL
 	}, //0
 	func(u bool) uint8 {
 		if u {
-			return datatype.T_U8
+			return memory.T_U8
 		} else {
-			return datatype.T_I8
+			return memory.T_I8
 		}
 	}, //1
 	func(u bool) uint8 {
 		if u {
-			return datatype.T_U16
+			return memory.T_U16
 		} else {
-			return datatype.T_I16
+			return memory.T_I16
 		}
 	}, //2
 	func(u bool) uint8 {
 		if u {
-			return datatype.T_U32
+			return memory.T_U32
 		} else {
-			return datatype.T_I32
+			return memory.T_I32
 		}
 	}, //3
 	func(u bool) uint8 {
 		if u {
-			return datatype.T_U32
+			return memory.T_U32
 		} else {
-			return datatype.T_I32
+			return memory.T_I32
 		}
 	}, //4
 	func(u bool) uint8 {
 		if u {
-			return datatype.T_U64
+			return memory.T_U64
 		} else {
-			return datatype.T_I64
+			return memory.T_I64
 		}
 	}, //5
 	func(u bool) uint8 {
-		return datatype.T_F32
+		return memory.T_F32
 	}, //6
 	func(u bool) uint8 {
-		return datatype.T_F64
+		return memory.T_F64
 	}, //7
 	func(u bool) uint8 {
-		return datatype.T_STR
+		return memory.T_STR
 	}, //8
 	func(u bool) uint8 {
-		return datatype.T_STR
+		return memory.T_STR
 	}, //9
 	func(u bool) uint8 {
-		return datatype.T_STR
+		return memory.T_STR
 	}, //10
 	func(u bool) uint8 {
-		return datatype.T_BYTES
+		return memory.T_BYTES
 	}, //11
 	func(u bool) uint8 {
-		return datatype.T_BYTES
+		return memory.T_BYTES
 	}, //12
 	func(u bool) uint8 {
-		return datatype.T_BYTES
+		return memory.T_BYTES
 	}, //13
 	func(u bool) uint8 {
-		return datatype.T_BYTES
+		return memory.T_BYTES
 	}, //14
 	func(u bool) uint8 {
-		return datatype.T_I64
+		return memory.T_I64
 	}, //15
 	func(u bool) uint8 {
-		return datatype.T_I64
+		return memory.T_I64
 	}, //16
 	func(u bool) uint8 {
-		return datatype.T_STR
+		return memory.T_STR
 	}, //17
 	func(u bool) uint8 {
-		return datatype.T_I64
+		return memory.T_I64
 	}, //18
 }
 

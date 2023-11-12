@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+//protoc --go_out=../generated/pbs  --go-grpc_out=. *.proto
+
+option go_package = "generated/account";
+
+service AccountService {
+  rpc OnRegister(AccountRegister) returns (AccountRegisterResult);
+}
+
+message AccountRegister {
+  string name = 1;
+  string email = 2;
+  string passwd = 3;
+}
+
+message AccountRegisterResult {
+  bool ok = 1;
+  int64 uid = 2;
+}

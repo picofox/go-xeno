@@ -3,7 +3,7 @@ package cmdline
 import (
 	"fmt"
 	"strings"
-	"xeno/zohar/core/datatype"
+	"xeno/zohar/core/memory"
 )
 
 type ArgumentSpec struct {
@@ -45,8 +45,8 @@ func (ego *ArgumentSpec) Optional() bool {
 
 func (ego *ArgumentSpec) KeyTypeStr() string {
 	if ego.IsDict() {
-		if int(ego._keyType) < len(datatype.SINGLE_TYPE_NAMES) {
-			return datatype.SINGLE_TYPE_NAMES[ego._keyType]
+		if int(ego._keyType) < len(memory.SINGLE_TYPE_NAMES) {
+			return memory.SINGLE_TYPE_NAMES[ego._keyType]
 		}
 	}
 
@@ -62,8 +62,8 @@ func (ego *ArgumentSpec) ValueTypeStr() string {
 	}
 
 	idx := ego._type & 0xf
-	if int(idx) < len(datatype.SINGLE_TYPE_NAMES) {
-		return datatype.SINGLE_TYPE_NAMES[idx]
+	if int(idx) < len(memory.SINGLE_TYPE_NAMES) {
+		return memory.SINGLE_TYPE_NAMES[idx]
 	}
 
 	return ""
@@ -91,11 +91,11 @@ func (ego *ArgumentSpec) IsValid() bool {
 	if ego.HasShort() || ego.HasLong() {
 		u := ego.SingleType()
 		if ego.IsFlag() {
-			if u == datatype.T_NULL {
+			if u == memory.T_NULL {
 				return true
 			}
 		} else {
-			if u > datatype.T_NULL && u <= datatype.T_STR {
+			if u > memory.T_NULL && u <= memory.T_STR {
 				return true
 			}
 		}
@@ -110,34 +110,34 @@ func (ego *ArgumentSpec) String() string {
 
 func parseSingleStringType(typeStr string) uint8 {
 	if len(typeStr) < 2 {
-		return datatype.T_NULL
+		return memory.T_NULL
 	}
 
 	if strings.Index(typeStr, "i8") >= 0 {
-		return datatype.T_I8
+		return memory.T_I8
 	} else if strings.Index(typeStr, "i16") >= 0 {
-		return datatype.T_I16
+		return memory.T_I16
 	} else if strings.Index(typeStr, "i32") >= 0 {
-		return datatype.T_I32
+		return memory.T_I32
 	} else if strings.Index(typeStr, "i64") >= 0 {
-		return datatype.T_I64
+		return memory.T_I64
 	} else if strings.Index(typeStr, "u8") >= 0 {
-		return datatype.T_U8
+		return memory.T_U8
 	} else if strings.Index(typeStr, "u16") >= 0 {
-		return datatype.T_U16
+		return memory.T_U16
 	} else if strings.Index(typeStr, "u32") >= 0 {
-		return datatype.T_U32
+		return memory.T_U32
 	} else if strings.Index(typeStr, "u64") >= 0 {
-		return datatype.T_U64
+		return memory.T_U64
 	} else if strings.Index(typeStr, "f32") >= 0 {
-		return datatype.T_F32
+		return memory.T_F32
 	} else if strings.Index(typeStr, "f64") >= 0 {
-		return datatype.T_F64
+		return memory.T_F64
 	} else if strings.Index(typeStr, "str") >= 0 {
-		return datatype.T_STR
+		return memory.T_STR
 	}
 
-	return datatype.T_NULL
+	return memory.T_NULL
 }
 
 func (ego *ArgumentSpec) HasLong() bool {
@@ -163,7 +163,7 @@ func (ego *ArgumentSpec) IsFlag() bool {
 
 func (ego *ArgumentSpec) IsSingle() bool {
 	hi := ego.ContainerType()
-	if hi == datatype.DT_SINGLE {
+	if hi == memory.DT_SINGLE {
 		return true
 	}
 	return false
@@ -171,7 +171,7 @@ func (ego *ArgumentSpec) IsSingle() bool {
 
 func (ego *ArgumentSpec) IsList() bool {
 	hi := ego.ContainerType()
-	if hi == datatype.DT_LIST {
+	if hi == memory.DT_LIST {
 		return true
 	}
 	return false
@@ -179,7 +179,7 @@ func (ego *ArgumentSpec) IsList() bool {
 
 func (ego *ArgumentSpec) IsDict() bool {
 	hi := ego.ContainerType()
-	if hi == datatype.DT_DICT {
+	if hi == memory.DT_DICT {
 		return true
 	}
 	return false
@@ -187,7 +187,7 @@ func (ego *ArgumentSpec) IsDict() bool {
 
 func parseTypeString(typeStr string) (uint8, uint8) {
 	if len(typeStr) < 1 {
-		return datatype.T_NULL, datatype.T_NULL
+		return memory.T_NULL, memory.T_NULL
 	}
 
 	idx := strings.Index(typeStr, "D")
@@ -195,20 +195,20 @@ func parseTypeString(typeStr string) (uint8, uint8) {
 		dSubStr := typeStr[idx+1:]
 		kvp := strings.SplitN(dSubStr, "-", 2)
 		if len(kvp) != 2 {
-			return datatype.T_NULL, datatype.T_NULL
+			return memory.T_NULL, memory.T_NULL
 		}
 
 		kt := parseSingleStringType(kvp[0])
 		vt := parseSingleStringType(kvp[1])
-		return (vt & 0xf) | (datatype.DT_DICT & 0xf << 4), kt
+		return (vt & 0xf) | (memory.DT_DICT & 0xf << 4), kt
 	} else {
 		idx := strings.Index(typeStr, "L")
 		if idx >= 0 {
 			vt := parseSingleStringType(typeStr)
-			return (vt & 0xf) | (datatype.DT_LIST << 4), datatype.T_NULL
+			return (vt & 0xf) | (memory.DT_LIST << 4), memory.T_NULL
 		} else {
 			vt := parseSingleStringType(typeStr)
-			return (vt & 0xf) | (datatype.DT_SINGLE << 4), datatype.T_NULL
+			return (vt & 0xf) | (memory.DT_SINGLE << 4), memory.T_NULL
 		}
 	}
 

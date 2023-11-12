@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/fs"
 )
@@ -38,6 +39,7 @@ var __g_prog_log_dir_path = ""
 var __g_prog_tmp_dir_path = ""
 var __g_prog_conf_dir_path = ""
 var __g_prog_bin_dir_path = ""
+var __g_base_unixtime time.Time
 
 //__g_main_dir_path = os.path.dirname(__s_main_file_path)
 //__s_main_file_name = os.path.basename(__s_main_file_path)
@@ -124,7 +126,12 @@ func getCurrentAbPathByCaller() string {
 	return abPath
 }
 
+func GetTimestampBase() *time.Time {
+	return &__g_base_unixtime
+}
+
 func Initialize(cwdPath string) int32 {
+	__g_base_unixtime = time.Now()
 	ExecutablePath()
 	MainDirPath()
 	__g_main_dir_path = MainDirPath()
