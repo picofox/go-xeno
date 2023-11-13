@@ -4,24 +4,24 @@ import (
 	"fmt"
 	"testing"
 	"time"
+	"xeno/zohar/core/concurrent"
 	"xeno/zohar/core/config"
-	"xeno/zohar/core/sched"
 )
 
-func cbpStart(worker *sched.GoWorker) {
+func cbpStart(worker *concurrent.GoWorker) {
 	startFlag = 1
 }
 
-func cbpRun(worker *sched.GoWorker) {
+func cbpRun(worker *concurrent.GoWorker) {
 	fmt.Printf("hello form %s\n", worker.String())
 }
 
-func cbpStop(worker *sched.GoWorker) {
+func cbpStop(worker *concurrent.GoWorker) {
 
 }
 
 func Test_GoWorkerPool_Functional_Basic(t *testing.T) {
-	pool := sched.NeoGoWorkerPool(cbpStart, cbpRun, cbpStop, nil, &config.GoWorkerPoolConfig{Name: "WPool", InitialCount: 10, PulseInterval: 1000})
+	pool := concurrent.NeoGoWorkerPool(cbpStart, cbpRun, cbpStop, nil, &config.GoWorkerPoolConfig{Name: "WPool", InitialCount: 10, PulseInterval: 1000})
 	if pool == nil {
 		t.Errorf("Create GoWorkerPool Failed.")
 	}

@@ -1,0 +1,6 @@
+2023-11-14	00:25:21.770505800	1699892721770	[INFO]	8652	1	Connecting Database For Pool: DBP0
+2023-11-14	00:25:21.877106200	1699892721877	[INFO]	8652	1	Connect_0 to db 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]
+2023-11-14	00:25:21.901212100	1699892721901	[INFO]	8652	1	Connect_1 to db 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]
+2023-11-14	00:25:21.925436900	1699892721925	[INFO]	8652	1	Connect_2 to db 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]
+2023-11-14	00:25:21.942969400	1699892721942	[INFO]	8652	1	Connect_3 to db 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]
+2023-11-14	00:25:21.945044400	1699892721945	[INFO]	8652	1	Connect to Databases 				[Success]

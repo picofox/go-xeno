@@ -23,21 +23,22 @@ type TimeWheel struct {
 	_startTime    uint32
 	_current      uint64
 	_currentPoint uint64
+	_milliInUnit  uint32
 }
 
 func (ego *TimeWheel) getTime() uint64 {
 	monoNano := datetime.GetMonotonicNano()
 	sec := monoNano / 1000000000
 	nsec := monoNano - (sec * 1000000000)
-	t := sec * 100
-	t = t + nsec/10000000
+	t := sec * (1000 / int64(ego._milliInUnit))
+	t = t + nsec/(1000000*int64(ego._milliInUnit))
 	return uint64(t)
 }
 
 func (ego *TimeWheel) systime(sec *uint32, cs *uint32) {
 	tv := datetime.GetRealTimeNano()
 	*sec = uint32(tv / 1000000000)
-	*cs = uint32((tv - (int64(ego._startTime) * 1000000000)) / 10000000)
+	*cs = uint32((tv - (int64(ego._startTime) * 1000000000)) / 1000000 * int64(ego._milliInUnit))
 }
 
 func (ego *TimeWheel) dispatchList(nodeList *TimerLinkedListNode) {
@@ -124,7 +125,6 @@ func (ego *TimeWheel) UpdateTime() {
 			ego.update()
 		}
 	}
-
 }
 
 func (ego *TimeWheel) Initialize() {
@@ -154,8 +154,8 @@ func (ego *TimeWheel) AddNode(node *TimerLinkedListNode) {
 	}
 }
 
-func (ego *TimeWheel) AddTimer(duration uint32, repCount int64, cb func(*Timer) int32, obj any) *Timer {
-	timer := NeoTimer(duration, repCount, cb, obj)
+func (ego *TimeWheel) AddTimer(duration uint32, repCount int64, repDura uint32, executor uint8, cb func(any), obj any) *Timer {
+	timer := NeoTimer(duration, repCount, repDura, executor, cb, obj)
 	node := NeoTimerLinkedListNode(timer)
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
@@ -164,12 +164,13 @@ func (ego *TimeWheel) AddTimer(duration uint32, repCount int64, cb func(*Timer) 
 	return timer
 }
 
-func NeoTimerWheel() *TimeWheel {
+func NeoTimerWheel(millisInUnit uint32) *TimeWheel {
 	t := TimeWheel{
 		_time:         0,
 		_startTime:    0,
 		_current:      0,
 		_currentPoint: 0,
+		_milliInUnit:  millisInUnit,
 	}
 	for i := 0; i < TIME_NEAR; i++ {
 		t._near[i] = NeoTimerLinkedList()

@@ -160,6 +160,8 @@ func Initialize() (*Arguments, string) {
 		minS, _ := strconv.Atoi(targetSubPart[1])
 		maxS, _ := strconv.Atoi(targetSubPart[2])
 		a._targetSpec = NeoArgumentSpec(0, targetSubPart[0], true, minS, maxS, "")
+	} else {
+		return a, ""
 	}
 
 	if len(config.GetIntrinsicConfig().CmdParamSpec) > 1 {
@@ -296,7 +298,11 @@ func (ego *Arguments) String() string {
 	}
 	ss.WriteString("Target Spec:\n")
 	ss.WriteString("\t")
-	ss.WriteString(ego._targetSpec.String())
+	if ego._targetSpec == nil {
+		ss.WriteString("<nil spec>")
+	} else {
+		ss.WriteString(ego._targetSpec.String())
+	}
 	ss.WriteString("\n")
 	ss.WriteString("Full Input:\n")
 	for k, v := range ego._values {

@@ -17,3 +17,7 @@ func GetMonotonicMilli() int64 {
 func GetRealTimeNano() int64 {
 	return time.Now().UnixNano()
 }
+
+func GetRealTimeMilli() int64 {
+	return time.Now().UnixMilli()
+}

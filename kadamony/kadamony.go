@@ -2,19 +2,26 @@ package main
 
 import (
 	"fmt"
+	"time"
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
+	"xeno/zohar/core/concurrent"
 	"xeno/zohar/core/db"
 	"xeno/zohar/core/finalization"
 	_ "xeno/zohar/core/initialization"
-	"xeno/zohar/core/logging"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/process"
+	"xeno/zohar/core/sched"
 )
 
 func SetValues(f string, args ...any) {
 	fmt.Println(f)
 	fmt.Println(args)
+}
+
+func TimerCB(a any) {
+	fmt.Printf("%s -> TimerCB : (%s)\n", time.Now().String(), a.(*sched.Timer))
+
 }
 
 func main() {
@@ -50,26 +57,12 @@ func main() {
 
 	fmt.Print("\t\t\t\t[Done]\n")
 
-	rc = db.GetPoolManager().ConnectDatabase()
-	if core.Err(rc) {
-		logging.Log(core.LL_INFO, "Connect to Databases \t\t\t\t[Failed]")
-	}
-	logging.Log(core.LL_INFO, "Connect to Databases \t\t\t\t[Success]")
+	concurrent.GetDefaultGoExecutorPool().Start()
+	sched.GetDefaultTimerManager().Start()
 
-	table := db.NeoSQLTable("gamedb", "car", 0, true)
-	table.AddFieldDesc("carId", 0, db.DBF_TYPE_BIGINT, false, false, db.DBK_PK)
-	table.AddFieldDesc("uid", 1, db.DBF_TYPE_BIGINT, false, false, db.DBK_NONE)
-	table.AddFieldDesc("nftId", 2, db.DBF_TYPE_BLOB, false, true, db.DBK_NONE)
-	table.AddFieldDesc("type_id", 3, db.DBF_TYPE_SMALLINT, false, false, db.DBK_NONE)
-	table.AddFieldDesc("level", 4, db.DBF_TYPE_TINYINT, false, false, db.DBK_NONE)
-	table.AddFieldDesc("part_level", 5, db.DBF_TYPE_BIGINT, false, false, db.DBK_NONE)
+	sched.GetDefaultTimerManager().AddAbsTimerSecond(5, 10, 1, sched.TIMER_EXEC_EXECUTOR_POOL, TimerCB, nil)
 
-	var idx int64 = 0
-	for idx = 0; idx < 1000; idx++ {
-		table.AddRow([]any{100 + idx, idx + 1, nil, idx % 3, 1, 1122334455667788})
-	}
+	sched.GetDefaultTimerManager().Wait()
+	concurrent.GetDefaultGoExecutorPool().Wait()
 
-	ps, rc := db.GetPoolManager().GetPool("DBP0").GetConnection(0).Create(table, "insert into car values(?,?,?,?,?,?)")
-	fmt.Println(ps)
-	fmt.Println(rc)
 }

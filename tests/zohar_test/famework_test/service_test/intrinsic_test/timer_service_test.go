@@ -23,7 +23,7 @@ func Test_TimerService_Functional_Basic(t *testing.T) {
 	*process.GetTimestampBase() = time.Now()
 
 	svc := intrinsic.NeoTimerService(intrinsic.GetServiceManager())
-	rc := intrinsic.GetServiceManager().AddService("TimerService", svc)
+	rc := intrinsic.GetServiceManager().AddService("TimerManager", svc)
 	if core.Err(rc) {
 		t.Errorf("AddService Failed")
 	}
@@ -32,7 +32,7 @@ func Test_TimerService_Functional_Basic(t *testing.T) {
 		intrinsic.GetServiceManager().Start()
 	}()
 
-	svc.AddTimer(100, 6, cbTimer0, nil)
+	svc.AddSecondTimer(3, 6, cbTimer0, nil)
 
 	intrinsic.GetServiceManager().Wait()
 

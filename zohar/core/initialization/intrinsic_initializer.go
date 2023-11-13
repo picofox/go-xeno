@@ -7,6 +7,7 @@ import (
 	"strings"
 	"xeno/zohar/core"
 	"xeno/zohar/core/cmdline"
+	"xeno/zohar/core/concurrent"
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/io"
 	"xeno/zohar/core/logging"
@@ -55,5 +56,7 @@ func init() {
 	}
 
 	fmt.Println(cmdline.GetArguments().String())
+
+	fmt.Println(concurrent.GetDefaultGoExecutorPool().String())
 
 }

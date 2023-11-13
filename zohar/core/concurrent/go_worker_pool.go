@@ -1,6 +1,7 @@
-package sched
+package concurrent
 
 import (
+	"math/rand"
 	"sync"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config"
@@ -18,8 +19,8 @@ type GoWorkerPool struct {
 	_object         any
 	_sleepInterval  int64
 	_waitGroup      sync.WaitGroup
-	_lastPickIndex  int
 	_config         *config.GoWorkerPoolConfig
+	_shuttingDown   bool
 }
 
 func (ego *GoWorkerPool) IsCurrentGoRoutineInPool() bool {
@@ -49,13 +50,25 @@ func (ego *GoWorkerPool) WorkerCount() int {
 }
 
 func (ego *GoWorkerPool) PostTask(proc func(any), obj any) {
+	if ego._shuttingDown {
+		return
+	}
 	wc := ego.WorkerCount()
-	ego._workers[ego._lastPickIndex].PostTask(proc, obj)
-	ego._lastPickIndex = (ego._lastPickIndex + 1) % wc
+	if wc < 1 {
+		return
+	}
+	idx := rand.Intn(wc)
+	ego._workers[idx].PostTask(proc, obj)
 }
 
 func (ego *GoWorkerPool) BroadcastTask(proc func(any), obj any) {
+	if ego._shuttingDown {
+		return
+	}
 	wc := ego.WorkerCount()
+	if wc < 1 {
+		return
+	}
 	for i := 0; i < wc; i++ {
 		ego._workers[i].PostTask(proc, obj)
 	}
@@ -89,6 +102,7 @@ func (ego *GoWorkerPool) SetWorkerCount(cnt int32) int32 {
 }
 
 func (ego *GoWorkerPool) Stop() {
+	ego._shuttingDown = true
 	ego.SetWorkerCount(0)
 }
 
@@ -111,7 +125,6 @@ func NeoGoWorkerPool(startedHdl func(*GoWorker), runningHdl func(*GoWorker),
 		_workers:        nil,
 		_object:         data,
 		_sleepInterval:  cfg.PulseInterval,
-		_lastPickIndex:  0,
 		_config:         cfg,
 	}
 	return wp

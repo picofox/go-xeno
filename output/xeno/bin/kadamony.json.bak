@@ -23,7 +23,7 @@
 	"GoExecutorPool": {
 		"Name":"default_WP",
 		"InitialCount": 3,
-		"MaxCount": 30,
+		"MaxCount": 3,
 		"MinCount": 3,
 		"QueueSize": 1024,
 		"HighWaterMark":500,

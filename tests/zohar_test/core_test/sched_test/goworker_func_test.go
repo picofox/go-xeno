@@ -4,26 +4,26 @@ import (
 	"sync"
 	"testing"
 	"time"
-	"xeno/zohar/core/sched"
+	"xeno/zohar/core/concurrent"
 )
 
 var startFlag = 0
 
-func cbStart(worker *sched.GoWorker) {
+func cbStart(worker *concurrent.GoWorker) {
 	startFlag = 1
 }
 
-func cbRun(worker *sched.GoWorker) {
+func cbRun(worker *concurrent.GoWorker) {
 
 }
 
-func cbStop(worker *sched.GoWorker) {
+func cbStop(worker *concurrent.GoWorker) {
 
 }
 
 func Test_GoWorker_Functional_Basic(t *testing.T) {
 	wg := sync.WaitGroup{}
-	w := sched.NeoGoWorker("test", 0, cbStart, cbRun, cbStop, nil, 1000, &wg)
+	w := concurrent.NeoGoWorker("test", 0, cbStart, cbRun, cbStop, nil, 1000, &wg)
 	if w == nil {
 		t.Errorf("Neo GoWorker Failed")
 	}

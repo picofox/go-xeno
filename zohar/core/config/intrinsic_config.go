@@ -35,6 +35,7 @@ type IntrinsicConfig struct {
 	CmdParamSpec    string                  `json:"CmdParamSpec"`
 	CmdTargetSpec   string                  `json:"CmdTargetSpec"`
 	Logging         map[string]LoggerConfig `json:"Logging"`
+	GoExecutorPool  GoExecutorPoolConfig    `json:"GoExecutorPool"`
 }
 
 var sIntrinsicConfig *IntrinsicConfig = nil
@@ -144,6 +145,7 @@ func (ego *IntrinsicConfig) String() string {
 		ss.WriteString(v.String())
 
 	}
+	ss.WriteString(ego.GoExecutorPool.String())
 	ss.WriteString("------------------------------- IntrinsicConfig -------------------------------\n")
 	return ss.String()
 }
@@ -195,6 +197,13 @@ func MakeDefaultIntrinsicConfig(file *io.File) int32 {
 
 	IntrinConfig.Logging = make(map[string]LoggerConfig)
 	IntrinConfig.Logging["default"] = loggerConfig
+	IntrinConfig.GoExecutorPool.Name = "DFL-WP"
+	IntrinConfig.GoExecutorPool.InitialCount = 2
+	IntrinConfig.GoExecutorPool.MaxCount = 20
+	IntrinConfig.GoExecutorPool.MinCount = 2
+	IntrinConfig.GoExecutorPool.QueueSize = 1024
+	IntrinConfig.GoExecutorPool.HighWaterMark = 512
+	IntrinConfig.GoExecutorPool.LowWaterMark = 0
 
 	jsonBytes, err := json.Marshal(IntrinConfig)
 	if err != nil {
