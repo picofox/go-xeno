@@ -9,7 +9,6 @@ require (
 
 require (
 	github.com/go-netty/go-netty v1.6.4 // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231106174013-bbf56f31fb17 // indirect
 	google.golang.org/grpc v1.59.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect

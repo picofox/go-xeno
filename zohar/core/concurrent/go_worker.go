@@ -7,6 +7,7 @@ import (
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/cms"
+	"xeno/zohar/core/logging"
 	"xeno/zohar/core/process"
 )
 
@@ -29,6 +30,18 @@ func (ego *GoWorker) String() string {
 	return fmt.Sprintf("GoWorker_%s_%d: (%t)-(%t)", ego._name, ego._id, ego._shuttingDown, ego._stopped)
 }
 
+func (ego *GoWorker) runSafely(t *cms.GoWorkerTask) {
+	defer func() {
+		if r := recover(); r != nil {
+			const size = 64 << 10
+			buf := make([]byte, size)
+			buf = buf[:runtime.Stack(buf, false)]
+			logging.Log(core.LL_ERR, "cron: panic running job: %v\n%s", r, buf)
+		}
+	}()
+	t.Exec()
+}
+
 func (ego *GoWorker) onRunning() {
 	defer ego._waitGroup.Done()
 	defer func() {
@@ -45,7 +58,7 @@ func (ego *GoWorker) onRunning() {
 		select {
 		case m := <-ego._channel:
 			if m.Id() == cms.CMSID_GOWORKER_TASK {
-				m.(*cms.GoWorkerTask).Exec()
+				ego.runSafely(m.(*cms.GoWorkerTask))
 			} else if m.Id() == cms.CMSID_FINALIZE {
 
 				runtime.Goexit()
