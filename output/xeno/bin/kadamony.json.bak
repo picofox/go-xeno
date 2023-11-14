@@ -23,10 +23,22 @@
 	"GoExecutorPool": {
 		"Name":"default_WP",
 		"InitialCount": 3,
-		"MaxCount": 3,
+		"MaxCount": 30,
 		"MinCount": 3,
 		"QueueSize": 1024,
 		"HighWaterMark":500,
 		"LowWaterMark": 0
+	},
+	"IntrinsicServices": {
+		"Cron" : {
+			"default" : 
+			{
+				"Offset" : 28800
+			},
+			"utc-0" : 
+			{
+				"Offset" : 0
+			}
+		}	
 	}
 }

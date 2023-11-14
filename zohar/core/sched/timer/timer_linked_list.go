@@ -1,4 +1,4 @@
-package sched
+package timer
 
 type TimerLinkedListNode struct {
 	_next *TimerLinkedListNode

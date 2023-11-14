@@ -8,7 +8,7 @@ import (
 	"sync"
 	"xeno/zohar/core"
 	"xeno/zohar/core/cms"
-	"xeno/zohar/core/config"
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/process"
 )
 
@@ -19,7 +19,7 @@ type GoExecutorPool struct {
 	_workers      []*GoExecutor
 	_counter      int32
 	_waitGroup    sync.WaitGroup
-	_config       *config.GoExecutorPoolConfig
+	_config       *intrinsic.GoExecutorPoolConfig
 	_lock         sync.Mutex
 	_shuttingDown bool
 }
@@ -124,7 +124,7 @@ func (ego *GoExecutorPool) Stop() {
 }
 
 func NeoGoExecutorPool() *GoExecutorPool {
-	cfg := &config.GetIntrinsicConfig().GoExecutorPool
+	cfg := &intrinsic.GetIntrinsicConfig().GoExecutorPool
 	wp := &GoExecutorPool{
 		_name:         cfg.Name,
 		_initCount:    cfg.InitialCount,

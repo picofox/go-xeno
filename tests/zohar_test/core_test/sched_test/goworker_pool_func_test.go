@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 	"xeno/zohar/core/concurrent"
-	"xeno/zohar/core/config"
+	"xeno/zohar/core/config/intrinsic"
 )
 
 func cbpStart(worker *concurrent.GoWorker) {
@@ -21,7 +21,7 @@ func cbpStop(worker *concurrent.GoWorker) {
 }
 
 func Test_GoWorkerPool_Functional_Basic(t *testing.T) {
-	pool := concurrent.NeoGoWorkerPool(cbpStart, cbpRun, cbpStop, nil, &config.GoWorkerPoolConfig{Name: "WPool", InitialCount: 10, PulseInterval: 1000})
+	pool := concurrent.NeoGoWorkerPool(cbpStart, cbpRun, cbpStop, nil, &intrinsic.GoWorkerPoolConfig{Name: "WPool", InitialCount: 10, PulseInterval: 1000})
 	if pool == nil {
 		t.Errorf("Create GoWorkerPool Failed.")
 	}

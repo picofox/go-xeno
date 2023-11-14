@@ -7,11 +7,11 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/datetime"
 	"xeno/zohar/core/process"
-	"xeno/zohar/core/sched"
+	"xeno/zohar/core/sched/timer"
 	"xeno/zohar/framework/service/intrinsic"
 )
 
-func cbTimer0(timer *sched.Timer) int32 {
+func cbTimer0(timer *timer.Timer) int32 {
 	fmt.Printf("timer [%d] due %d \n", timer.Id(), datetime.GetMonotonicMilli())
 	if timer.RemainCount() == 2 {
 		timer.Cancel()

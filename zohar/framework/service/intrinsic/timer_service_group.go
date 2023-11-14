@@ -58,7 +58,7 @@ func (ego *TimerServiceGroup) Finalize() int32 {
 
 func NeoTimerServiceGroup() *TimerServiceGroup {
 	sg := TimerServiceGroup{
-		_name:     "TimerService",
+		_name:     "CronService",
 		_services: make([]IService, 0),
 	}
 	return &sg

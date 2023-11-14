@@ -10,14 +10,14 @@ import (
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
-	"xeno/zohar/core/config"
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/io"
 	"xeno/zohar/core/process"
 )
 
 type LocalSyncTextLogger struct {
 	_logFile    *io.TextFile
-	_config     *config.LoggerConfig
+	_config     *intrinsic.LoggerConfig
 	_lineBuffer strings.Builder
 	_lock       sync.RWMutex
 
@@ -72,7 +72,7 @@ func (ego *LocalSyncTextLogger) CalcFileName(tm *time.Time, checkDirExist bool) 
 	ego._filename = fileName
 }
 
-func NeoLocalSyncTextLogger(name string, cfg *config.LoggerConfig) *LocalSyncTextLogger {
+func NeoLocalSyncTextLogger(name string, cfg *intrinsic.LoggerConfig) *LocalSyncTextLogger {
 
 	var elemes int32 = 0
 	for i := 0; i < len(cfg.LinePattern); i++ {

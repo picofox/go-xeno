@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 	"xeno/zohar/core"
-	"xeno/zohar/core/config"
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/memory"
 )
 
@@ -142,7 +142,7 @@ func GetArguments() *Arguments {
 func Initialize() (*Arguments, string) {
 	var specRawPart []string
 	a := &Arguments{
-		_isStrict:    config.GetIntrinsicConfig().CmdSpecRestrict,
+		_isStrict:    intrinsic.GetIntrinsicConfig().CmdSpecRestrict,
 		_program:     os.Args[0],
 		_targetSpec:  nil,
 		_shortSpecs:  [128]*ArgumentSpec{},
@@ -152,10 +152,10 @@ func Initialize() (*Arguments, string) {
 		_values:      make(map[string]*memory.TLV),
 	}
 
-	if len(config.GetIntrinsicConfig().CmdTargetSpec) > 1 {
-		targetSubPart := strings.Split(config.GetIntrinsicConfig().CmdTargetSpec, ":")
+	if len(intrinsic.GetIntrinsicConfig().CmdTargetSpec) > 1 {
+		targetSubPart := strings.Split(intrinsic.GetIntrinsicConfig().CmdTargetSpec, ":")
 		if len(targetSubPart) != 3 {
-			return nil, "Invalid Target Spec of " + config.GetIntrinsicConfig().CmdTargetSpec
+			return nil, "Invalid Target Spec of " + intrinsic.GetIntrinsicConfig().CmdTargetSpec
 		}
 		minS, _ := strconv.Atoi(targetSubPart[1])
 		maxS, _ := strconv.Atoi(targetSubPart[2])
@@ -164,8 +164,8 @@ func Initialize() (*Arguments, string) {
 		return a, ""
 	}
 
-	if len(config.GetIntrinsicConfig().CmdParamSpec) > 1 {
-		specRawPart = strings.Split(config.GetIntrinsicConfig().CmdParamSpec, ",")
+	if len(intrinsic.GetIntrinsicConfig().CmdParamSpec) > 1 {
+		specRawPart = strings.Split(intrinsic.GetIntrinsicConfig().CmdParamSpec, ",")
 		for i := 0; i < len(specRawPart); i++ {
 			specRawPart[i] = strings.Trim(specRawPart[i], " \t\r\n")
 		}

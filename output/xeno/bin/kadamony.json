@@ -28,5 +28,17 @@
 		"QueueSize": 1024,
 		"HighWaterMark":500,
 		"LowWaterMark": 0
+	},
+	"IntrinsicServices": {
+		"Cron" : {
+			"default" : 
+			{
+				"Offset" : 28800
+			},
+			"utc0" : 
+			{
+				"Offset" : 0
+			}
+		}	
 	}
 }

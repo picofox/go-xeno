@@ -1,4 +1,4 @@
-package sched
+package timer
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	TIMER_EXEC_EXECUTOR_POOL   = uint8(0)
-	TIMER_EXEC_CURRENT_ROUTINE = uint8(1)
-	TIMER_EXEC_NEO_ROUTINE     = uint8(2)
+	TASK_EXEC_EXECUTOR_POOL   = uint8(0)
+	TASK_EXEC_CURRENT_ROUTINE = uint8(1)
+	TASK_EXEC_NEO_ROUTINE     = uint8(2)
 )
 
 type Timer struct {
@@ -87,8 +87,8 @@ func (ego *Timer) reSchedCheck(timeSlotPointer uint32) bool {
 var s_timerUidGenerator unique.SequentialGenerator
 
 func NeoTimer(dura uint32, repCount int64, repDura uint32, executor uint8, cb func(any), obj any) *Timer {
-	if executor > TIMER_EXEC_NEO_ROUTINE {
-		executor = TIMER_EXEC_EXECUTOR_POOL
+	if executor > TASK_EXEC_NEO_ROUTINE {
+		executor = TASK_EXEC_EXECUTOR_POOL
 	}
 	tm := Timer{
 		_id:             s_timerUidGenerator.Next(),

@@ -1,4 +1,4 @@
-package config
+package intrinsic
 
 type GoWorkerPoolConfig struct {
 	Name          string `json:"Name"`

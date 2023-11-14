@@ -1,11 +1,13 @@
 package cron
 
 import (
-	"log"
 	"runtime"
 	"sort"
 	"time"
+	"xeno/zohar/core"
 	"xeno/zohar/core/concurrent"
+	"xeno/zohar/core/logging"
+	"xeno/zohar/core/sched/timer"
 )
 
 // Cron keeps track of any number of entries, invoking the associated func as
@@ -17,13 +19,12 @@ type Cron struct {
 	add      chan *Entry
 	snapshot chan []*Entry
 	running  bool
-	ErrorLog *log.Logger
 	location *time.Location
 }
 
 // Job is an interface for submitted cron jobs.
 type Job interface {
-	Run()
+	Run(any)
 }
 
 // The Schedule describes a job's duty cycle.
@@ -48,6 +49,10 @@ type Entry struct {
 
 	// The Job to run.
 	Job Job
+
+	Param any
+
+	Executor uint8
 }
 
 // byTime is a wrapper for sorting the entry array by time
@@ -82,36 +87,40 @@ func NewWithLocation(location *time.Location) *Cron {
 		stop:     make(chan struct{}),
 		snapshot: make(chan []*Entry),
 		running:  false,
-		ErrorLog: nil,
 		location: location,
 	}
 }
 
 // A wrapper that turns a func() into a cron.Job
-type FuncJob func()
+type FuncJob func(any)
 
-func (f FuncJob) Run() { f() }
+func (f FuncJob) Run(a any) { f(a) }
+
+//try it
 
 // AddFunc adds a func to the Cron to be run on the given schedule.
-func (c *Cron) AddFunc(spec string, cmd func()) error {
-	return c.AddJob(spec, FuncJob(cmd))
+func (c *Cron) AddFunc(spec string, cmd func(any), a any, executor uint8) error {
+	return c.AddJob(spec, FuncJob(cmd), a, executor)
 }
 
 // AddJob adds a Job to the Cron to be run on the given schedule.
-func (c *Cron) AddJob(spec string, cmd Job) error {
+func (c *Cron) AddJob(spec string, cmd Job, a any, executor uint8) error {
 	schedule, err := Parse(spec)
 	if err != nil {
 		return err
 	}
-	c.Schedule(schedule, cmd)
+	c.Schedule(schedule, cmd, a, executor)
+
 	return nil
 }
 
 // Schedule adds a Job to the Cron to be run on the given schedule.
-func (c *Cron) Schedule(schedule Schedule, cmd Job) {
+func (c *Cron) Schedule(schedule Schedule, cmd Job, a any, executor uint8) {
 	entry := &Entry{
 		Schedule: schedule,
 		Job:      cmd,
+		Param:    a,
+		Executor: executor,
 	}
 	if !c.running {
 		c.entries = append(c.entries, entry)
@@ -154,19 +163,29 @@ func (c *Cron) Run() {
 	c.run()
 }
 
-func (c *Cron) runWithRecovery(j Job) {
-	defer func() {
+var sCronExecMethodsArr = [3]func(*Entry){
+	func(e *Entry) {
+		concurrent.GetDefaultGoExecutorPool().PostTask(e.Job.Run, e.Param)
+	},
+	func(e *Entry) {
 		if r := recover(); r != nil {
 			const size = 64 << 10
 			buf := make([]byte, size)
 			buf = buf[:runtime.Stack(buf, false)]
-			c.logf("cron: panic running job: %v\n%s", r, buf)
+			logging.Log(core.LL_ERR, "cron: panic running job: %v\n%s", r, buf)
 		}
-	}()
+		e.Job.Run(e.Param)
+	},
+	func(e *Entry) {
+		go e.Job.Run(e.Param)
+	},
+}
 
-	concurrent.GetDefaultGoExecutorPool().PostTask(func(a any) {
-		j.Run()
-	}, nil)
+func (c *Cron) runWithRecovery(e *Entry) {
+	if e.Executor > timer.TASK_EXEC_NEO_ROUTINE {
+		return
+	}
+	sCronExecMethodsArr[e.Executor](e)
 }
 
 // Run the scheduler. this is private just due to the need to synchronize
@@ -200,7 +219,7 @@ func (c *Cron) run() {
 					if e.Next.After(now) || e.Next.IsZero() {
 						break
 					}
-					go c.runWithRecovery(e.Job)
+					c.runWithRecovery(e)
 					e.Prev = e.Next
 					e.Next = e.Schedule.Next(now)
 				}
@@ -222,15 +241,6 @@ func (c *Cron) run() {
 
 			break
 		}
-	}
-}
-
-// Logs an error to stderr or to the configured error log
-func (c *Cron) logf(format string, args ...interface{}) {
-	if c.ErrorLog != nil {
-		c.ErrorLog.Printf(format, args...)
-	} else {
-		log.Printf(format, args...)
 	}
 }
 

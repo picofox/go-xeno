@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"sync"
 	"xeno/zohar/core"
-	"xeno/zohar/core/config"
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/process"
 )
 
@@ -19,7 +19,7 @@ type GoWorkerPool struct {
 	_object         any
 	_sleepInterval  int64
 	_waitGroup      sync.WaitGroup
-	_config         *config.GoWorkerPoolConfig
+	_config         *intrinsic.GoWorkerPoolConfig
 	_shuttingDown   bool
 }
 
@@ -107,9 +107,9 @@ func (ego *GoWorkerPool) Stop() {
 }
 
 func NeoGoWorkerPool(startedHdl func(*GoWorker), runningHdl func(*GoWorker),
-	stoppedHdl func(*GoWorker), data any, cfg *config.GoWorkerPoolConfig) *GoWorkerPool {
+	stoppedHdl func(*GoWorker), data any, cfg *intrinsic.GoWorkerPoolConfig) *GoWorkerPool {
 	if cfg == nil {
-		cfg = &config.GoWorkerPoolConfig{
+		cfg = &intrinsic.GoWorkerPoolConfig{
 			Name:          "WorkerPool",
 			PulseInterval: 1000,
 			InitialCount:  2,

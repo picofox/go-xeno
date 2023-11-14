@@ -11,8 +11,8 @@ import (
 	_ "xeno/zohar/core/initialization"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/process"
-	"xeno/zohar/core/sched"
 	"xeno/zohar/core/sched/cron"
+	"xeno/zohar/core/sched/timer"
 )
 
 func SetValues(f string, args ...any) {
@@ -21,11 +21,11 @@ func SetValues(f string, args ...any) {
 }
 
 func TimerCB(a any) {
-	fmt.Printf("%s -> TimerCB : (%s)\n", time.Now().String(), a.(*sched.Timer))
+	fmt.Printf("%s -> TimerCB : (%s)\n", time.Now().String(), a.(*timer.Timer))
 }
 
 func CronCB(a any) {
-	fmt.Printf("CRonCB")
+	fmt.Printf("CRonCB (%s)\t", a.(string))
 }
 
 func main() {
@@ -62,17 +62,18 @@ func main() {
 	fmt.Print("\t\t\t\t[Done]\n")
 
 	concurrent.GetDefaultGoExecutorPool().Start()
-	sched.GetDefaultTimerManager().Start()
+	timer.GetDefaultTimerManager().Start()
 
-	c := cron.New()
+	location := time.FixedZone("UTC+8", 8*3600)
+	fmt.Println(location)
+
+	c := cron.NewWithLocation(location)
 	c.Start()
-	c.AddFunc("* * * * * *", CronCB) {
-		fmt.Println("shabi")
-	})
+	c.AddFunc("*/5 28 13 * * *", CronCB, "pimao", timer.TASK_EXEC_EXECUTOR_POOL)
 
-	sched.GetDefaultTimerManager().AddAbsTimerMilli(5, 10, 10, sched.TIMER_EXEC_EXECUTOR_POOL, TimerCB, nil)
+	timer.GetDefaultTimerManager().AddAbsTimerMilli(5, 10, 10, timer.TASK_EXEC_EXECUTOR_POOL, TimerCB, nil)
 
-	sched.GetDefaultTimerManager().Wait()
+	timer.GetDefaultTimerManager().Wait()
 	concurrent.GetDefaultGoExecutorPool().Wait()
 
 }

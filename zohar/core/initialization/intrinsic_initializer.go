@@ -8,7 +8,7 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/cmdline"
 	"xeno/zohar/core/concurrent"
-	"xeno/zohar/core/config"
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/io"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/process"
@@ -31,22 +31,22 @@ func init() {
 
 	sz := f.GetInfo().Size()
 	if sz < 1 {
-		rc = config.MakeDefaultIntrinsicConfig(f)
+		rc = intrinsic.MakeDefaultIntrinsicConfig(f)
 		if core.Err(rc) {
 			panic("init: Make Default IntrinsicConfig Failed")
 		}
 	} else {
-		rc = config.LoadConfig(f)
+		rc = intrinsic.LoadConfig(f)
 		if core.Err(rc) {
 			panic("init: Load IntrinsicConfig Failed")
 		}
 	}
-	fmt.Println(config.GetIntrinsicConfig().String())
+	fmt.Println(intrinsic.GetIntrinsicConfig().String())
 
-	process.Initialize(config.GetIntrinsicConfig().CWD)
+	process.Initialize(intrinsic.GetIntrinsicConfig().CWD)
 
 	logging.GetLoggerManager().Start()
-	for k, v := range config.GetIntrinsicConfig().Logging {
+	for k, v := range intrinsic.GetIntrinsicConfig().Logging {
 		logger := logging.NeoLocalSyncTextLogger(k, &v)
 		if logger == nil {
 			fmt.Printf("[Failed: Logger Init (%s)]", k)
