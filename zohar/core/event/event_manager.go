@@ -14,6 +14,8 @@ type EventManager struct {
 }
 
 func (ego *EventManager) Register(eventName string, e uint8, f datatype.TaskFuncType, a any) int64 {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
 	uid := ego._seq.Next()
 	t := NeoTask(uid, e, f, a)
 	ego.registerTask(eventName, t)
@@ -21,8 +23,6 @@ func (ego *EventManager) Register(eventName string, e uint8, f datatype.TaskFunc
 }
 
 func (ego *EventManager) registerTask(eventName string, task *Task) {
-	ego._lock.Lock()
-	defer ego._lock.Unlock()
 	tq, ok := ego._events[eventName]
 	if !ok {
 		tq = list.New()
