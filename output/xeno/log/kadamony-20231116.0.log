@@ -875,3 +875,55 @@ GoExecutorPool:
 2023-11-16	01:57:28.644976700	1700071048644	[SYS]	8500	1	Default Timer Manager...                                              [Stopped]
 2023-11-16	01:57:28.644976700	1700071048644	[SYS]	8500	1	Default Executor Pool ...                                             [Stopped]
 2023-11-16	01:57:28.644976700	1700071048644	[SYS]	8500	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+Short Args Specs:
+Target Spec:
+	<nil spec>
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-16	02:13:53.36234400	1700072033036	[SYS]	768	1	Zohar Core Initializing ...                                           [Success]
+2023-11-16	02:13:53.36234400	1700072033036	[SYS]	768	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-16	02:13:53.36234400	1700072033036	[SYS]	768	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-16	02:13:53.36734800	1700072033036	[SYS]	768	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-16	02:13:53.36734800	1700072033036	[SYS]	768	1	Zohar Framework Initializing ... 
+2023-11-16	02:13:53.36734800	1700072033036	[SYS]	768	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-16	02:13:53.36734800	1700072033036	[SYS]	768	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-16	02:13:55.102912500	1700072035102	[SYS]	768	20	Catch Sig interrupt
+2023-11-16	02:13:55.102912500	1700072035102	[SYS]	768	20	Stopping Intrinsic Services
+2023-11-16	02:13:55.102912500	1700072035102	[SYS]	768	20	Stopping Default Timer Manager ... 
+2023-11-16	02:13:55.102912500	1700072035102	[SYS]	768	20	Stopping Default Executor Pool 
+2023-11-16	02:13:55.102912500	1700072035102	[SYS]	768	1	Intrinsic Services ...                                                [Stopped]
+2023-11-16	02:13:55.102912500	1700072035102	[SYS]	768	20	Stopping Default Log Manager 
+2023-11-16	02:13:55.105419900	1700072035105	[SYS]	768	1	Default Timer Manager...                                              [Stopped]
+2023-11-16	02:13:55.105419900	1700072035105	[SYS]	768	1	Default Executor Pool ...                                             [Stopped]
+2023-11-16	02:13:55.105419900	1700072035105	[SYS]	768	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+Short Args Specs:
+Target Spec:
+	<nil spec>
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-16	02:14:55.562861800	1700072095562	[SYS]	7424	1	Zohar Core Initializing ...                                           [Success]
+2023-11-16	02:14:55.562861800	1700072095562	[SYS]	7424	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-16	02:14:55.562861800	1700072095562	[SYS]	7424	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-16	02:14:55.562861800	1700072095562	[SYS]	7424	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-16	02:14:55.562861800	1700072095562	[SYS]	7424	1	Zohar Framework Initializing ... 
+2023-11-16	02:14:55.562861800	1700072095562	[SYS]	7424	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-16	02:14:55.562861800	1700072095562	[SYS]	7424	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-16	02:14:59.739599000	1700072099739	[SYS]	7424	20	Catch Sig interrupt
+2023-11-16	02:14:59.739599000	1700072099739	[SYS]	7424	20	Stopping Intrinsic Services
+2023-11-16	02:14:59.739599000	1700072099739	[SYS]	7424	20	Stopping Default Timer Manager ... 
+2023-11-16	02:14:59.739599000	1700072099739	[SYS]	7424	20	Stopping Default Executor Pool 
+2023-11-16	02:14:59.739599000	1700072099739	[SYS]	7424	20	Stopping Default Log Manager 
+2023-11-16	02:14:59.739599000	1700072099739	[SYS]	7424	1	Intrinsic Services ...                                                [Stopped]
+2023-11-16	02:14:59.742608200	1700072099742	[SYS]	7424	1	Default Timer Manager...                                              [Stopped]
+2023-11-16	02:14:59.742608200	1700072099742	[SYS]	7424	1	Default Executor Pool ...                                             [Stopped]
+2023-11-16	02:14:59.742608200	1700072099742	[SYS]	7424	1	Default Log Manager ...                                               [Stopped]

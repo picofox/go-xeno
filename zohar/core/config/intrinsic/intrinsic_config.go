@@ -206,6 +206,22 @@ func MakeDefaultIntrinsicConfig(file *io.File) int32 {
 	IntrinConfig.GoExecutorPool.HighWaterMark = 512
 	IntrinConfig.GoExecutorPool.LowWaterMark = 0
 
+	cronCfgDfl := CronServiceConfig{
+		Offset: 0,
+	}
+	cronCfgUtc0 := CronServiceConfig{
+		Offset: 0,
+	}
+	cronGrpCfg := CronServiceGroupConfig{
+		Params: make(map[string]CronServiceConfig),
+	}
+	cronGrpCfg.Params["default"] = cronCfgDfl
+	cronGrpCfg.Params["utc0"] = cronCfgUtc0
+	intrinSvcConfig := IntrinsicServiceConfig{
+		Cron: cronGrpCfg,
+	}
+	IntrinConfig.IntrinsicService = intrinSvcConfig
+
 	jsonBytes, err := json.Marshal(IntrinConfig)
 	if err != nil {
 		return core.MkErr(core.EC_JSON_MARSHAL_FAILED, 1)
