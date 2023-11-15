@@ -45,6 +45,7 @@ const (
 	EC_STRING_TOO_LONG
 	EC_RESPACE_FAILED
 	EC_INCOMPLETE_DATA
+	EC_ELEMENT_EXIST
 
 	EC_ERROR_COUNT
 )
@@ -92,6 +93,7 @@ var g_error_str = [EC_ERROR_COUNT]string{
 	"EC_STRING_TOO_LONG",
 	"EC_RESPACE_FAILED",
 	"EC_INCOMPLETE_DATA",
+	"EC_ELEMENT_EXIST",
 }
 
 func MkErr(et int32, mark int32) int32 {

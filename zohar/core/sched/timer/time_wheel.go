@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 	"xeno/zohar/core/datetime"
+	"xeno/zohar/core/sched"
 )
 
 const (
@@ -154,7 +155,7 @@ func (ego *TimeWheel) AddNode(node *TimerLinkedListNode) {
 	}
 }
 
-func (ego *TimeWheel) AddTimer(duration uint32, repCount int64, repDura uint32, executor uint8, cb func(any), obj any) *Timer {
+func (ego *TimeWheel) AddTimer(duration uint32, repCount int64, repDura uint32, executor uint8, cb sched.TaskFuncType, obj any) *Timer {
 	timer := NeoTimer(duration, repCount, repDura, executor, cb, obj)
 	node := NeoTimerLinkedListNode(timer)
 	ego._lock.Lock()

@@ -214,6 +214,53 @@ func (ego *LocalSyncTextLogger) checkNeoFile(tm *time.Time) {
 
 }
 
+func (ego *LocalSyncTextLogger) LogFixedWidth(lv int, leftLen int, ok bool, failStr string, format string, arg ...any) {
+	if lv > ego._level {
+		return
+	}
+
+	tm := time.Now()
+
+	ego.LockExclusive()
+	defer ego.UnLockExclusive()
+	ego._lineBuffer.Reset()
+
+	ego.checkNeoFile(&tm)
+
+	ego.writeHeader(&tm, lv)
+	str := fmt.Sprintf(format, arg...)
+	strLen := len(str)
+	ego._lineBuffer.WriteString(str)
+	if strLen < leftLen {
+		for i := 0; i < leftLen-strLen; i++ {
+			ego._lineBuffer.WriteByte(' ')
+		}
+	}
+	if ok {
+		if failStr != "" {
+			ego._lineBuffer.WriteString(failStr)
+		} else {
+			ego._lineBuffer.WriteString("[Success]")
+		}
+
+	} else {
+		ego._lineBuffer.WriteString("[Failed(")
+		ego._lineBuffer.WriteString(failStr)
+		ego._lineBuffer.WriteString(")]")
+	}
+	s := ego._lineBuffer.String()
+	ego._logFile.WriteLineBared(s)
+	if ego._config.ToConsole {
+		fmt.Println(s)
+	}
+	if ego._config.SizeLimit > 0 {
+		ego._size = ego._size + int64(len(s))
+	}
+	if ego._config.LineLimit > 0 {
+		ego._lineCount++
+	}
+}
+
 func (ego *LocalSyncTextLogger) Log(lv int, format string, arg ...any) {
 	if lv > ego._level {
 		return

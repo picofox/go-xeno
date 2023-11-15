@@ -4,10 +4,13 @@ import (
 	"sync"
 	"time"
 	"xeno/zohar/core"
+	"xeno/zohar/core/config/intrinsic"
+	"xeno/zohar/core/logging"
+	"xeno/zohar/core/sched"
 )
 
 var _serviceManagerInstance ServiceManager
-var once sync.Once
+var _serviceManagerOnce sync.Once
 
 type ServiceManager struct {
 	_groups    map[string]IServiceGroup
@@ -42,10 +45,33 @@ func (ego *ServiceManager) delRef() {
 	ego._waitGroup.Done()
 }
 
+func (ego *ServiceManager) Initialize() int32 {
+	cronCfg := &intrinsic.GetIntrinsicConfig().IntrinsicService
+	if cronCfg == nil {
+		return core.MkErr(core.EC_NULL_VALUE, 1)
+	}
+	grp := NeoCronServiceGroup(ego)
+	if grp == nil {
+		return core.MkErr(core.EC_NULL_VALUE, 1)
+	}
+
+	rc := grp.Initialize()
+	if core.Err(rc) {
+		return rc
+	}
+
+	ego.AddGroup(grp)
+
+	return core.MkSuccess(0)
+}
+
 func (ego *ServiceManager) Wait() {
+
 	for {
 		if !ego._started {
 			time.Sleep(100 * time.Millisecond)
+		} else {
+			break
 		}
 	}
 
@@ -70,17 +96,29 @@ func (ego *ServiceManager) AddGroup(grp IServiceGroup) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *ServiceManager) AddService(name string, svc IService) int32 {
+func (ego *ServiceManager) AddService(name string, key any, svc IService) int32 {
 	g := ego.GetGroup(name)
 	if g == nil {
-		g = NeoTimerServiceGroup()
+		g = NeoCronServiceGroup(ego)
 		ego.AddGroup(g)
 	}
-	return g.AddService(svc)
+	return g.AddService(key, svc)
+}
+
+func (ego *ServiceManager) AddCronTask(which string, spec string, cmd sched.TaskFuncType, a any, executor uint8) int32 {
+	grp := ego.GetGroup("Cron")
+	if grp == nil {
+		logging.Log(core.LL_ERR, "Cron Service Group Not Found")
+		return core.MkErr(core.EC_ELEMENT_NOT_FOUND, 1)
+	}
+
+	var cs *CronService = nil
+	cs = grp.FindServiceByKey(which).(*CronService)
+	return cs.AddCron(spec, cmd, a, executor)
 }
 
 func GetServiceManager() *ServiceManager {
-	once.Do(func() {
+	_serviceManagerOnce.Do(func() {
 		_serviceManagerInstance = ServiceManager{
 			_groups:  make(map[string]IServiceGroup),
 			_started: true,

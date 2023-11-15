@@ -36,7 +36,7 @@ func (ego *GoExecutor) onRunning() {
 	for {
 		select {
 		case <-timeout:
-			fmt.Println("timeout")
+
 		case m := <-ego._channel:
 			if m.Id() == cms.CMSID_GOWORKER_TASK {
 				m.(*cms.GoWorkerTask).Exec()
@@ -49,9 +49,6 @@ func (ego *GoExecutor) onRunning() {
 
 		}
 	}
-
-	fmt.Println("hahah")
-
 }
 
 func (ego *GoExecutor) Id() int32 {
@@ -74,7 +71,6 @@ func (ego *GoExecutor) Start() {
 	ego._stopped = false
 	ego._shuttingDown = false
 	ego._waitGroup.Add(1)
-	fmt.Printf("call add add : %d\n", process.GetCurrentGoRoutineId())
 	go ego.onRunning()
 
 }

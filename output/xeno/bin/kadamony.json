@@ -10,7 +10,7 @@
 			"BackupDir": "log/bak",
 			"ZipFile": true,
 			"ToConsole": true,
-			"LineLimit": 10,
+			"LineLimit": 100000,
 			"SizeLimit": 2097152000,
 			"VolumeLimit": 10,
 			"Type": 0,
@@ -29,15 +29,17 @@
 		"HighWaterMark":500,
 		"LowWaterMark": 0
 	},
-	"IntrinsicServices": {
+	"IntrinsicService": {
 		"Cron" : {
-			"default" : 
-			{
-				"Offset" : 28800
-			},
-			"utc0" : 
-			{
-				"Offset" : 0
+			"Params" : {
+				"default" : 
+				{
+					"Offset" : 28800
+				},
+				"utc0" : 
+				{
+					"Offset" : 0
+				}
 			}
 		}	
 	}

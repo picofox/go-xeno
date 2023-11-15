@@ -1,7 +1,8 @@
 package core
 
 const (
-	LL_FATAL = iota
+	LL_SYS = iota
+	LL_FATAL
 	LL_ERR
 	LL_WARN
 	LL_INFO

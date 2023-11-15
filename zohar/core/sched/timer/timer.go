@@ -4,13 +4,9 @@ import (
 	"fmt"
 	"sync/atomic"
 	"xeno/zohar/core/concurrent"
+	"xeno/zohar/core/datatype"
+	"xeno/zohar/core/sched"
 	"xeno/zohar/core/unique"
-)
-
-const (
-	TASK_EXEC_EXECUTOR_POOL   = uint8(0)
-	TASK_EXEC_CURRENT_ROUTINE = uint8(1)
-	TASK_EXEC_NEO_ROUTINE     = uint8(2)
 )
 
 type Timer struct {
@@ -20,7 +16,7 @@ type Timer struct {
 	_repeatCount    int64
 	_repeatDuration uint32
 	_executor       uint8
-	_eventFunc      func(any)
+	_eventFunc      sched.TaskFuncType
 	_eventObject    any
 	_cancel         atomic.Bool
 }
@@ -86,9 +82,9 @@ func (ego *Timer) reSchedCheck(timeSlotPointer uint32) bool {
 
 var s_timerUidGenerator unique.SequentialGenerator
 
-func NeoTimer(dura uint32, repCount int64, repDura uint32, executor uint8, cb func(any), obj any) *Timer {
-	if executor > TASK_EXEC_NEO_ROUTINE {
-		executor = TASK_EXEC_EXECUTOR_POOL
+func NeoTimer(dura uint32, repCount int64, repDura uint32, executor uint8, cb sched.TaskFuncType, obj any) *Timer {
+	if executor > datatype.TASK_EXEC_NEO_ROUTINE {
+		executor = datatype.TASK_EXEC_EXECUTOR_POOL
 	}
 	tm := Timer{
 		_id:             s_timerUidGenerator.Next(),

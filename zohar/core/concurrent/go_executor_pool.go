@@ -2,7 +2,6 @@ package concurrent
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"strings"
 	"sync"
@@ -10,6 +9,7 @@ import (
 	"xeno/zohar/core/cms"
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/process"
+	"xeno/zohar/core/sched"
 )
 
 type GoExecutorPool struct {
@@ -50,7 +50,6 @@ func (ego *GoExecutorPool) IsCurrentGoRoutineInPool() bool {
 }
 
 func (ego *GoExecutorPool) Wait() {
-	fmt.Printf("call wait gid : %d\n", process.GetCurrentGoRoutineId())
 	ego._waitGroup.Wait()
 }
 
@@ -61,7 +60,7 @@ func (ego *GoExecutorPool) WorkerCount() int {
 	return len(ego._workers)
 }
 
-func (ego *GoExecutorPool) PostTask(proc func(any), obj any) {
+func (ego *GoExecutorPool) PostTask(proc sched.TaskFuncType, obj any) {
 	if ego._shuttingDown {
 		return
 	}

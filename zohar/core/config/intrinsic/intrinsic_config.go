@@ -30,12 +30,13 @@ type LoggerConfig struct {
 }
 
 type IntrinsicConfig struct {
-	CWD             string                  `json:"CWD"`
-	CmdSpecRestrict bool                    `json:"CmdSpecRestrict"`
-	CmdParamSpec    string                  `json:"CmdParamSpec"`
-	CmdTargetSpec   string                  `json:"CmdTargetSpec"`
-	Logging         map[string]LoggerConfig `json:"Logging"`
-	GoExecutorPool  GoExecutorPoolConfig    `json:"GoExecutorPool"`
+	CWD              string                  `json:"CWD"`
+	CmdSpecRestrict  bool                    `json:"CmdSpecRestrict"`
+	CmdParamSpec     string                  `json:"CmdParamSpec"`
+	CmdTargetSpec    string                  `json:"CmdTargetSpec"`
+	Logging          map[string]LoggerConfig `json:"Logging"`
+	GoExecutorPool   GoExecutorPoolConfig    `json:"GoExecutorPool"`
+	IntrinsicService IntrinsicServiceConfig  `json:"IntrinsicService"`
 }
 
 var sIntrinsicConfig *IntrinsicConfig = nil
@@ -143,9 +144,9 @@ func (ego *IntrinsicConfig) String() string {
 		ss.WriteString(k)
 		ss.WriteString(":\n")
 		ss.WriteString(v.String())
-
 	}
 	ss.WriteString(ego.GoExecutorPool.String())
+	ss.WriteString(ego.IntrinsicService.String())
 	ss.WriteString("------------------------------- IntrinsicConfig -------------------------------\n")
 	return ss.String()
 }

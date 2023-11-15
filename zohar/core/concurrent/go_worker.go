@@ -9,6 +9,7 @@ import (
 	"xeno/zohar/core/cms"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/process"
+	"xeno/zohar/core/sched"
 )
 
 type GoWorker struct {
@@ -108,7 +109,7 @@ func (ego *GoWorker) IsSameGoRoutine(goid int64) bool {
 	return false
 }
 
-func (ego *GoWorker) PostTask(proc func(any), obj any) {
+func (ego *GoWorker) PostTask(proc sched.TaskFuncType, obj any) {
 	if ego._shuttingDown || ego._stopped {
 		return
 	}

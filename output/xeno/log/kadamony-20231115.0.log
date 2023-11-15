@@ -1,0 +1,2928 @@
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	19:47:41.548947300	1700048861548	[INFO]	5660	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	19:47:41.548947300	1700048861548	[INFO]	5660	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	19:47:41.548947300	1700048861548	[INFO]	5660	1	Starting Default Executor Pool ... 				[Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	19:51:12.373506500	1700049072373	[INFO]	7268	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	19:51:12.373506500	1700049072373	[INFO]	7268	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	19:51:12.373506500	1700049072373	[INFO]	7268	1	Starting Default Executor Pool ... 				[Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:29:45.167273200	1700051385167	[INFO]	7748	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:29:45.167273200	1700051385167	[INFO]	7748	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:29:45.167774700	1700051385167	[INFO]	7748	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:29:47.55622800	1700051387055	[INFO]	7748	7	Catch Sig interrupt
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:30:10.316370300	1700051410316	[INFO]	8320	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:30:10.316370300	1700051410316	[INFO]	8320	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:30:10.316370300	1700051410316	[INFO]	8320	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:30:12.262312700	1700051412262	[INFO]	8320	7	Catch Sig interrupt
+2023-11-15	20:30:12.262312700	1700051412262	[INFO]	8320	7	Stopping Default Executor Pool 
+2023-11-15	20:30:12.262814500	1700051412262	[INFO]	8320	7	Stopping Default Executor Pool ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:31:15.669808300	1700051475669	[INFO]	2636	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:31:15.669808300	1700051475669	[INFO]	2636	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:31:15.669808300	1700051475669	[INFO]	2636	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:31:18.374935300	1700051478374	[INFO]	2636	7	Catch Sig interrupt
+2023-11-15	20:31:18.374935300	1700051478374	[INFO]	2636	7	Stopping Default Executor Pool 
+2023-11-15	20:31:18.374935300	1700051478374	[INFO]	2636	7	Stopping Default Executor Pool ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:31:31.598611000	1700051491598	[INFO]	9160	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:31:31.598611000	1700051491598	[INFO]	9160	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:31:31.598611000	1700051491598	[INFO]	9160	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:31:33.335551900	1700051493335	[INFO]	9160	20	Catch Sig interrupt
+2023-11-15	20:31:33.335551900	1700051493335	[INFO]	9160	20	Stopping Default Executor Pool 
+2023-11-15	20:31:33.335551900	1700051493335	[INFO]	9160	20	Stopping Default Executor Pool ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:31:43.368685100	1700051503368	[INFO]	7820	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:31:43.368685100	1700051503368	[INFO]	7820	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:31:43.369186200	1700051503369	[INFO]	7820	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:31:44.541741400	1700051504541	[INFO]	7820	20	Catch Sig interrupt
+2023-11-15	20:31:44.541741400	1700051504541	[INFO]	7820	20	Stopping Default Executor Pool 
+2023-11-15	20:31:44.542243200	1700051504542	[INFO]	7820	20	Stopping Default Executor Pool ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:32:36.898462400	1700051556898	[INFO]	3480	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:32:36.898462400	1700051556898	[INFO]	3480	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:32:36.898462400	1700051556898	[INFO]	3480	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:32:40.22702600	1700051560022	[INFO]	3480	7	Catch Sig interrupt
+2023-11-15	20:32:40.22702600	1700051560022	[INFO]	3480	7	Stopping Default Executor Pool 
+2023-11-15	20:32:40.22702600	1700051560022	[INFO]	3480	7	Stopping Default Executor Pool ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:35:13.70324700	1700051713070	[SYS]	3240	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:35:13.70324700	1700051713070	[SYS]	3240	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:35:13.70850300	1700051713070	[SYS]	3240	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:35:13.901542600	1700051713901	[INFO]	3240	7	Catch Sig interrupt
+2023-11-15	20:35:13.901542600	1700051713901	[INFO]	3240	7	Stopping Default Executor Pool 
+2023-11-15	20:35:13.901542600	1700051713901	[INFO]	3240	7	Stopping Default Executor Pool ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:51:25.282208700	1700052685282	[SYS]	5684	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:51:25.282208700	1700052685282	[SYS]	5684	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:51:25.282208700	1700052685282	[SYS]	5684	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:51:28.831802400	1700052688831	[SYS]	5684	7	Catch Sig interrupt
+2023-11-15	20:51:28.832303400	1700052688832	[SYS]	5684	7	Stopping Default Executor Pool 
+2023-11-15	20:51:28.832303400	1700052688832	[SYS]	5684	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	20:51:28.832303400	1700052688832	[SYS]	5684	7	Stopping Default Log Manager 
+2023-11-15	20:51:28.932378600	1700052688932	[SYS]	5684	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:51:46.714421600	1700052706714	[SYS]	7984	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:51:46.714421600	1700052706714	[SYS]	7984	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:51:46.714421600	1700052706714	[SYS]	7984	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:51:48.424637200	1700052708424	[SYS]	7984	20	Catch Sig interrupt
+2023-11-15	20:51:48.424637200	1700052708424	[SYS]	7984	20	Stopping Default Executor Pool 
+2023-11-15	20:51:48.424637200	1700052708424	[SYS]	7984	20	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	20:51:48.424637200	1700052708424	[SYS]	7984	20	Stopping Default Log Manager 
+2023-11-15	20:51:48.525303900	1700052708525	[SYS]	7984	20	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:52:19.183035300	1700052739183	[SYS]	8500	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:52:19.183561300	1700052739183	[SYS]	8500	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:52:19.183561300	1700052739183	[SYS]	8500	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:52:21.942798800	1700052741942	[SYS]	8500	7	Catch Sig interrupt
+2023-11-15	20:52:21.943300200	1700052741943	[SYS]	8500	7	Stopping Default Executor Pool 
+2023-11-15	20:52:21.943300200	1700052741943	[SYS]	8500	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	20:52:21.943300200	1700052741943	[SYS]	8500	7	Stopping Default Log Manager 
+2023-11-15	20:52:22.43511600	1700052742043	[SYS]	8500	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	20:54:06.757077300	1700052846757	[SYS]	8020	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	20:54:06.757077300	1700052846757	[SYS]	8020	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	20:54:06.757578400	1700052846757	[SYS]	8020	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	20:54:06.757578400	1700052846757	[SYS]	8020	1	Kadamony Application Initializing ... 
+2023-11-15	20:54:08.470364600	1700052848470	[SYS]	8020	20	Catch Sig interrupt
+2023-11-15	20:54:08.470364600	1700052848470	[SYS]	8020	20	Stopping Default Executor Pool 
+2023-11-15	20:54:08.470364600	1700052848470	[SYS]	8020	20	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	20:54:08.470364600	1700052848470	[SYS]	8020	20	Stopping Default Log Manager 
+2023-11-15	20:54:08.570861600	1700052848570	[SYS]	8020	20	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:03:45.506901900	1700053425506	[SYS]	7408	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:03:45.506901900	1700053425506	[SYS]	7408	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:03:45.507402600	1700053425507	[SYS]	7408	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:03:45.507402600	1700053425507	[SYS]	7408	1	Starting Intrinsis Services ... 			[Faild:OK(0).0]
+2023-11-15	21:03:45.507402600	1700053425507	[SYS]	7408	1	Kadamony Application Initializing ... 
+2023-11-15	21:03:49.753690600	1700053429753	[SYS]	7408	20	Catch Sig interrupt
+2023-11-15	21:03:49.753690600	1700053429753	[SYS]	7408	20	Stopping Default Executor Pool 
+2023-11-15	21:03:49.754183200	1700053429754	[SYS]	7408	20	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:03:49.754183200	1700053429754	[SYS]	7408	20	Stopping Default Log Manager 
+2023-11-15	21:03:49.854601700	1700053429854	[SYS]	7408	20	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:37:47.172460100	1700055467172	[SYS]	8484	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:37:47.172460100	1700055467172	[SYS]	8484	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:37:47.172460100	1700055467172	[SYS]	8484	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:37:47.172460100	1700055467172	[SYS]	8484	1	Starting Intrinsis Services ... 			[Faild:OK(0).0]
+2023-11-15	21:37:47.172460100	1700055467172	[SYS]	8484	1	Kadamony Application Initializing ... 
+2023-11-15	21:38:12.360006700	1700055492360	[SYS]	8484	7	Catch Sig interrupt
+2023-11-15	21:38:12.360982600	1700055492360	[SYS]	8484	7	Stopping Default Executor Pool 
+2023-11-15	21:38:12.360982600	1700055492360	[SYS]	8484	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:38:12.360982600	1700055492360	[SYS]	8484	7	Stopping Default Log Manager 
+2023-11-15	21:38:12.461146900	1700055492461	[SYS]	8484	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:39:02.739863200	1700055542739	[SYS]	3192	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:39:02.739863200	1700055542739	[SYS]	3192	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:39:02.739863200	1700055542739	[SYS]	3192	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:39:02.739863200	1700055542739	[SYS]	3192	1	Starting Intrinsis Services ... 			[Faild:OK(0).0]
+2023-11-15	21:39:02.739863200	1700055542739	[SYS]	3192	1	Kadamony Application Initializing ... 
+2023-11-15	21:39:02.754902700	1700055542754	[SYS]	3192	7	Catch Sig interrupt
+2023-11-15	21:39:02.754902700	1700055542754	[SYS]	3192	7	Stopping Default Executor Pool 
+2023-11-15	21:39:02.754902700	1700055542754	[SYS]	3192	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:39:02.754902700	1700055542754	[SYS]	3192	7	Stopping Default Log Manager 
+2023-11-15	21:39:02.855941100	1700055542855	[SYS]	3192	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:39:14.472593500	1700055554472	[SYS]	7020	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:39:14.472593500	1700055554472	[SYS]	7020	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:39:14.472593500	1700055554472	[SYS]	7020	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:39:14.472593500	1700055554472	[SYS]	7020	1	Starting Intrinsis Services ... 			[Faild:OK(0).0]
+2023-11-15	21:39:14.472593500	1700055554472	[SYS]	7020	1	Kadamony Application Initializing ... 
+2023-11-15	21:39:14.487607700	1700055554487	[SYS]	7020	7	Catch Sig interrupt
+2023-11-15	21:39:14.487607700	1700055554487	[SYS]	7020	7	Stopping Default Executor Pool 
+2023-11-15	21:39:14.487607700	1700055554487	[SYS]	7020	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:39:14.487607700	1700055554487	[SYS]	7020	7	Stopping Default Log Manager 
+2023-11-15	21:39:14.588406800	1700055554588	[SYS]	7020	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:39:25.495495200	1700055565495	[SYS]	8720	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:39:25.495495200	1700055565495	[SYS]	8720	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:39:25.495495200	1700055565495	[SYS]	8720	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:39:30.6898100	1700055570006	[SYS]	8720	1	Starting Intrinsis Services ... 			[Faild:OK(0).0]
+2023-11-15	21:39:30.6898100	1700055570006	[SYS]	8720	1	Kadamony Application Initializing ... 
+2023-11-15	21:39:30.20936200	1700055570020	[SYS]	8720	7	Catch Sig interrupt
+2023-11-15	21:39:30.20936200	1700055570020	[SYS]	8720	7	Stopping Default Executor Pool 
+2023-11-15	21:39:30.20936200	1700055570020	[SYS]	8720	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:39:30.20936200	1700055570020	[SYS]	8720	7	Stopping Default Log Manager 
+2023-11-15	21:39:30.121097000	1700055570121	[SYS]	8720	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:39:36.399563500	1700055576399	[SYS]	568	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:39:36.399563500	1700055576399	[SYS]	568	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:39:37.411470600	1700055577411	[SYS]	568	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:39:50.702471900	1700055590702	[SYS]	568	1	Starting Intrinsis Services ... 			[Faild:OK(0).0]
+2023-11-15	21:39:54.512773200	1700055594512	[SYS]	568	1	Kadamony Application Initializing ... 
+2023-11-15	21:40:02.40075100	1700055602040	[SYS]	568	7	Catch Sig interrupt
+2023-11-15	21:40:02.41076900	1700055602041	[SYS]	568	7	Stopping Default Executor Pool 
+2023-11-15	21:40:02.41076900	1700055602041	[SYS]	568	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:40:02.41076900	1700055602041	[SYS]	568	7	Stopping Default Log Manager 
+2023-11-15	21:40:02.142027900	1700055602142	[SYS]	568	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:40:18.693292400	1700055618693	[SYS]	4740	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:40:18.693292400	1700055618693	[SYS]	4740	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:40:22.24742000	1700055622024	[SYS]	4740	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:41:04.684118700	1700055664684	[SYS]	4740	1	Starting Intrinsis Services ... 			[Faild:OK(0).0]
+2023-11-15	21:41:13.186498800	1700055673186	[SYS]	4740	1	Kadamony Application Initializing ... 
+2023-11-15	21:41:16.29163000	1700055676029	[SYS]	4740	7	Catch Sig interrupt
+2023-11-15	21:41:16.29163000	1700055676029	[SYS]	4740	7	Stopping Default Executor Pool 
+2023-11-15	21:41:16.29163000	1700055676029	[SYS]	4740	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:41:16.29163000	1700055676029	[SYS]	4740	7	Stopping Default Log Manager 
+2023-11-15	21:41:16.129322400	1700055676129	[SYS]	4740	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:41:40.851699400	1700055700851	[SYS]	4024	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:41:40.851699400	1700055700851	[SYS]	4024	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:41:42.582173100	1700055702582	[SYS]	4024	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:41:44.898141200	1700055704898	[SYS]	4024	1	Starting Intrinsis Services ... 			[Faild:OK(0).0]
+2023-11-15	21:41:44.899139200	1700055704899	[SYS]	4024	1	Kadamony Application Initializing ... 
+2023-11-15	21:41:49.114458700	1700055709114	[SYS]	4024	7	Catch Sig interrupt
+2023-11-15	21:41:49.114458700	1700055709114	[SYS]	4024	7	Stopping Default Executor Pool 
+2023-11-15	21:41:49.114458700	1700055709114	[SYS]	4024	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:41:49.114458700	1700055709114	[SYS]	4024	7	Stopping Default Log Manager 
+2023-11-15	21:41:49.214646200	1700055709214	[SYS]	4024	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:41:50.379143200	1700055710379	[SYS]	6892	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:41:50.379143200	1700055710379	[SYS]	6892	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:41:50.379143200	1700055710379	[SYS]	6892	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:41:50.379143200	1700055710379	[SYS]	6892	1	Starting Intrinsis Services ... 			[Faild:OK(0).0]
+2023-11-15	21:41:50.379143200	1700055710379	[SYS]	6892	1	Kadamony Application Initializing ... 
+2023-11-15	21:41:56.646267600	1700055716646	[SYS]	6892	7	Catch Sig interrupt
+2023-11-15	21:41:56.646267600	1700055716646	[SYS]	6892	7	Stopping Default Executor Pool 
+2023-11-15	21:41:56.646267600	1700055716646	[SYS]	6892	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:41:56.646267600	1700055716646	[SYS]	6892	7	Stopping Default Log Manager 
+2023-11-15	21:41:56.746677300	1700055716746	[SYS]	6892	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:51:04.478789000	1700056264478	[SYS]	6768	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:51:04.478789000	1700056264478	[SYS]	6768	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:51:04.478789000	1700056264478	[SYS]	6768	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:51:04.478789000	1700056264478	[SYS]	6768	1	Zohar Framework Initializing ... 
+2023-11-15	21:51:04.478789000	1700056264478	[SYS]	6768	1	Starting Intrinsic Services ... 			[Failed:OK(0).0]
+2023-11-15	21:51:04.478789000	1700056264478	[SYS]	6768	1	Kadamony Application Initializing ... 
+2023-11-15	21:51:05.836590600	1700056265836	[SYS]	6768	7	Catch Sig interrupt
+2023-11-15	21:51:05.836590600	1700056265836	[SYS]	6768	7	Stopping Default Executor Pool 
+2023-11-15	21:51:05.836590600	1700056265836	[SYS]	6768	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:51:05.836590600	1700056265836	[SYS]	6768	7	Stopping Default Log Manager 
+2023-11-15	21:51:05.939151300	1700056265939	[SYS]	6768	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:57:26.400131800	1700056646400	[SYS]	5228	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:57:26.400131800	1700056646400	[SYS]	5228	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:57:26.400131800	1700056646400	[SYS]	5228	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:57:26.400131800	1700056646400	[SYS]	5228	1	Zohar Framework Initializing ... 
+2023-11-15	21:57:26.400131800	1700056646400	[SYS]	5228	1	Starting Intrinsic Services ... 			[Failed:OK(0).0]
+2023-11-15	21:57:26.400131800	1700056646400	[SYS]	5228	1	Kadamony Application Initializing ... 
+2023-11-15	21:57:28.172874200	1700056648172	[SYS]	5228	7	Catch Sig interrupt
+2023-11-15	21:57:28.172874200	1700056648172	[SYS]	5228	7	Stopping Intrinsic Services
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:57:32.264028900	1700056652264	[SYS]	2636	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:57:32.264028900	1700056652264	[SYS]	2636	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:57:32.264028900	1700056652264	[SYS]	2636	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:57:32.264028900	1700056652264	[SYS]	2636	1	Zohar Framework Initializing ... 
+2023-11-15	21:57:32.265031800	1700056652265	[SYS]	2636	1	Starting Intrinsic Services ... 			[Failed:OK(0).0]
+2023-11-15	21:57:32.265031800	1700056652265	[SYS]	2636	1	Kadamony Application Initializing ... 
+2023-11-15	21:57:34.674985300	1700056654674	[SYS]	2636	20	Catch Sig interrupt
+2023-11-15	21:57:34.674985300	1700056654674	[SYS]	2636	20	Stopping Intrinsic Services
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:58:08.456476100	1700056688456	[SYS]	6520	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:58:08.456476100	1700056688456	[SYS]	6520	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:58:08.456476100	1700056688456	[SYS]	6520	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:58:08.456476100	1700056688456	[SYS]	6520	1	Zohar Framework Initializing ... 
+2023-11-15	21:58:08.456476100	1700056688456	[SYS]	6520	1	Starting Intrinsic Services ... 			[Failed:OK(0).0]
+2023-11-15	21:58:08.456476100	1700056688456	[SYS]	6520	1	Kadamony Application Initializing ... 
+2023-11-15	21:58:10.952259900	1700056690952	[SYS]	6520	7	Catch Sig interrupt
+2023-11-15	21:58:10.952259900	1700056690952	[SYS]	6520	7	Stopping Intrinsic Services
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:58:31.472720100	1700056711472	[SYS]	1916	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:58:31.472720100	1700056711472	[SYS]	1916	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:58:31.472720100	1700056711472	[SYS]	1916	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:58:31.472720100	1700056711472	[SYS]	1916	1	Zohar Framework Initializing ... 
+2023-11-15	21:58:31.472720100	1700056711472	[SYS]	1916	1	Starting Intrinsic Services ... 			[Failed:OK(0).0]
+2023-11-15	21:58:31.472720100	1700056711472	[SYS]	1916	1	Kadamony Application Initializing ... 
+2023-11-15	21:58:35.902102700	1700056715902	[SYS]	1916	20	Catch Sig interrupt
+2023-11-15	21:58:35.902102700	1700056715902	[SYS]	1916	20	Stopping Intrinsic Services
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:58:54.20678800	1700056734020	[SYS]	5836	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:58:54.20678800	1700056734020	[SYS]	5836	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:58:54.21681600	1700056734021	[SYS]	5836	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:58:54.21681600	1700056734021	[SYS]	5836	1	Zohar Framework Initializing ... 
+2023-11-15	21:58:54.21681600	1700056734021	[SYS]	5836	1	Starting Intrinsic Services ... 			[Failed:OK(0).0]
+2023-11-15	21:58:54.21681600	1700056734021	[SYS]	5836	1	Kadamony Application Initializing ... 
+2023-11-15	21:59:02.890259400	1700056742890	[SYS]	5836	7	Catch Sig interrupt
+2023-11-15	21:59:02.890259400	1700056742890	[SYS]	5836	7	Stopping Intrinsic Services
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:59:16.826330100	1700056756826	[SYS]	8248	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:59:16.826330100	1700056756826	[SYS]	8248	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:59:16.826330100	1700056756826	[SYS]	8248	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:59:16.826330100	1700056756826	[SYS]	8248	1	Zohar Framework Initializing ... 
+2023-11-15	21:59:16.826330100	1700056756826	[SYS]	8248	1	Starting Intrinsic Services ... 			[Failed:OK(0).0]
+2023-11-15	21:59:16.826330100	1700056756826	[SYS]	8248	1	Kadamony Application Initializing ... 
+2023-11-15	21:59:19.324141800	1700056759324	[SYS]	8248	7	Catch Sig interrupt
+2023-11-15	21:59:19.324141800	1700056759324	[SYS]	8248	7	Stopping Default Executor Pool 
+2023-11-15	21:59:19.324141800	1700056759324	[SYS]	8248	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:59:19.324141800	1700056759324	[SYS]	8248	7	Stopping Default Log Manager 
+2023-11-15	21:59:19.424408100	1700056759424	[SYS]	8248	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	21:59:51.185844800	1700056791185	[SYS]	4996	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	21:59:51.185844800	1700056791185	[SYS]	4996	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	21:59:51.185844800	1700056791185	[SYS]	4996	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	21:59:51.185844800	1700056791185	[SYS]	4996	1	Zohar Framework Initializing ... 
+2023-11-15	21:59:51.185844800	1700056791185	[SYS]	4996	1	Starting Intrinsic Services ... 			[Failed:OK(0).0]
+2023-11-15	21:59:51.185844800	1700056791185	[SYS]	4996	1	Kadamony Application Initializing ... 
+2023-11-15	21:59:54.571254100	1700056794571	[SYS]	4996	7	Catch Sig interrupt
+2023-11-15	21:59:54.571254100	1700056794571	[SYS]	4996	7	Stopping Default Executor Pool 
+2023-11-15	21:59:54.571254100	1700056794571	[SYS]	4996	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	21:59:54.571254100	1700056794571	[SYS]	4996	7	Stopping Default Log Manager 
+2023-11-15	21:59:54.671519800	1700056794671	[SYS]	4996	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:00:10.27361800	1700056810027	[SYS]	6524	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:00:10.27361800	1700056810027	[SYS]	6524	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:00:10.27361800	1700056810027	[SYS]	6524	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:00:10.27361800	1700056810027	[SYS]	6524	1	Zohar Framework Initializing ... 
+2023-11-15	22:00:10.27361800	1700056810027	[SYS]	6524	1	Starting Intrinsic Services ... 			[Failed:OK(0).0]
+2023-11-15	22:00:10.27361800	1700056810027	[SYS]	6524	1	Kadamony Application Initializing ... 
+2023-11-15	22:00:19.844548100	1700056819844	[SYS]	6524	7	Catch Sig interrupt
+2023-11-15	22:00:19.844548100	1700056819844	[SYS]	6524	7	Stopping Default Executor Pool 
+2023-11-15	22:00:19.844548100	1700056819844	[SYS]	6524	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:00:19.844548100	1700056819844	[SYS]	6524	7	Stopping Default Log Manager 
+2023-11-15	22:00:19.944594600	1700056819944	[SYS]	6524	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:01:21.162949200	1700056881162	[SYS]	3688	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:01:21.162949200	1700056881162	[SYS]	3688	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:01:21.162949200	1700056881162	[SYS]	3688	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:01:21.162949200	1700056881162	[SYS]	3688	1	Zohar Framework Initializing ... 
+2023-11-15	22:01:21.162949200	1700056881162	[SYS]	3688	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:01:21.162949200	1700056881162	[SYS]	3688	1	Kadamony Application Initializing ... 
+2023-11-15	22:01:27.076900	1700056887000	[SYS]	3688	7	Catch Sig interrupt
+2023-11-15	22:01:27.076900	1700056887000	[SYS]	3688	7	Stopping Default Executor Pool 
+2023-11-15	22:01:27.076900	1700056887000	[SYS]	3688	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:01:27.076900	1700056887000	[SYS]	3688	7	Stopping Default Log Manager 
+2023-11-15	22:01:27.100451100	1700056887100	[SYS]	3688	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:02:12.49913000	1700056932049	[SYS]	6672	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:02:12.49913000	1700056932049	[SYS]	6672	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:02:12.49913000	1700056932049	[SYS]	6672	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:02:12.49913000	1700056932049	[SYS]	6672	1	Zohar Framework Initializing ... 
+2023-11-15	22:02:12.49913000	1700056932049	[SYS]	6672	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:02:12.49913000	1700056932049	[SYS]	6672	1	Kadamony Application Initializing ... 
+2023-11-15	22:02:14.813635200	1700056934813	[SYS]	6672	7	Catch Sig interrupt
+2023-11-15	22:02:14.813635200	1700056934813	[SYS]	6672	7	Stopping Default Executor Pool 
+2023-11-15	22:02:14.813635200	1700056934813	[SYS]	6672	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:02:14.813635200	1700056934813	[SYS]	6672	7	Stopping Default Log Manager 
+2023-11-15	22:02:14.914940900	1700056934914	[SYS]	6672	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:02:32.721434000	1700056952721	[SYS]	808	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:02:32.721434000	1700056952721	[SYS]	808	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:02:32.721434000	1700056952721	[SYS]	808	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:02:32.721434000	1700056952721	[SYS]	808	1	Zohar Framework Initializing ... 
+2023-11-15	22:02:32.721434000	1700056952721	[SYS]	808	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:02:32.722435800	1700056952722	[SYS]	808	1	Kadamony Application Initializing ... 
+2023-11-15	22:02:51.245039500	1700056971245	[SYS]	808	7	Catch Sig interrupt
+2023-11-15	22:02:51.245039500	1700056971245	[SYS]	808	7	Stopping Intrinsic Services
+2023-11-15	22:02:51.245039500	1700056971245	[SYS]	808	7	Wait
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:03:52.222108800	1700057032222	[SYS]	7244	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:03:52.222108800	1700057032222	[SYS]	7244	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:03:52.222108800	1700057032222	[SYS]	7244	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:03:52.223084300	1700057032223	[SYS]	7244	1	Zohar Framework Initializing ... 
+2023-11-15	22:03:52.223084300	1700057032223	[SYS]	7244	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:03:52.223084300	1700057032223	[SYS]	7244	1	Kadamony Application Initializing ... 
+2023-11-15	22:03:53.176014800	1700057033176	[SYS]	7244	7	Catch Sig interrupt
+2023-11-15	22:03:53.176992400	1700057033176	[SYS]	7244	7	Stopping Intrinsic Services
+2023-11-15	22:03:53.176992400	1700057033176	[SYS]	7244	7	Wait
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:04:33.80363300	1700057073080	[SYS]	7468	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:04:33.80363300	1700057073080	[SYS]	7468	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:04:33.80363300	1700057073080	[SYS]	7468	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:04:33.80363300	1700057073080	[SYS]	7468	1	Zohar Framework Initializing ... 
+2023-11-15	22:04:33.80363300	1700057073080	[SYS]	7468	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:04:33.80363300	1700057073080	[SYS]	7468	1	Kadamony Application Initializing ... 
+2023-11-15	22:04:37.108092500	1700057077108	[SYS]	7468	7	Catch Sig interrupt
+2023-11-15	22:04:37.108092500	1700057077108	[SYS]	7468	7	Stopping Intrinsic Services
+2023-11-15	22:04:37.108092500	1700057077108	[SYS]	7468	7	Wait
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:04:55.777671000	1700057095777	[SYS]	3148	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:04:55.777671000	1700057095777	[SYS]	3148	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:04:55.777671000	1700057095777	[SYS]	3148	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:04:55.777671000	1700057095777	[SYS]	3148	1	Zohar Framework Initializing ... 
+2023-11-15	22:04:55.777671000	1700057095777	[SYS]	3148	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:04:55.777671000	1700057095777	[SYS]	3148	1	Kadamony Application Initializing ... 
+2023-11-15	22:05:01.372723800	1700057101372	[SYS]	3148	7	Catch Sig interrupt
+2023-11-15	22:05:01.372723800	1700057101372	[SYS]	3148	7	Stopping Intrinsic Services
+2023-11-15	22:05:01.373747400	1700057101373	[SYS]	3148	7	Wait
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:05:23.619841900	1700057123619	[SYS]	8560	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:05:23.619841900	1700057123619	[SYS]	8560	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:05:23.619841900	1700057123619	[SYS]	8560	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:05:23.619841900	1700057123619	[SYS]	8560	1	Zohar Framework Initializing ... 
+2023-11-15	22:05:23.619841900	1700057123619	[SYS]	8560	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:05:23.619841900	1700057123619	[SYS]	8560	1	Kadamony Application Initializing ... 
+2023-11-15	22:05:25.680614300	1700057125680	[SYS]	8560	7	Catch Sig interrupt
+2023-11-15	22:05:25.680614300	1700057125680	[SYS]	8560	7	Stopping Intrinsic Services
+2023-11-15	22:05:25.680614300	1700057125680	[SYS]	8560	7	Wait
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:05:37.878339100	1700057137878	[SYS]	5748	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:05:37.878339100	1700057137878	[SYS]	5748	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:05:37.878339100	1700057137878	[SYS]	5748	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:05:37.878339100	1700057137878	[SYS]	5748	1	Zohar Framework Initializing ... 
+2023-11-15	22:05:37.878339100	1700057137878	[SYS]	5748	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:05:37.878339100	1700057137878	[SYS]	5748	1	Kadamony Application Initializing ... 
+2023-11-15	22:05:41.427591700	1700057141427	[SYS]	5748	7	Catch Sig interrupt
+2023-11-15	22:05:41.428582000	1700057141428	[SYS]	5748	7	Stopping Intrinsic Services
+2023-11-15	22:05:41.428582000	1700057141428	[SYS]	5748	7	Wait
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:06:02.635204600	1700057162635	[SYS]	7216	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:06:02.635204600	1700057162635	[SYS]	7216	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:06:02.635204600	1700057162635	[SYS]	7216	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:06:02.635204600	1700057162635	[SYS]	7216	1	Zohar Framework Initializing ... 
+2023-11-15	22:06:02.635204600	1700057162635	[SYS]	7216	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:06:02.635204600	1700057162635	[SYS]	7216	1	Kadamony Application Initializing ... 
+2023-11-15	22:06:05.652940300	1700057165652	[SYS]	7216	20	Catch Sig interrupt
+2023-11-15	22:06:05.652940300	1700057165652	[SYS]	7216	20	Stopping Intrinsic Services
+2023-11-15	22:06:05.652940300	1700057165652	[SYS]	7216	20	Wait
+2023-11-15	22:06:05.652940300	1700057165652	[SYS]	7216	20	Stopping Intrinsic Services ... 				 [Stopped] 
+2023-11-15	22:06:05.652940300	1700057165652	[SYS]	7216	20	Stopping Default Executor Pool 
+2023-11-15	22:06:05.652940300	1700057165652	[SYS]	7216	20	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:06:05.652940300	1700057165652	[SYS]	7216	20	Stopping Default Log Manager 
+2023-11-15	22:06:05.753036600	1700057165753	[SYS]	7216	20	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:09:59.926075200	1700057399926	[SYS]	7468	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:09:59.926075200	1700057399926	[SYS]	7468	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:09:59.926075200	1700057399926	[SYS]	7468	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:09:59.926075200	1700057399926	[SYS]	7468	1	Zohar Framework Initializing ... 
+2023-11-15	22:09:59.926075200	1700057399926	[SYS]	7468	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:09:59.926075200	1700057399926	[SYS]	7468	1	Kadamony Application Initializing ... 
+2023-11-15	22:10:05.40682600	1700057405040	[SYS]	7468	20	Catch Sig interrupt
+2023-11-15	22:10:05.40682600	1700057405040	[SYS]	7468	20	Stopping Intrinsic Services
+2023-11-15	22:10:05.40682600	1700057405040	[SYS]	7468	20	Stopping Intrinsic Services ... 				 [Stopped] 
+2023-11-15	22:10:05.41183000	1700057405041	[SYS]	7468	20	Stopping Default Executor Pool 
+2023-11-15	22:10:05.41183000	1700057405041	[SYS]	7468	20	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:10:05.41183000	1700057405041	[SYS]	7468	20	Stopping Default Log Manager 
+2023-11-15	22:10:05.141799200	1700057405141	[SYS]	7468	20	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:11:46.416288800	1700057506416	[SYS]	8972	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:11:46.416288800	1700057506416	[SYS]	8972	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:11:46.416288800	1700057506416	[SYS]	8972	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:11:46.416288800	1700057506416	[SYS]	8972	1	Zohar Framework Initializing ... 
+2023-11-15	22:11:46.416288800	1700057506416	[SYS]	8972	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:11:46.416288800	1700057506416	[SYS]	8972	1	Kadamony Application Initializing ... 
+2023-11-15	22:11:50.288795700	1700057510288	[SYS]	8972	7	Catch Sig interrupt
+2023-11-15	22:11:50.288795700	1700057510288	[SYS]	8972	7	Stopping Intrinsic Services
+2023-11-15	22:11:50.288795700	1700057510288	[SYS]	8972	7	Stopping Intrinsic Services ... 				 [Stopped] 
+2023-11-15	22:11:50.288795700	1700057510288	[SYS]	8972	7	Stopping Default Executor Pool 
+2023-11-15	22:11:50.288795700	1700057510288	[SYS]	8972	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:11:50.288795700	1700057510288	[SYS]	8972	7	Stopping Default Log Manager 
+2023-11-15	22:11:50.389523500	1700057510389	[SYS]	8972	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:13:23.363010800	1700057603363	[SYS]	7508	1	Zohar Core Initializing ... 				[Success]
+2023-11-15	22:13:23.363010800	1700057603363	[SYS]	7508	1	Starting Default Log Manager ... 				[Success]
+2023-11-15	22:13:23.363010800	1700057603363	[SYS]	7508	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:13:23.363010800	1700057603363	[SYS]	7508	1	Zohar Framework Initializing ... 
+2023-11-15	22:13:23.363010800	1700057603363	[SYS]	7508	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:13:23.363010800	1700057603363	[SYS]	7508	1	Kadamony Application Initializing ... 
+2023-11-15	22:13:28.288615900	1700057608288	[SYS]	7508	7	Catch Sig interrupt
+2023-11-15	22:13:28.288615900	1700057608288	[SYS]	7508	7	Stopping Intrinsic Services
+2023-11-15	22:13:28.288615900	1700057608288	[SYS]	7508	7	Stopping Intrinsic Services ... 				 [Stopped] 
+2023-11-15	22:13:28.288615900	1700057608288	[SYS]	7508	7	Stopping Default Executor Pool 
+2023-11-15	22:13:28.288615900	1700057608288	[SYS]	7508	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:13:28.288615900	1700057608288	[SYS]	7508	7	Stopping Default Log Manager 
+2023-11-15	22:13:28.389313600	1700057608389	[SYS]	7508	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:25:08.618581700	1700058308618	[SYS]	1180	1	Zohar Core Initializing ...%!(EXTRA []interface {}=[])                [Success]
+2023-11-15	22:25:08.618581700	1700058308618	[SYS]	1180	1	Starting Default Log Manager  ...%!(EXTRA []interface {}=[])          [Success]
+2023-11-15	22:25:08.618581700	1700058308618	[SYS]	1180	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:25:08.619082100	1700058308619	[SYS]	1180	1	Zohar Framework Initializing ... 
+2023-11-15	22:25:08.619082100	1700058308619	[SYS]	1180	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:25:08.619082100	1700058308619	[SYS]	1180	1	Kadamony Application Initializing ... 
+2023-11-15	22:25:19.533047000	1700058319533	[SYS]	1180	7	Catch Sig interrupt
+2023-11-15	22:25:19.533047000	1700058319533	[SYS]	1180	7	Stopping Intrinsic Services
+2023-11-15	22:25:19.533047000	1700058319533	[SYS]	1180	7	Stopping Intrinsic Services ... 				 [Stopped] 
+2023-11-15	22:25:19.533047000	1700058319533	[SYS]	1180	7	Stopping Default Executor Pool 
+2023-11-15	22:25:19.533047000	1700058319533	[SYS]	1180	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:25:19.533047000	1700058319533	[SYS]	1180	7	Stopping Default Log Manager 
+2023-11-15	22:25:19.633441300	1700058319633	[SYS]	1180	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:25:43.82673400	1700058343082	[SYS]	3080	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:25:43.82673400	1700058343082	[SYS]	3080	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:25:43.82673400	1700058343082	[SYS]	3080	1	Starting Default Executor Pool ... 				[Success]
+2023-11-15	22:25:43.83175500	1700058343083	[SYS]	3080	1	Zohar Framework Initializing ... 
+2023-11-15	22:25:43.83175500	1700058343083	[SYS]	3080	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:25:43.83175500	1700058343083	[SYS]	3080	1	Kadamony Application Initializing ... 
+2023-11-15	22:25:47.693583600	1700058347693	[SYS]	3080	7	Catch Sig interrupt
+2023-11-15	22:25:47.693583600	1700058347693	[SYS]	3080	7	Stopping Intrinsic Services
+2023-11-15	22:25:47.693583600	1700058347693	[SYS]	3080	7	Stopping Intrinsic Services ... 				 [Stopped] 
+2023-11-15	22:25:47.693583600	1700058347693	[SYS]	3080	7	Stopping Default Executor Pool 
+2023-11-15	22:25:47.693583600	1700058347693	[SYS]	3080	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:25:47.693583600	1700058347693	[SYS]	3080	7	Stopping Default Log Manager 
+2023-11-15	22:25:47.794477200	1700058347794	[SYS]	3080	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:27:21.371168300	1700058441371	[SYS]	7992	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:27:21.371168300	1700058441371	[SYS]	7992	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:27:21.371168300	1700058441371	[SYS]	7992	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:27:21.371168300	1700058441371	[SYS]	7992	1	Zohar Framework Initializing ... 
+2023-11-15	22:27:21.371168300	1700058441371	[SYS]	7992	1	Starting Intrinsic Services ... 			[Success]
+2023-11-15	22:27:21.371168300	1700058441371	[SYS]	7992	1	Kadamony Application Initializing ... 
+2023-11-15	22:28:00.685845200	1700058480685	[SYS]	7992	7	Catch Sig interrupt
+2023-11-15	22:28:00.685845200	1700058480685	[SYS]	7992	7	Stopping Intrinsic Services
+2023-11-15	22:28:00.685845200	1700058480685	[SYS]	7992	7	Stopping Intrinsic Services ... 				 [Stopped] 
+2023-11-15	22:28:00.685845200	1700058480685	[SYS]	7992	7	Stopping Default Executor Pool 
+2023-11-15	22:28:00.685845200	1700058480685	[SYS]	7992	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:28:00.685845200	1700058480685	[SYS]	7992	7	Stopping Default Log Manager 
+2023-11-15	22:28:00.785883500	1700058480785	[SYS]	7992	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:30:09.430489300	1700058609430	[SYS]	3428	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:30:09.430489300	1700058609430	[SYS]	3428	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:30:09.430489300	1700058609430	[SYS]	3428	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:30:09.430990700	1700058609430	[SYS]	3428	1	Zohar Framework Initializing ... 
+2023-11-15	22:30:09.430990700	1700058609430	[FATAL]	3428	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:30:09.430990700	1700058609430	[SYS]	3428	1	Kadamony Application Initializing ... 
+2023-11-15	22:30:16.189385200	1700058616189	[SYS]	3428	7	Catch Sig interrupt
+2023-11-15	22:30:16.189886600	1700058616189	[SYS]	3428	7	Stopping Intrinsic Services
+2023-11-15	22:30:16.189886600	1700058616189	[SYS]	3428	7	Stopping Intrinsic Services ... 				 [Stopped] 
+2023-11-15	22:30:16.189886600	1700058616189	[SYS]	3428	7	Stopping Default Executor Pool 
+2023-11-15	22:30:16.189886600	1700058616189	[SYS]	3428	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:30:16.189886600	1700058616189	[SYS]	3428	7	Stopping Default Log Manager 
+2023-11-15	22:30:16.290441000	1700058616290	[SYS]	3428	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:32:23.462835400	1700058743462	[SYS]	832	1	Zohar Core Initializing ...                                           
+2023-11-15	22:32:23.462835400	1700058743462	[SYS]	832	1	Starting Default Log Manager  ...                                     
+2023-11-15	22:32:23.462835400	1700058743462	[SYS]	832	1	Starting Default Executor Pool ...                                    
+2023-11-15	22:32:23.462835400	1700058743462	[SYS]	832	1	Zohar Framework Initializing ... 
+2023-11-15	22:32:23.462835400	1700058743462	[FATAL]	832	1	Starting Intrinsic Services ...                                       
+2023-11-15	22:32:23.462835400	1700058743462	[SYS]	832	1	Kadamony Application Initializing ... 
+2023-11-15	22:32:24.780127900	1700058744780	[SYS]	832	7	Catch Sig interrupt
+2023-11-15	22:32:24.780127900	1700058744780	[SYS]	832	7	Stopping Intrinsic Services
+2023-11-15	22:32:24.780127900	1700058744780	[SYS]	832	7	Stopping Intrinsic Services ...                                       [Success]
+2023-11-15	22:32:24.780127900	1700058744780	[SYS]	832	7	Stopping Default Executor Pool 
+2023-11-15	22:32:24.780127900	1700058744780	[SYS]	832	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:32:24.780127900	1700058744780	[SYS]	832	7	Stopping Default Log Manager 
+2023-11-15	22:32:24.880423200	1700058744880	[SYS]	832	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:32:37.735824600	1700058757735	[SYS]	460	1	Zohar Core Initializing ...                                           
+2023-11-15	22:32:37.735824600	1700058757735	[SYS]	460	1	Starting Default Log Manager  ...                                     
+2023-11-15	22:32:37.735824600	1700058757735	[SYS]	460	1	Starting Default Executor Pool ...                                    
+2023-11-15	22:32:37.735824600	1700058757735	[SYS]	460	1	Zohar Framework Initializing ... 
+2023-11-15	22:32:37.735824600	1700058757735	[FATAL]	460	1	Starting Intrinsic Services ...                                       
+2023-11-15	22:32:37.735824600	1700058757735	[SYS]	460	1	Kadamony Application Initializing ... 
+2023-11-15	22:32:40.798272500	1700058760798	[SYS]	460	7	Catch Sig interrupt
+2023-11-15	22:32:40.798272500	1700058760798	[SYS]	460	7	Stopping Intrinsic Services
+2023-11-15	22:32:40.798272500	1700058760798	[SYS]	460	7	Stopping Intrinsic Services ...                                       [Success]
+2023-11-15	22:32:40.798272500	1700058760798	[SYS]	460	7	Stopping Default Executor Pool 
+2023-11-15	22:32:40.798773900	1700058760798	[SYS]	460	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:32:40.798773900	1700058760798	[SYS]	460	7	Stopping Default Log Manager 
+2023-11-15	22:32:40.898995200	1700058760898	[SYS]	460	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:33:10.100618700	1700058790100	[SYS]	8644	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:33:10.101120800	1700058790101	[SYS]	8644	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:33:10.101120800	1700058790101	[SYS]	8644	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:33:10.101120800	1700058790101	[SYS]	8644	1	Zohar Framework Initializing ... 
+2023-11-15	22:33:10.101120800	1700058790101	[FATAL]	8644	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:33:10.101120800	1700058790101	[SYS]	8644	1	Kadamony Application Initializing ... 
+2023-11-15	22:33:14.229219100	1700058794229	[SYS]	8644	7	Catch Sig interrupt
+2023-11-15	22:33:14.229695200	1700058794229	[SYS]	8644	7	Stopping Intrinsic Services
+2023-11-15	22:33:14.229695200	1700058794229	[SYS]	8644	7	Stopping Intrinsic Services ...                                       [Stooped]
+2023-11-15	22:33:14.229695200	1700058794229	[SYS]	8644	7	Stopping Default Executor Pool 
+2023-11-15	22:33:14.229695200	1700058794229	[SYS]	8644	7	Stopping Default Executor Pool ... 				 [Stopped] 
+2023-11-15	22:33:14.229695200	1700058794229	[SYS]	8644	7	Stopping Default Log Manager 
+2023-11-15	22:33:14.331168500	1700058794331	[SYS]	8644	7	Stopping Default Log Manager ... 				 [Stopped] 
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:35:29.882150700	1700058929882	[SYS]	8808	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:35:29.882150700	1700058929882	[SYS]	8808	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:35:29.882150700	1700058929882	[SYS]	8808	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:35:29.882150700	1700058929882	[SYS]	8808	1	Zohar Framework Initializing ... 
+2023-11-15	22:35:29.882651500	1700058929882	[FATAL]	8808	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:35:29.882651500	1700058929882	[SYS]	8808	1	Kadamony Application Initializing ... 
+2023-11-15	22:35:32.596584500	1700058932596	[SYS]	8808	7	Catch Sig interrupt
+2023-11-15	22:35:32.596584500	1700058932596	[SYS]	8808	7	Stopping Intrinsic Services
+2023-11-15	22:35:32.596584500	1700058932596	[SYS]	8808	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:35:32.596584500	1700058932596	[SYS]	8808	7	Stopping Default Executor Pool 
+2023-11-15	22:35:32.596584500	1700058932596	[SYS]	8808	7	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:35:32.597081500	1700058932597	[SYS]	8808	7	Stopping Default Log Manager 
+2023-11-15	22:35:32.698416800	1700058932698	[SYS]	8808	7	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:39:50.859378700	1700059190859	[SYS]	196	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:39:50.859378700	1700059190859	[SYS]	196	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:39:50.859378700	1700059190859	[SYS]	196	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:39:50.859378700	1700059190859	[SYS]	196	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:39:50.859378700	1700059190859	[SYS]	196	1	Zohar Framework Initializing ... 
+2023-11-15	22:39:50.859378700	1700059190859	[FATAL]	196	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:39:50.859378700	1700059190859	[SYS]	196	1	Kadamony Application Initializing ... 
+2023-11-15	22:40:03.743066300	1700059203743	[SYS]	196	7	Catch Sig interrupt
+2023-11-15	22:40:03.743066300	1700059203743	[SYS]	196	7	Stopping Intrinsic Services
+2023-11-15	22:40:03.743066300	1700059203743	[SYS]	196	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:40:03.743066300	1700059203743	[SYS]	196	7	Stopping Default Executor Pool 
+2023-11-15	22:40:03.743066300	1700059203743	[SYS]	196	7	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:40:03.743066300	1700059203743	[SYS]	196	7	Stopping Default Log Manager 
+2023-11-15	22:40:03.843314900	1700059203843	[SYS]	196	7	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:41:23.564239100	1700059283564	[SYS]	8916	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:41:23.564239100	1700059283564	[SYS]	8916	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:41:23.564239100	1700059283564	[SYS]	8916	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:41:23.564239100	1700059283564	[SYS]	8916	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:41:23.564740800	1700059283564	[SYS]	8916	1	Zohar Framework Initializing ... 
+2023-11-15	22:41:23.564740800	1700059283564	[FATAL]	8916	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:41:23.564740800	1700059283564	[SYS]	8916	1	Kadamony Application Initializing ... 
+2023-11-15	22:41:28.812175000	1700059288812	[SYS]	8916	7	Catch Sig interrupt
+2023-11-15	22:41:28.812175000	1700059288812	[SYS]	8916	7	Stopping Intrinsic Services
+2023-11-15	22:41:28.812175000	1700059288812	[SYS]	8916	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:41:28.812175000	1700059288812	[SYS]	8916	7	Stopping Default Timer Manager ... 
+2023-11-15	22:41:28.812676100	1700059288812	[SYS]	8916	7	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:41:28.812676100	1700059288812	[SYS]	8916	7	Stopping Default Executor Pool 
+2023-11-15	22:41:28.812676100	1700059288812	[SYS]	8916	7	Stopping Default Executor Pool ...                                    [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:43:31.327176300	1700059411327	[SYS]	3472	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:43:31.327176300	1700059411327	[SYS]	3472	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:43:31.327176300	1700059411327	[SYS]	3472	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:43:31.327176300	1700059411327	[SYS]	3472	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:43:31.327176300	1700059411327	[SYS]	3472	1	Zohar Framework Initializing ... 
+2023-11-15	22:43:31.327176300	1700059411327	[FATAL]	3472	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:43:31.327176300	1700059411327	[SYS]	3472	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:43:37.613169900	1700059417613	[SYS]	3472	7	Catch Sig interrupt
+2023-11-15	22:43:37.613646000	1700059417613	[SYS]	3472	7	Stopping Intrinsic Services
+2023-11-15	22:43:37.613646000	1700059417613	[SYS]	3472	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:43:37.613646000	1700059417613	[SYS]	3472	7	Stopping Default Timer Manager ... 
+2023-11-15	22:43:37.616775400	1700059417616	[SYS]	3472	7	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:43:37.616775400	1700059417616	[SYS]	3472	7	Stopping Default Executor Pool 
+2023-11-15	22:43:37.616775400	1700059417616	[SYS]	3472	7	Stopping Default Executor Pool ...                                    [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:46:09.757690000	1700059569757	[SYS]	5560	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:46:09.757690000	1700059569757	[SYS]	5560	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:46:09.757690000	1700059569757	[SYS]	5560	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:46:09.757690000	1700059569757	[SYS]	5560	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:46:09.757690000	1700059569757	[SYS]	5560	1	Zohar Framework Initializing ... 
+2023-11-15	22:46:09.757690000	1700059569757	[FATAL]	5560	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:46:09.757690000	1700059569757	[SYS]	5560	1	Kadamony Application Initializing ...                                 [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:46:19.896159000	1700059579896	[SYS]	8976	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:46:19.896159000	1700059579896	[SYS]	8976	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:46:19.896159000	1700059579896	[SYS]	8976	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:46:19.896159000	1700059579896	[SYS]	8976	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:46:19.896159000	1700059579896	[SYS]	8976	1	Zohar Framework Initializing ... 
+2023-11-15	22:46:19.896159000	1700059579896	[FATAL]	8976	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:46:19.896660500	1700059579896	[SYS]	8976	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:46:22.669947200	1700059582669	[SYS]	8976	7	Catch Sig interrupt
+2023-11-15	22:46:22.669947200	1700059582669	[SYS]	8976	7	Stopping Intrinsic Services
+2023-11-15	22:46:22.669947200	1700059582669	[SYS]	8976	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:46:22.669947200	1700059582669	[SYS]	8976	7	Stopping Default Timer Manager ... 
+2023-11-15	22:46:22.673044200	1700059582673	[SYS]	8976	7	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:46:22.673044200	1700059582673	[SYS]	8976	7	Stopping Default Executor Pool 
+2023-11-15	22:46:22.673044200	1700059582673	[SYS]	8976	7	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:46:22.673044200	1700059582673	[SYS]	8976	7	Stopping Default Log Manager 
+2023-11-15	22:46:22.773538500	1700059582773	[SYS]	8976	7	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:47:17.761348800	1700059637761	[SYS]	9148	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:47:17.761348800	1700059637761	[SYS]	9148	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:47:17.761348800	1700059637761	[SYS]	9148	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:47:17.761348800	1700059637761	[SYS]	9148	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:47:17.761348800	1700059637761	[SYS]	9148	1	Zohar Framework Initializing ... 
+2023-11-15	22:47:17.761348800	1700059637761	[FATAL]	9148	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:47:17.761850900	1700059637761	[SYS]	9148	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:47:21.764466900	1700059641764	[SYS]	9148	7	Catch Sig interrupt
+2023-11-15	22:47:21.764466900	1700059641764	[SYS]	9148	7	Stopping Intrinsic Services
+2023-11-15	22:47:21.764466900	1700059641764	[SYS]	9148	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:47:21.764466900	1700059641764	[SYS]	9148	7	Stopping Default Timer Manager ... 
+2023-11-15	22:47:21.764466900	1700059641764	[SYS]	9148	7	Stopping Default Executor Pool 
+2023-11-15	22:47:21.764466900	1700059641764	[SYS]	9148	7	Stopping Default Log Manager 
+2023-11-15	22:47:21.864722900	1700059641864	[SYS]	9148	7	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:47:21.864722900	1700059641864	[SYS]	9148	7	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:47:21.864722900	1700059641864	[SYS]	9148	7	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:47:41.341377400	1700059661341	[SYS]	3528	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:47:41.341377400	1700059661341	[SYS]	3528	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:47:41.341377400	1700059661341	[SYS]	3528	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:47:41.341377400	1700059661341	[SYS]	3528	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:47:41.341377400	1700059661341	[SYS]	3528	1	Zohar Framework Initializing ... 
+2023-11-15	22:47:41.341377400	1700059661341	[FATAL]	3528	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:47:41.341879500	1700059661341	[SYS]	3528	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:47:42.844870000	1700059662844	[SYS]	3528	20	Catch Sig interrupt
+2023-11-15	22:47:42.844870000	1700059662844	[SYS]	3528	20	Stopping Intrinsic Services
+2023-11-15	22:47:42.844870000	1700059662844	[SYS]	3528	20	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:47:42.844870000	1700059662844	[SYS]	3528	20	Stopping Default Timer Manager ... 
+2023-11-15	22:47:42.844870000	1700059662844	[SYS]	3528	20	Stopping Default Executor Pool 
+2023-11-15	22:47:42.844870000	1700059662844	[SYS]	3528	20	Stopping Default Log Manager 
+2023-11-15	22:47:42.847375700	1700059662847	[SYS]	3528	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:47:42.847375700	1700059662847	[SYS]	3528	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:47:42.847375700	1700059662847	[SYS]	3528	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:47:52.595415800	1700059672595	[SYS]	5744	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:47:52.595916200	1700059672595	[SYS]	5744	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:47:52.595916200	1700059672595	[SYS]	5744	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:47:52.595916200	1700059672595	[SYS]	5744	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:47:52.595916200	1700059672595	[SYS]	5744	1	Zohar Framework Initializing ... 
+2023-11-15	22:47:52.595916200	1700059672595	[FATAL]	5744	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:47:52.595916200	1700059672595	[SYS]	5744	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:47:55.359712800	1700059675359	[SYS]	5744	7	Catch Sig interrupt
+2023-11-15	22:47:55.359712800	1700059675359	[SYS]	5744	7	Stopping Intrinsic Services
+2023-11-15	22:47:55.359712800	1700059675359	[SYS]	5744	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:47:55.359712800	1700059675359	[SYS]	5744	7	Stopping Default Timer Manager ... 
+2023-11-15	22:47:55.359712800	1700059675359	[SYS]	5744	7	Stopping Default Executor Pool 
+2023-11-15	22:47:55.359712800	1700059675359	[SYS]	5744	7	Stopping Default Log Manager 
+2023-11-15	22:47:55.363291700	1700059675363	[SYS]	5744	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:47:55.363291700	1700059675363	[SYS]	5744	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:47:55.363291700	1700059675363	[SYS]	5744	1	Stopping Default Log Manager ...                                      [Stopped]
+2023-11-15	22:47:55.460335800	1700059675460	[SYS]	5744	7	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:47:55.460335800	1700059675460	[SYS]	5744	7	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:47:55.460335800	1700059675460	[SYS]	5744	7	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:49:50.470693600	1700059790470	[SYS]	1248	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:49:50.470693600	1700059790470	[SYS]	1248	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:49:50.470693600	1700059790470	[SYS]	1248	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:49:50.470693600	1700059790470	[SYS]	1248	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:49:50.471193300	1700059790471	[SYS]	1248	1	Zohar Framework Initializing ... 
+2023-11-15	22:49:50.471193300	1700059790471	[FATAL]	1248	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:49:50.471193300	1700059790471	[SYS]	1248	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:49:56.401262300	1700059796401	[SYS]	1248	7	Catch Sig interrupt
+2023-11-15	22:49:56.401262300	1700059796401	[SYS]	1248	7	Stopping Intrinsic Services
+2023-11-15	22:49:56.401262300	1700059796401	[SYS]	1248	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:49:56.401262300	1700059796401	[SYS]	1248	7	Stopping Default Timer Manager ... 
+2023-11-15	22:49:56.401262300	1700059796401	[SYS]	1248	7	Stopping Default Executor Pool 
+2023-11-15	22:49:56.401262300	1700059796401	[SYS]	1248	7	Stopping Default Log Manager 
+2023-11-15	22:49:56.404803000	1700059796404	[SYS]	1248	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:49:56.404803000	1700059796404	[SYS]	1248	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:49:56.404803000	1700059796404	[SYS]	1248	1	Stopping Default Log Manager ...                                      [Stopped]
+2023-11-15	22:49:56.501864200	1700059796501	[SYS]	1248	7	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:49:56.501864200	1700059796501	[SYS]	1248	7	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:49:56.501864200	1700059796501	[SYS]	1248	7	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:49:58.149095200	1700059798149	[SYS]	7844	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:49:58.149595600	1700059798149	[SYS]	7844	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:49:58.149595600	1700059798149	[SYS]	7844	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:49:58.149595600	1700059798149	[SYS]	7844	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:49:58.149595600	1700059798149	[SYS]	7844	1	Zohar Framework Initializing ... 
+2023-11-15	22:49:58.149595600	1700059798149	[FATAL]	7844	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:49:58.150097000	1700059798150	[SYS]	7844	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:50:00.274515700	1700059800274	[SYS]	7844	7	Catch Sig interrupt
+2023-11-15	22:50:00.274515700	1700059800274	[SYS]	7844	7	Stopping Intrinsic Services
+2023-11-15	22:50:00.275016800	1700059800275	[SYS]	7844	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:50:00.275016800	1700059800275	[SYS]	7844	7	Stopping Default Timer Manager ... 
+2023-11-15	22:50:00.275016800	1700059800275	[SYS]	7844	7	Stopping Default Executor Pool 
+2023-11-15	22:50:00.275016800	1700059800275	[SYS]	7844	7	Stopping Default Log Manager 
+2023-11-15	22:50:00.276521700	1700059800276	[SYS]	7844	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:50:00.276521700	1700059800276	[SYS]	7844	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:50:00.276521700	1700059800276	[SYS]	7844	1	Stopping Default Log Manager ...                                      [Stopped]
+2023-11-15	22:50:00.383510300	1700059800383	[SYS]	7844	7	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:50:00.383807600	1700059800383	[SYS]	7844	7	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:50:00.383807600	1700059800383	[SYS]	7844	7	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:50:15.119369800	1700059815119	[SYS]	7628	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:50:15.119369800	1700059815119	[SYS]	7628	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:50:15.119369800	1700059815119	[SYS]	7628	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:50:15.119369800	1700059815119	[SYS]	7628	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:50:15.119369800	1700059815119	[SYS]	7628	1	Zohar Framework Initializing ... 
+2023-11-15	22:50:15.119871300	1700059815119	[FATAL]	7628	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:50:15.119871300	1700059815119	[SYS]	7628	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:50:17.380523300	1700059817380	[SYS]	7628	7	Catch Sig interrupt
+2023-11-15	22:50:17.380523300	1700059817380	[SYS]	7628	7	Stopping Intrinsic Services
+2023-11-15	22:50:17.380523300	1700059817380	[SYS]	7628	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:50:17.380523300	1700059817380	[SYS]	7628	7	Stopping Default Timer Manager ... 
+2023-11-15	22:50:17.380523300	1700059817380	[SYS]	7628	7	Stopping Default Executor Pool 
+2023-11-15	22:50:17.380523300	1700059817380	[SYS]	7628	7	Stopping Default Log Manager 
+2023-11-15	22:50:17.384019500	1700059817384	[SYS]	7628	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:50:17.384019500	1700059817384	[SYS]	7628	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:50:17.384019500	1700059817384	[SYS]	7628	1	Stopping Default Log Manager ...                                      [Stopped]
+2023-11-15	22:50:17.481309100	1700059817481	[SYS]	7628	7	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:50:17.481309100	1700059817481	[SYS]	7628	7	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:50:17.481309100	1700059817481	[SYS]	7628	7	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:50:30.194220100	1700059830194	[SYS]	1152	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:50:30.194220100	1700059830194	[SYS]	1152	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:50:30.194220100	1700059830194	[SYS]	1152	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:50:30.194220100	1700059830194	[SYS]	1152	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:50:30.194220100	1700059830194	[SYS]	1152	1	Zohar Framework Initializing ... 
+2023-11-15	22:50:30.194220100	1700059830194	[FATAL]	1152	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:50:30.194721900	1700059830194	[SYS]	1152	1	Kadamony Application Initializing ...                                 [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:50:48.875250700	1700059848875	[SYS]	6992	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:50:48.875250700	1700059848875	[SYS]	6992	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:50:48.875250700	1700059848875	[SYS]	6992	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:50:48.875752100	1700059848875	[SYS]	6992	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:50:48.875752100	1700059848875	[SYS]	6992	1	Zohar Framework Initializing ... 
+2023-11-15	22:50:48.875752100	1700059848875	[FATAL]	6992	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:50:48.875752100	1700059848875	[SYS]	6992	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:50:50.399269300	1700059850399	[SYS]	6992	7	Catch Sig interrupt
+2023-11-15	22:50:50.399269300	1700059850399	[SYS]	6992	7	Stopping Intrinsic Services
+2023-11-15	22:50:50.399269300	1700059850399	[SYS]	6992	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:50:50.399269300	1700059850399	[SYS]	6992	7	Stopping Default Timer Manager ... 
+2023-11-15	22:50:50.399269300	1700059850399	[SYS]	6992	7	Stopping Default Executor Pool 
+2023-11-15	22:50:50.399269300	1700059850399	[SYS]	6992	7	Stopping Default Log Manager 
+2023-11-15	22:50:50.500157200	1700059850500	[SYS]	6992	7	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:50:50.500157200	1700059850500	[SYS]	6992	7	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:50:50.500157200	1700059850500	[SYS]	6992	7	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:54:09.300005800	1700060049300	[SYS]	8124	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:54:09.300508200	1700060049300	[SYS]	8124	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:54:09.300508200	1700060049300	[SYS]	8124	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:54:09.300508200	1700060049300	[SYS]	8124	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:54:09.300508200	1700060049300	[SYS]	8124	1	Zohar Framework Initializing ... 
+2023-11-15	22:54:09.300508200	1700060049300	[FATAL]	8124	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:54:09.300508200	1700060049300	[SYS]	8124	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:54:12.485716700	1700060052485	[SYS]	8124	7	Catch Sig interrupt
+2023-11-15	22:54:12.486217800	1700060052486	[SYS]	8124	7	Stopping Intrinsic Services
+2023-11-15	22:54:12.486217800	1700060052486	[SYS]	8124	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:54:12.486217800	1700060052486	[SYS]	8124	7	Stopping Default Timer Manager ... 
+2023-11-15	22:54:12.486217800	1700060052486	[SYS]	8124	7	Stopping Default Executor Pool 
+2023-11-15	22:54:12.486217800	1700060052486	[SYS]	8124	7	Stopping Default Log Manager 
+2023-11-15	22:54:12.488223500	1700060052488	[SYS]	8124	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:54:12.488223500	1700060052488	[SYS]	8124	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:54:12.488223500	1700060052488	[SYS]	8124	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:54:17.407647300	1700060057407	[SYS]	2716	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:54:17.407647300	1700060057407	[SYS]	2716	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:54:17.408174700	1700060057408	[SYS]	2716	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:54:17.408174700	1700060057408	[SYS]	2716	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:54:17.408174700	1700060057408	[SYS]	2716	1	Zohar Framework Initializing ... 
+2023-11-15	22:54:17.408174700	1700060057408	[FATAL]	2716	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:54:17.408174700	1700060057408	[SYS]	2716	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:54:20.973061800	1700060060973	[SYS]	2716	7	Catch Sig interrupt
+2023-11-15	22:54:20.973061800	1700060060973	[SYS]	2716	7	Stopping Intrinsic Services
+2023-11-15	22:54:20.973061800	1700060060973	[SYS]	2716	7	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:54:20.973061800	1700060060973	[SYS]	2716	7	Stopping Default Timer Manager ... 
+2023-11-15	22:54:20.973061800	1700060060973	[SYS]	2716	7	Stopping Default Executor Pool 
+2023-11-15	22:54:20.973061800	1700060060973	[SYS]	2716	7	Stopping Default Log Manager 
+2023-11-15	22:54:20.975588700	1700060060975	[SYS]	2716	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:54:20.975588700	1700060060975	[SYS]	2716	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:54:20.975588700	1700060060975	[SYS]	2716	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	22:57:20.762093200	1700060240762	[SYS]	1204	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	22:57:20.762093200	1700060240762	[SYS]	1204	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	22:57:20.762093200	1700060240762	[SYS]	1204	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	22:57:20.762093200	1700060240762	[SYS]	1204	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	22:57:20.762093200	1700060240762	[SYS]	1204	1	Zohar Framework Initializing ... 
+2023-11-15	22:57:20.762093200	1700060240762	[FATAL]	1204	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	22:57:20.762093200	1700060240762	[SYS]	1204	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	22:57:20.762093200	1700060240762	[SYS]	1204	1	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	22:57:22.904416600	1700060242904	[SYS]	1204	7	Catch Sig interrupt
+2023-11-15	22:57:22.904416600	1700060242904	[SYS]	1204	7	Stopping Intrinsic Services
+2023-11-15	22:57:22.904416600	1700060242904	[SYS]	1204	7	Stopping Default Timer Manager ... 
+2023-11-15	22:57:22.904416600	1700060242904	[SYS]	1204	7	Stopping Default Executor Pool 
+2023-11-15	22:57:22.904416600	1700060242904	[SYS]	1204	7	Stopping Default Log Manager 
+2023-11-15	22:57:22.906388500	1700060242906	[SYS]	1204	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	22:57:22.906388500	1700060242906	[SYS]	1204	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	22:57:22.906388500	1700060242906	[SYS]	1204	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:00:08.176321300	1700060408176	[SYS]	7300	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:00:08.176321300	1700060408176	[SYS]	7300	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:00:08.176321300	1700060408176	[SYS]	7300	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:00:08.176822400	1700060408176	[SYS]	7300	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:00:08.176822400	1700060408176	[SYS]	7300	1	Zohar Framework Initializing ... 
+2023-11-15	23:00:08.176822400	1700060408176	[FATAL]	7300	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:00:08.176822400	1700060408176	[SYS]	7300	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:00:08.176822400	1700060408176	[SYS]	7300	1	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	23:00:51.845256000	1700060451845	[SYS]	7300	20	Catch Sig interrupt
+2023-11-15	23:00:51.845256000	1700060451845	[SYS]	7300	20	Stopping Intrinsic Services
+2023-11-15	23:00:51.845756400	1700060451845	[SYS]	7300	20	Stopping Default Timer Manager ... 
+2023-11-15	23:00:51.845756400	1700060451845	[SYS]	7300	20	Stopping Default Executor Pool 
+2023-11-15	23:00:51.845756400	1700060451845	[SYS]	7300	20	Stopping Default Log Manager 
+2023-11-15	23:00:51.846759600	1700060451846	[SYS]	7300	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	23:00:51.846759600	1700060451846	[SYS]	7300	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	23:00:51.846759600	1700060451846	[SYS]	7300	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:00:54.253940100	1700060454253	[SYS]	5708	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:00:54.254445000	1700060454254	[SYS]	5708	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:00:54.254445000	1700060454254	[SYS]	5708	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:00:54.254445000	1700060454254	[SYS]	5708	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:00:54.254445000	1700060454254	[SYS]	5708	1	Zohar Framework Initializing ... 
+2023-11-15	23:00:54.254445000	1700060454254	[FATAL]	5708	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:00:54.254942600	1700060454254	[SYS]	5708	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:01:01.823965400	1700060461823	[SYS]	5708	1	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	23:01:01.838002300	1700060461838	[SYS]	5708	20	Catch Sig interrupt
+2023-11-15	23:01:01.838002300	1700060461838	[SYS]	5708	20	Stopping Intrinsic Services
+2023-11-15	23:01:01.838002300	1700060461838	[SYS]	5708	20	Stopping Default Timer Manager ... 
+2023-11-15	23:01:01.838002300	1700060461838	[SYS]	5708	20	Stopping Default Executor Pool 
+2023-11-15	23:01:01.838002300	1700060461838	[SYS]	5708	20	Stopping Default Log Manager 
+2023-11-15	23:01:01.839005900	1700060461839	[SYS]	5708	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	23:01:01.839005900	1700060461839	[SYS]	5708	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	23:01:01.839005900	1700060461839	[SYS]	5708	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:01:10.955424100	1700060470955	[SYS]	8808	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:01:10.955424100	1700060470955	[SYS]	8808	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:01:10.955424100	1700060470955	[SYS]	8808	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:01:10.955424100	1700060470955	[SYS]	8808	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:01:10.955424100	1700060470955	[SYS]	8808	1	Zohar Framework Initializing ... 
+2023-11-15	23:01:10.955424100	1700060470955	[FATAL]	8808	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:01:10.955925500	1700060470955	[SYS]	8808	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:01:17.188811000	1700060477188	[SYS]	8808	1	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	23:01:17.202345900	1700060477202	[SYS]	8808	7	Catch Sig interrupt
+2023-11-15	23:01:17.202345900	1700060477202	[SYS]	8808	7	Stopping Intrinsic Services
+2023-11-15	23:01:17.202345900	1700060477202	[SYS]	8808	7	Stopping Default Timer Manager ... 
+2023-11-15	23:01:17.202848400	1700060477202	[SYS]	8808	7	Stopping Default Executor Pool 
+2023-11-15	23:01:17.202848400	1700060477202	[SYS]	8808	7	Stopping Default Log Manager 
+2023-11-15	23:01:17.205381400	1700060477205	[SYS]	8808	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	23:01:17.205381400	1700060477205	[SYS]	8808	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	23:01:17.205381400	1700060477205	[SYS]	8808	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:01:18.568660400	1700060478568	[SYS]	1192	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:01:18.568660400	1700060478568	[SYS]	1192	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:01:18.568660400	1700060478568	[SYS]	1192	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:01:18.568660400	1700060478568	[SYS]	1192	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:01:18.568660400	1700060478568	[SYS]	1192	1	Zohar Framework Initializing ... 
+2023-11-15	23:01:18.568660400	1700060478568	[FATAL]	1192	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:01:18.568660400	1700060478568	[SYS]	1192	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:01:18.568660400	1700060478568	[SYS]	1192	1	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	23:01:21.604859800	1700060481604	[SYS]	1192	7	Catch Sig interrupt
+2023-11-15	23:01:21.604859800	1700060481604	[SYS]	1192	7	Stopping Intrinsic Services
+2023-11-15	23:01:21.604859800	1700060481604	[SYS]	1192	7	Stopping Default Timer Manager ... 
+2023-11-15	23:01:21.604859800	1700060481604	[SYS]	1192	7	Stopping Default Executor Pool 
+2023-11-15	23:01:21.604859800	1700060481604	[SYS]	1192	7	Stopping Default Log Manager 
+2023-11-15	23:01:21.606363700	1700060481606	[SYS]	1192	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	23:01:21.606363700	1700060481606	[SYS]	1192	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	23:01:21.606363700	1700060481606	[SYS]	1192	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:01:36.650138300	1700060496650	[SYS]	3960	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:01:36.650138300	1700060496650	[SYS]	3960	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:01:36.650138300	1700060496650	[SYS]	3960	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:01:36.650615200	1700060496650	[SYS]	3960	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:01:36.650615200	1700060496650	[SYS]	3960	1	Zohar Framework Initializing ... 
+2023-11-15	23:01:36.650615200	1700060496650	[FATAL]	3960	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:01:36.650615200	1700060496650	[SYS]	3960	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:01:41.902146400	1700060501902	[SYS]	3960	1	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	23:01:41.915915800	1700060501915	[SYS]	3960	7	Catch Sig interrupt
+2023-11-15	23:01:41.915915800	1700060501915	[SYS]	3960	7	Stopping Intrinsic Services
+2023-11-15	23:01:41.916417200	1700060501916	[SYS]	3960	7	Stopping Default Timer Manager ... 
+2023-11-15	23:01:41.916417200	1700060501916	[SYS]	3960	7	Stopping Default Executor Pool 
+2023-11-15	23:01:41.916417200	1700060501916	[SYS]	3960	7	Stopping Default Log Manager 
+2023-11-15	23:01:41.917420700	1700060501917	[SYS]	3960	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	23:01:41.917420700	1700060501917	[SYS]	3960	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	23:01:41.917420700	1700060501917	[SYS]	3960	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:01:43.556284300	1700060503556	[SYS]	5284	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:01:43.556284300	1700060503556	[SYS]	5284	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:01:43.556284300	1700060503556	[SYS]	5284	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:01:43.556284300	1700060503556	[SYS]	5284	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:01:43.556284300	1700060503556	[SYS]	5284	1	Zohar Framework Initializing ... 
+2023-11-15	23:01:43.556284300	1700060503556	[FATAL]	5284	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:01:43.556761100	1700060503556	[SYS]	5284	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:02:36.159708300	1700060556159	[SYS]	5284	1	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	23:02:36.173243500	1700060556173	[SYS]	5284	7	Catch Sig interrupt
+2023-11-15	23:02:36.173243500	1700060556173	[SYS]	5284	7	Stopping Intrinsic Services
+2023-11-15	23:02:36.173243500	1700060556173	[SYS]	5284	7	Stopping Default Timer Manager ... 
+2023-11-15	23:02:36.173744600	1700060556173	[SYS]	5284	7	Stopping Default Executor Pool 
+2023-11-15	23:02:36.173744600	1700060556173	[SYS]	5284	7	Stopping Default Log Manager 
+2023-11-15	23:02:36.176777700	1700060556176	[SYS]	5284	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	23:02:36.176777700	1700060556176	[SYS]	5284	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	23:02:36.176777700	1700060556176	[SYS]	5284	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:04:19.194335200	1700060659194	[SYS]	2736	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:04:19.194335200	1700060659194	[SYS]	2736	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:04:19.194836600	1700060659194	[SYS]	2736	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:04:19.194836600	1700060659194	[SYS]	2736	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:04:19.194836600	1700060659194	[SYS]	2736	1	Zohar Framework Initializing ... 
+2023-11-15	23:04:19.194836600	1700060659194	[FATAL]	2736	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:04:19.194836600	1700060659194	[SYS]	2736	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:04:37.204049900	1700060677204	[SYS]	2736	1	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	23:04:37.218068100	1700060677218	[SYS]	2736	7	Catch Sig interrupt
+2023-11-15	23:04:37.218568800	1700060677218	[SYS]	2736	7	Stopping Intrinsic Services
+2023-11-15	23:04:37.218568800	1700060677218	[SYS]	2736	7	Stopping Default Timer Manager ... 
+2023-11-15	23:04:37.218568800	1700060677218	[SYS]	2736	7	Stopping Default Executor Pool 
+2023-11-15	23:04:37.218568800	1700060677218	[SYS]	2736	7	Stopping Default Log Manager 
+2023-11-15	23:04:37.220072700	1700060677220	[SYS]	2736	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	23:04:37.220072700	1700060677220	[SYS]	2736	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	23:04:37.220072700	1700060677220	[SYS]	2736	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:05:55.687214300	1700060755687	[SYS]	6672	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:05:55.687214300	1700060755687	[SYS]	6672	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:05:55.687214300	1700060755687	[SYS]	6672	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:05:55.687214300	1700060755687	[SYS]	6672	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:05:55.687214300	1700060755687	[SYS]	6672	1	Zohar Framework Initializing ... 
+2023-11-15	23:05:55.687694200	1700060755687	[FATAL]	6672	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:05:55.687694200	1700060755687	[FATAL]	6672	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:05:55.687694200	1700060755687	[SYS]	6672	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:05:59.604036500	1700060759604	[SYS]	6672	7	Catch Sig interrupt
+2023-11-15	23:05:59.604036500	1700060759604	[SYS]	6672	7	Stopping Intrinsic Services
+2023-11-15	23:05:59.604036500	1700060759604	[SYS]	6672	7	Stopping Default Timer Manager ... 
+2023-11-15	23:05:59.604036500	1700060759604	[SYS]	6672	7	Stopping Default Executor Pool 
+2023-11-15	23:05:59.604036500	1700060759604	[SYS]	6672	1	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	23:05:59.604036500	1700060759604	[SYS]	6672	7	Stopping Default Log Manager 
+2023-11-15	23:05:59.605540700	1700060759605	[SYS]	6672	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	23:05:59.605540700	1700060759605	[SYS]	6672	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	23:05:59.605540700	1700060759605	[SYS]	6672	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:07:37.521599000	1700060857521	[SYS]	3092	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:07:37.522100100	1700060857522	[SYS]	3092	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:07:37.522100100	1700060857522	[SYS]	3092	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:07:37.522100100	1700060857522	[SYS]	3092	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:07:37.522100100	1700060857522	[SYS]	3092	1	Zohar Framework Initializing ... 
+2023-11-15	23:07:37.522100100	1700060857522	[FATAL]	3092	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:07:37.522100100	1700060857522	[FATAL]	3092	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:07:37.522100100	1700060857522	[SYS]	3092	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:07:42.290523900	1700060862290	[SYS]	3092	7	Catch Sig interrupt
+2023-11-15	23:07:42.290523900	1700060862290	[SYS]	3092	7	Stopping Intrinsic Services
+2023-11-15	23:07:42.290523900	1700060862290	[SYS]	3092	7	Stopping Default Timer Manager ... 
+2023-11-15	23:07:42.290523900	1700060862290	[SYS]	3092	7	Stopping Default Executor Pool 
+2023-11-15	23:07:42.290523900	1700060862290	[SYS]	3092	7	Stopping Default Log Manager 
+2023-11-15	23:07:42.290523900	1700060862290	[SYS]	3092	1	Stopping Intrinsic Services ...                                       [Stopped]
+2023-11-15	23:07:42.291025000	1700060862291	[SYS]	3092	1	Stopping Default Timer Manager...                                     [Stopped]
+2023-11-15	23:07:42.291025000	1700060862291	[SYS]	3092	1	Stopping Default Executor Pool ...                                    [Stopped]
+2023-11-15	23:07:42.291025000	1700060862291	[SYS]	3092	1	Stopping Default Log Manager ...                                      [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:08:22.395339800	1700060902395	[SYS]	2860	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:08:22.395339800	1700060902395	[SYS]	2860	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:08:22.395867900	1700060902395	[SYS]	2860	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:08:22.395867900	1700060902395	[SYS]	2860	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:08:22.395867900	1700060902395	[SYS]	2860	1	Zohar Framework Initializing ... 
+2023-11-15	23:08:22.395867900	1700060902395	[FATAL]	2860	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:08:22.395867900	1700060902395	[FATAL]	2860	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:08:22.395867900	1700060902395	[SYS]	2860	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:08:28.196970900	1700060908196	[SYS]	2860	7	Catch Sig interrupt
+2023-11-15	23:08:28.196970900	1700060908196	[SYS]	2860	7	Stopping Intrinsic Services
+2023-11-15	23:08:28.196970900	1700060908196	[SYS]	2860	7	Stopping Default Timer Manager ... 
+2023-11-15	23:08:28.196970900	1700060908196	[SYS]	2860	7	Stopping Default Executor Pool 
+2023-11-15	23:08:28.196970900	1700060908196	[SYS]	2860	7	Stopping Default Log Manager 
+2023-11-15	23:08:28.196970900	1700060908196	[SYS]	2860	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:08:28.198474900	1700060908198	[SYS]	2860	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:08:28.198474900	1700060908198	[SYS]	2860	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:08:28.198474900	1700060908198	[SYS]	2860	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:10:39.321656200	1700061039321	[SYS]	2636	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:10:39.321656200	1700061039321	[SYS]	2636	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:10:39.321656200	1700061039321	[SYS]	2636	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:10:39.321656200	1700061039321	[SYS]	2636	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:10:39.321656200	1700061039321	[SYS]	2636	1	Zohar Framework Initializing ... 
+2023-11-15	23:10:39.321656200	1700061039321	[FATAL]	2636	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:10:39.321656200	1700061039321	[FATAL]	2636	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:10:39.322158000	1700061039322	[SYS]	2636	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:11:15.589218200	1700061075589	[SYS]	2636	7	Catch Sig interrupt
+2023-11-15	23:11:15.589218200	1700061075589	[SYS]	2636	7	Stopping Intrinsic Services
+2023-11-15	23:11:15.589218200	1700061075589	[SYS]	2636	7	Stopping Default Timer Manager ... 
+2023-11-15	23:11:15.589218200	1700061075589	[SYS]	2636	7	Stopping Default Executor Pool 
+2023-11-15	23:11:15.589218200	1700061075589	[SYS]	2636	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:11:15.589218200	1700061075589	[SYS]	2636	7	Stopping Default Log Manager 
+2023-11-15	23:11:15.590722100	1700061075590	[SYS]	2636	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:11:15.590722100	1700061075590	[SYS]	2636	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:11:15.590722100	1700061075590	[SYS]	2636	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:11:17.284250200	1700061077284	[SYS]	5512	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:11:17.284250200	1700061077284	[SYS]	5512	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:11:17.284250200	1700061077284	[SYS]	5512	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:11:17.284250200	1700061077284	[SYS]	5512	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:11:17.284250200	1700061077284	[SYS]	5512	1	Zohar Framework Initializing ... 
+2023-11-15	23:11:17.284250200	1700061077284	[SYS]	5512	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:11:17.284250200	1700061077284	[SYS]	5512	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:11:17.284752300	1700061077284	[SYS]	5512	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:11:53.685717900	1700061113685	[SYS]	5512	7	Catch Sig interrupt
+2023-11-15	23:11:53.685717900	1700061113685	[SYS]	5512	7	Stopping Intrinsic Services
+2023-11-15	23:11:53.685717900	1700061113685	[SYS]	5512	7	Stopping Default Timer Manager ... 
+2023-11-15	23:11:53.685717900	1700061113685	[SYS]	5512	7	Stopping Default Executor Pool 
+2023-11-15	23:11:53.685717900	1700061113685	[SYS]	5512	7	Stopping Default Log Manager 
+2023-11-15	23:11:53.685717900	1700061113685	[SYS]	5512	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:11:53.688813100	1700061113688	[SYS]	5512	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:11:53.688813100	1700061113688	[SYS]	5512	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:11:53.688813100	1700061113688	[SYS]	5512	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:19:07.341015300	1700061547341	[SYS]	3124	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:19:07.341015300	1700061547341	[SYS]	3124	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:19:07.341015300	1700061547341	[SYS]	3124	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:19:07.341015300	1700061547341	[SYS]	3124	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:19:07.341015300	1700061547341	[SYS]	3124	1	Zohar Framework Initializing ... 
+2023-11-15	23:19:07.341015300	1700061547341	[SYS]	3124	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:19:07.341015300	1700061547341	[SYS]	3124	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:19:07.341484600	1700061547341	[SYS]	3124	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:19:10.38126400	1700061550038	[SYS]	3124	7	Catch Sig interrupt
+2023-11-15	23:19:10.38126400	1700061550038	[SYS]	3124	7	Stopping Intrinsic Services
+2023-11-15	23:19:10.38126400	1700061550038	[SYS]	3124	7	Stopping Default Timer Manager ... 
+2023-11-15	23:19:10.38126400	1700061550038	[SYS]	3124	7	Stopping Default Executor Pool 
+2023-11-15	23:19:10.38126400	1700061550038	[SYS]	3124	7	Stopping Default Log Manager 
+2023-11-15	23:19:10.38126400	1700061550038	[SYS]	3124	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:19:10.40634200	1700061550040	[SYS]	3124	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:19:10.40634200	1700061550040	[SYS]	3124	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:19:10.40634200	1700061550040	[SYS]	3124	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:19:27.497009400	1700061567497	[SYS]	352	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:19:27.497009400	1700061567497	[SYS]	352	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:19:27.497009400	1700061567497	[SYS]	352	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:19:27.497009400	1700061567497	[SYS]	352	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:19:27.497009400	1700061567497	[SYS]	352	1	Zohar Framework Initializing ... 
+2023-11-15	23:19:27.497009400	1700061567497	[SYS]	352	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:19:27.497009400	1700061567497	[SYS]	352	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:19:27.497510800	1700061567497	[SYS]	352	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:19:39.82667000	1700061579082	[SYS]	352	7	Catch Sig interrupt
+2023-11-15	23:19:39.83143100	1700061579083	[SYS]	352	7	Stopping Intrinsic Services
+2023-11-15	23:19:39.83143100	1700061579083	[SYS]	352	7	Stopping Default Timer Manager ... 
+2023-11-15	23:19:39.83143100	1700061579083	[SYS]	352	7	Stopping Default Executor Pool 
+2023-11-15	23:19:39.83143100	1700061579083	[SYS]	352	7	Stopping Default Log Manager 
+2023-11-15	23:19:39.83143100	1700061579083	[SYS]	352	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:19:39.86170100	1700061579086	[SYS]	352	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:19:39.86170100	1700061579086	[SYS]	352	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:19:39.86170100	1700061579086	[SYS]	352	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:21:09.850923900	1700061669850	[SYS]	5836	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:21:09.850923900	1700061669850	[SYS]	5836	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:21:09.850923900	1700061669850	[SYS]	5836	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:21:09.851424900	1700061669851	[SYS]	5836	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:21:09.851424900	1700061669851	[SYS]	5836	1	Zohar Framework Initializing ... 
+2023-11-15	23:21:09.851424900	1700061669851	[SYS]	5836	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:21:09.851424900	1700061669851	[SYS]	5836	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:21:09.851424900	1700061669851	[SYS]	5836	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:21:20.484838800	1700061680484	[SYS]	5836	7	Catch Sig interrupt
+2023-11-15	23:21:20.484838800	1700061680484	[SYS]	5836	7	Stopping Intrinsic Services
+2023-11-15	23:21:20.484838800	1700061680484	[SYS]	5836	7	Stopping Default Timer Manager ... 
+2023-11-15	23:21:20.484838800	1700061680484	[SYS]	5836	7	Stopping Default Executor Pool 
+2023-11-15	23:21:20.484838800	1700061680484	[SYS]	5836	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:21:20.484838800	1700061680484	[SYS]	5836	7	Stopping Default Log Manager 
+2023-11-15	23:21:20.488478100	1700061680488	[SYS]	5836	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:21:20.488478100	1700061680488	[SYS]	5836	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:21:20.488478100	1700061680488	[SYS]	5836	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:21:44.914221000	1700061704914	[SYS]	4840	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:21:44.914722100	1700061704914	[SYS]	4840	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:21:44.914722100	1700061704914	[SYS]	4840	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:21:44.914722100	1700061704914	[SYS]	4840	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:21:44.914722100	1700061704914	[SYS]	4840	1	Zohar Framework Initializing ... 
+2023-11-15	23:21:44.914722100	1700061704914	[SYS]	4840	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:21:44.914722100	1700061704914	[SYS]	4840	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:21:44.914722100	1700061704914	[SYS]	4840	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:22:02.873142900	1700061722873	[SYS]	4840	7	Catch Sig interrupt
+2023-11-15	23:22:02.873142900	1700061722873	[SYS]	4840	7	Stopping Intrinsic Services
+2023-11-15	23:22:02.873644700	1700061722873	[SYS]	4840	7	Stopping Default Timer Manager ... 
+2023-11-15	23:22:02.873644700	1700061722873	[SYS]	4840	7	Stopping Default Executor Pool 
+2023-11-15	23:22:02.873644700	1700061722873	[SYS]	4840	7	Stopping Default Log Manager 
+2023-11-15	23:22:02.873644700	1700061722873	[SYS]	4840	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:22:02.875650000	1700061722875	[SYS]	4840	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:22:02.875650000	1700061722875	[SYS]	4840	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:22:02.875650000	1700061722875	[SYS]	4840	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:33:47.42181400	1700062427042	[SYS]	768	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:33:47.43190400	1700062427043	[SYS]	768	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:33:47.43190400	1700062427043	[SYS]	768	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:33:47.43190400	1700062427043	[SYS]	768	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:33:47.43190400	1700062427043	[SYS]	768	1	Zohar Framework Initializing ... 
+2023-11-15	23:33:47.43190400	1700062427043	[SYS]	768	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:33:47.43190400	1700062427043	[SYS]	768	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:33:47.43190400	1700062427043	[SYS]	768	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:33:49.920929300	1700062429920	[SYS]	768	7	Catch Sig interrupt
+2023-11-15	23:33:49.920929300	1700062429920	[SYS]	768	7	Stopping Intrinsic Services
+2023-11-15	23:33:49.920929300	1700062429920	[SYS]	768	7	Stopping Default Timer Manager ... 
+2023-11-15	23:33:49.920929300	1700062429920	[SYS]	768	7	Stopping Default Executor Pool 
+2023-11-15	23:33:49.920929300	1700062429920	[SYS]	768	7	Stopping Default Log Manager 
+2023-11-15	23:33:49.920929300	1700062429920	[SYS]	768	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:33:49.922909700	1700062429922	[SYS]	768	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:33:49.922909700	1700062429922	[SYS]	768	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:33:49.922909700	1700062429922	[SYS]	768	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:35:10.847103000	1700062510847	[SYS]	7876	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:35:10.847103000	1700062510847	[SYS]	7876	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:35:10.847103000	1700062510847	[SYS]	7876	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:35:10.848106500	1700062510848	[SYS]	7876	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:35:10.848106500	1700062510848	[SYS]	7876	1	Zohar Framework Initializing ... 
+2023-11-15	23:35:10.848106500	1700062510848	[SYS]	7876	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:35:10.848106500	1700062510848	[SYS]	7876	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:35:10.848106500	1700062510848	[SYS]	7876	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:35:13.992119400	1700062513992	[SYS]	7876	7	Catch Sig interrupt
+2023-11-15	23:35:13.992119400	1700062513992	[SYS]	7876	7	Stopping Intrinsic Services
+2023-11-15	23:35:13.992119400	1700062513992	[SYS]	7876	7	Stopping Default Timer Manager ... 
+2023-11-15	23:35:13.992119400	1700062513992	[SYS]	7876	7	Stopping Default Executor Pool 
+2023-11-15	23:35:13.992119400	1700062513992	[SYS]	7876	7	Stopping Default Log Manager 
+2023-11-15	23:35:13.992119400	1700062513992	[SYS]	7876	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:35:13.995229700	1700062513995	[SYS]	7876	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:35:13.995229700	1700062513995	[SYS]	7876	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:35:13.995229700	1700062513995	[SYS]	7876	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:36:14.52203300	1700062574052	[SYS]	7780	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:36:14.52203300	1700062574052	[SYS]	7780	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:36:14.52203300	1700062574052	[SYS]	7780	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:36:14.52203300	1700062574052	[SYS]	7780	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:36:14.52203300	1700062574052	[SYS]	7780	1	Zohar Framework Initializing ... 
+2023-11-15	23:36:14.52203300	1700062574052	[SYS]	7780	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:36:14.52203300	1700062574052	[SYS]	7780	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:36:14.52203300	1700062574052	[SYS]	7780	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:36:17.485354600	1700062577485	[SYS]	7780	7	Catch Sig interrupt
+2023-11-15	23:36:17.485354600	1700062577485	[SYS]	7780	7	Stopping Intrinsic Services
+2023-11-15	23:36:17.485354600	1700062577485	[SYS]	7780	7	Stopping Default Timer Manager ... 
+2023-11-15	23:36:17.485354600	1700062577485	[SYS]	7780	7	Stopping Default Executor Pool 
+2023-11-15	23:36:17.485354600	1700062577485	[SYS]	7780	7	Stopping Default Log Manager 
+2023-11-15	23:36:17.485354600	1700062577485	[SYS]	7780	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:36:17.486343400	1700062577486	[SYS]	7780	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:36:17.486343400	1700062577486	[SYS]	7780	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:36:17.486343400	1700062577486	[SYS]	7780	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:56:50.874603200	1700063810874	[SYS]	7896	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:56:50.874603200	1700063810874	[SYS]	7896	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:56:50.874603200	1700063810874	[SYS]	7896	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:56:50.874603200	1700063810874	[SYS]	7896	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:56:50.874603200	1700063810874	[SYS]	7896	1	Zohar Framework Initializing ... 
+2023-11-15	23:56:50.874603200	1700063810874	[SYS]	7896	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:56:50.874603200	1700063810874	[SYS]	7896	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:56:50.875606700	1700063810875	[SYS]	7896	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:56:55.167876400	1700063815167	[SYS]	7896	20	Catch Sig interrupt
+2023-11-15	23:56:55.167876400	1700063815167	[SYS]	7896	20	Stopping Intrinsic Services
+2023-11-15	23:56:55.167876400	1700063815167	[SYS]	7896	20	Stopping Default Timer Manager ... 
+2023-11-15	23:56:55.167876400	1700063815167	[SYS]	7896	20	Stopping Default Executor Pool 
+2023-11-15	23:56:55.167876400	1700063815167	[SYS]	7896	20	Stopping Default Log Manager 
+2023-11-15	23:56:55.167876400	1700063815167	[SYS]	7896	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:56:55.169881000	1700063815169	[SYS]	7896	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:56:55.169881000	1700063815169	[SYS]	7896	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:56:55.169881000	1700063815169	[SYS]	7896	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-15	23:57:43.924393500	1700063863924	[SYS]	6260	1	Zohar Core Initializing ...                                           [Success]
+2023-11-15	23:57:43.924393500	1700063863924	[SYS]	6260	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-15	23:57:43.924393500	1700063863924	[SYS]	6260	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-15	23:57:43.924393500	1700063863924	[SYS]	6260	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-15	23:57:43.924393500	1700063863924	[SYS]	6260	1	Zohar Framework Initializing ... 
+2023-11-15	23:57:43.924393500	1700063863924	[SYS]	6260	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-15	23:57:43.924393500	1700063863924	[SYS]	6260	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-15	23:57:43.925396300	1700063863925	[SYS]	6260	1	Kadamony Application Initializing ...                                 [Success]
+2023-11-15	23:57:45.196434400	1700063865196	[SYS]	6260	20	Catch Sig interrupt
+2023-11-15	23:57:45.196434400	1700063865196	[SYS]	6260	20	Stopping Intrinsic Services
+2023-11-15	23:57:45.196434400	1700063865196	[SYS]	6260	20	Stopping Default Timer Manager ... 
+2023-11-15	23:57:45.196434400	1700063865196	[SYS]	6260	20	Stopping Default Executor Pool 
+2023-11-15	23:57:45.196434400	1700063865196	[SYS]	6260	20	Stopping Default Log Manager 
+2023-11-15	23:57:45.196434400	1700063865196	[SYS]	6260	1	Intrinsic Services ...                                                [Stopped]
+2023-11-15	23:57:45.199507400	1700063865199	[SYS]	6260	1	Default Timer Manager...                                              [Stopped]
+2023-11-15	23:57:45.199507400	1700063865199	[SYS]	6260	1	Default Executor Pool ...                                             [Stopped]
+2023-11-15	23:57:45.199507400	1700063865199	[SYS]	6260	1	Default Log Manager ...                                               [Stopped]

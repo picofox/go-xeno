@@ -10,7 +10,6 @@ import (
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/cms"
-	"xeno/zohar/core/finalization"
 	"xeno/zohar/core/zip"
 )
 
@@ -19,9 +18,11 @@ type LoggerManager struct {
 	defaultLogger ILogger
 	channel       chan cms.ICMS
 	stopped       bool
+	waitGroup     sync.WaitGroup
 }
 
 func (ego *LoggerManager) Start() {
+	ego.waitGroup.Add(1)
 	go ego.MaintenanceRoutine()
 }
 
@@ -36,13 +37,17 @@ func (ego *LoggerManager) Stop() {
 	close(ego.channel)
 }
 
+func (ego *LoggerManager) Wait() {
+	ego.waitGroup.Wait()
+}
+
 func (ego *LoggerManager) BackUp(filePath string, backupPath string, zip bool) {
 	m := cms.NeoCMSLogBackUp(filePath, backupPath, zip)
 	ego.channel <- m
 }
 
 func (ego *LoggerManager) MaintenanceRoutine() {
-	finalization.GetGlobalFinalizer().Register("LoggerManager", ego, finalizeLoggerManagerMaintenanceRoutine)
+
 	for {
 		m := <-ego.channel
 		if m.Id() == cms.CMSID_LOG_BACKUP {
@@ -66,11 +71,13 @@ func (ego *LoggerManager) MaintenanceRoutine() {
 
 		} else if m.Id() == cms.CMSID_FINALIZE {
 			ego.stopped = true
+			ego.waitGroup.Done()
 			runtime.Goexit()
 		}
 		sz := len(ego.channel)
 		fmt.Println("channel " + strconv.Itoa(sz))
 	}
+	ego.waitGroup.Done()
 }
 
 func (ego *LoggerManager) Add(logger ILogger) {
@@ -90,6 +97,10 @@ func Log(lv int, format string, arg ...any) {
 
 func LogRaw(lv int, format string, arg ...any) {
 	GetLoggerManager().Default().LogRaw(lv, format, arg...)
+}
+
+func LogFixedWidth(lv int, leftLen int, ok bool, failStr string, format string, arg ...any) {
+	GetLoggerManager().Default().LogFixedWidth(lv, leftLen, ok, failStr, format, arg...)
 }
 
 func (ego *LoggerManager) Get(name string) ILogger {
@@ -113,9 +124,4 @@ func GetLoggerManager() *LoggerManager {
 		}
 	})
 	return &lmInstance
-}
-
-func finalizeLoggerManagerMaintenanceRoutine(subject any) {
-	subject.(*LoggerManager).Stop()
-
 }

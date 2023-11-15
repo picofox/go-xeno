@@ -1,7 +1,6 @@
 package finalization
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -23,6 +22,12 @@ type FinalizerItem struct {
 	Handler func(any)
 }
 
+func NeoFinalizer() *Finalizer {
+	return &Finalizer{
+		items: make([]FinalizerItem, 0),
+	}
+}
+
 type Finalizer struct {
 	items []FinalizerItem
 }
@@ -38,7 +43,6 @@ func (ego *Finalizer) Register(name string, sub any, m func(any)) {
 
 func (ego *Finalizer) Finalize() {
 	for i := len(ego.items) - 1; i >= 0; i-- {
-		fmt.Printf("Finalizing %s\n", ego.items[i].Name)
 		ego.items[i].Handler(ego.items[i].Subject)
 	}
 }

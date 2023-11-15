@@ -13,7 +13,7 @@ const (
 )
 
 var LEVEL_NAMES []string = []string{
-	"[FATAL]", "[ERROR]", "[WARN]", "[INFO]", "[DEBUG]",
+	"[SYS]", "[FATAL]", "[ERROR]", "[WARN]", "[INFO]", "[DEBUG]",
 }
 
 func GetLogLevelName(idx int) string {
@@ -28,4 +28,5 @@ type ILogger interface {
 	SetLevel(lv int)
 	Log(int, string, ...any)
 	LogRaw(int, string, ...any)
+	LogFixedWidth(int, int, bool, string, string, ...any)
 }

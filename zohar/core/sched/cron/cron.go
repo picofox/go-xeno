@@ -3,28 +3,31 @@ package cron
 import (
 	"runtime"
 	"sort"
+	"sync"
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/concurrent"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/logging"
-	"xeno/zohar/core/sched/timer"
+	"xeno/zohar/core/sched"
 )
 
 // Cron keeps track of any number of entries, invoking the associated func as
 // specified by the schedule. It may be started, stopped, and the entries may
 // be inspected while running.
 type Cron struct {
-	entries  []*Entry
-	stop     chan struct{}
-	add      chan *Entry
-	snapshot chan []*Entry
-	running  bool
-	location *time.Location
+	entries    []*Entry
+	stop       chan struct{}
+	add        chan *Entry
+	snapshot   chan []*Entry
+	running    bool
+	location   *time.Location
+	_waitGroup *sync.WaitGroup
 }
 
 // Job is an interface for submitted cron jobs.
 type Job interface {
-	Run(any)
+	Run(any) int32
 }
 
 // The Schedule describes a job's duty cycle.
@@ -75,31 +78,30 @@ func (s byTime) Less(i, j int) bool {
 }
 
 // New returns a new Cron job runner, in the Local time zone.
-func New() *Cron {
-	return NewWithLocation(time.Now().Location())
+func New(wg *sync.WaitGroup) *Cron {
+	return NewWithLocation(time.Now().Location(), wg)
 }
 
 // NewWithLocation returns a new Cron job runner.
-func NewWithLocation(location *time.Location) *Cron {
+func NewWithLocation(location *time.Location, wg *sync.WaitGroup) *Cron {
 	return &Cron{
-		entries:  nil,
-		add:      make(chan *Entry),
-		stop:     make(chan struct{}),
-		snapshot: make(chan []*Entry),
-		running:  false,
-		location: location,
+		entries:    nil,
+		add:        make(chan *Entry),
+		stop:       make(chan struct{}),
+		snapshot:   make(chan []*Entry),
+		running:    false,
+		location:   location,
+		_waitGroup: wg,
 	}
 }
 
 // A wrapper that turns a func() into a cron.Job
-type FuncJob func(any)
+type FuncJob sched.TaskFuncType
 
-func (f FuncJob) Run(a any) { f(a) }
-
-//try it
+func (f FuncJob) Run(a any) int32 { f(a); return 0 }
 
 // AddFunc adds a func to the Cron to be run on the given schedule.
-func (c *Cron) AddFunc(spec string, cmd func(any), a any, executor uint8) error {
+func (c *Cron) AddFunc(spec string, cmd sched.TaskFuncType, a any, executor uint8) error {
 	return c.AddJob(spec, FuncJob(cmd), a, executor)
 }
 
@@ -182,7 +184,7 @@ var sCronExecMethodsArr = [3]func(*Entry){
 }
 
 func (c *Cron) runWithRecovery(e *Entry) {
-	if e.Executor > timer.TASK_EXEC_NEO_ROUTINE {
+	if e.Executor > datatype.TASK_EXEC_NEO_ROUTINE {
 		return
 	}
 	sCronExecMethodsArr[e.Executor](e)
@@ -191,6 +193,9 @@ func (c *Cron) runWithRecovery(e *Entry) {
 // Run the scheduler. this is private just due to the need to synchronize
 // access to the 'running' state variable.
 func (c *Cron) run() {
+	if c._waitGroup != nil {
+		defer c._waitGroup.Done()
+	}
 	// Figure out the next activation times for each entry.
 	now := c.now()
 	for _, entry := range c.entries {
