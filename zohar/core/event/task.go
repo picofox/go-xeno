@@ -6,6 +6,7 @@ import (
 )
 
 type Task struct {
+	_id       int64
 	_executor uint8
 	_function datatype.TaskFuncType
 	_arg      any
@@ -55,8 +56,20 @@ func (ego *Task) SetFunction(e datatype.TaskFuncType) {
 	ego._function = e
 }
 
-func NeoTask(e uint8, f datatype.TaskFuncType, a any) *Task {
+//func (ego *Task) SetCancel() {
+//	ego._flag = ego._flag | datatype.TaskCancel
+//}
+//
+//func (ego *Task) IsCancelling() bool {
+//	if ego._flag&datatype.TaskCancel != 0 {
+//		return true
+//	}
+//	return false
+//}
+
+func NeoTask(id int64, e uint8, f datatype.TaskFuncType, a any) *Task {
 	t := Task{
+		_id:       id,
 		_executor: e,
 		_function: f,
 		_arg:      a,

@@ -927,3 +927,29 @@ GoExecutorPool:
 2023-11-16	02:14:59.742608200	1700072099742	[SYS]	7424	1	Default Timer Manager...                                              [Stopped]
 2023-11-16	02:14:59.742608200	1700072099742	[SYS]	7424	1	Default Executor Pool ...                                             [Stopped]
 2023-11-16	02:14:59.742608200	1700072099742	[SYS]	7424	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+Short Args Specs:
+Target Spec:
+	<nil spec>
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-16	02:59:24.204183000	1700074764204	[SYS]	7064	1	Zohar Core Initializing ...                                           [Success]
+2023-11-16	02:59:24.204183000	1700074764204	[SYS]	7064	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-16	02:59:24.204684100	1700074764204	[SYS]	7064	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-16	02:59:24.204684100	1700074764204	[SYS]	7064	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-16	02:59:24.204684100	1700074764204	[SYS]	7064	1	Zohar Framework Initializing ... 
+2023-11-16	02:59:24.204684100	1700074764204	[SYS]	7064	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-16	02:59:24.204684100	1700074764204	[SYS]	7064	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-16	02:59:28.627411300	1700074768627	[SYS]	7064	7	Catch Sig interrupt
+2023-11-16	02:59:28.627411300	1700074768627	[SYS]	7064	7	Stopping Intrinsic Services
+2023-11-16	02:59:28.627411300	1700074768627	[SYS]	7064	7	Stopping Default Timer Manager ... 
+2023-11-16	02:59:28.627411300	1700074768627	[SYS]	7064	1	Intrinsic Services ...                                                [Stopped]
+2023-11-16	02:59:28.627411300	1700074768627	[SYS]	7064	7	Stopping Default Executor Pool 
+2023-11-16	02:59:28.627411300	1700074768627	[SYS]	7064	7	Stopping Default Log Manager 
+2023-11-16	02:59:28.628914500	1700074768628	[SYS]	7064	1	Default Timer Manager...                                              [Stopped]
+2023-11-16	02:59:28.628914500	1700074768628	[SYS]	7064	1	Default Executor Pool ...                                             [Stopped]
+2023-11-16	02:59:28.628914500	1700074768628	[SYS]	7064	1	Default Log Manager ...                                               [Stopped]

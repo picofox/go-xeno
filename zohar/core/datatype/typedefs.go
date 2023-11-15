@@ -10,4 +10,6 @@ const (
 	TASK_EXEC_NEO_ROUTINE     = uint8(2)
 )
 
+const TaskCancel = 1
+
 type TaskFuncType = func(any) int32
