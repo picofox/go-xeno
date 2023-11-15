@@ -1,12 +1,12 @@
 package cms
 
 import (
-	"xeno/zohar/core/sched"
+	"xeno/zohar/core/datatype"
 )
 
 type GoWorkerTask struct {
 	_cmsid     uint32
-	_procedure sched.TaskFuncType
+	_procedure datatype.TaskFuncType
 	_object    any
 }
 
@@ -20,7 +20,7 @@ func (ego *GoWorkerTask) Exec() {
 	}
 }
 
-func NeoCMSGoWorkerTask(proc sched.TaskFuncType, obj any) *GoWorkerTask {
+func NeoCMSGoWorkerTask(proc datatype.TaskFuncType, obj any) *GoWorkerTask {
 	return &GoWorkerTask{
 		_cmsid:     CMSID_GOWORKER_TASK,
 		_procedure: proc,

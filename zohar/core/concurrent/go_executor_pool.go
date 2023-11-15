@@ -8,8 +8,8 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/cms"
 	"xeno/zohar/core/config/intrinsic"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/process"
-	"xeno/zohar/core/sched"
 )
 
 type GoExecutorPool struct {
@@ -60,7 +60,7 @@ func (ego *GoExecutorPool) WorkerCount() int {
 	return len(ego._workers)
 }
 
-func (ego *GoExecutorPool) PostTask(proc sched.TaskFuncType, obj any) {
+func (ego *GoExecutorPool) PostTask(proc datatype.TaskFuncType, obj any) {
 	if ego._shuttingDown {
 		return
 	}

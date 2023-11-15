@@ -5,8 +5,8 @@ import (
 	"sync"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config/intrinsic"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/process"
-	"xeno/zohar/core/sched"
 )
 
 type GoWorkerPool struct {
@@ -50,7 +50,7 @@ func (ego *GoWorkerPool) WorkerCount() int {
 	return len(ego._workers)
 }
 
-func (ego *GoWorkerPool) PostTask(proc sched.TaskFuncType, obj any) {
+func (ego *GoWorkerPool) PostTask(proc datatype.TaskFuncType, obj any) {
 	if ego._shuttingDown {
 		return
 	}
@@ -62,7 +62,7 @@ func (ego *GoWorkerPool) PostTask(proc sched.TaskFuncType, obj any) {
 	ego._workers[idx].PostTask(proc, obj)
 }
 
-func (ego *GoWorkerPool) BroadcastTask(proc sched.TaskFuncType, obj any) {
+func (ego *GoWorkerPool) BroadcastTask(proc datatype.TaskFuncType, obj any) {
 	if ego._shuttingDown {
 		return
 	}

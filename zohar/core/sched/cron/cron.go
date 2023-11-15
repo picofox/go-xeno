@@ -9,7 +9,6 @@ import (
 	"xeno/zohar/core/concurrent"
 	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/logging"
-	"xeno/zohar/core/sched"
 )
 
 // Cron keeps track of any number of entries, invoking the associated func as
@@ -96,12 +95,12 @@ func NewWithLocation(location *time.Location, wg *sync.WaitGroup) *Cron {
 }
 
 // A wrapper that turns a func() into a cron.Job
-type FuncJob sched.TaskFuncType
+type FuncJob datatype.TaskFuncType
 
 func (f FuncJob) Run(a any) int32 { f(a); return 0 }
 
 // AddFunc adds a func to the Cron to be run on the given schedule.
-func (c *Cron) AddFunc(spec string, cmd sched.TaskFuncType, a any, executor uint8) error {
+func (c *Cron) AddFunc(spec string, cmd datatype.TaskFuncType, a any, executor uint8) error {
 	return c.AddJob(spec, FuncJob(cmd), a, executor)
 }
 

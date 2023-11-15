@@ -7,8 +7,8 @@ import (
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/cms"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/datetime"
-	"xeno/zohar/core/sched"
 )
 
 type TimerManager struct {
@@ -49,7 +49,7 @@ func (ego *TimerManager) _onRunning() {
 	}
 }
 
-func (ego *TimerManager) AddAbsTimerMilli(epochMillis int64, repCount int64, repDura uint32, executor uint8, cb sched.TaskFuncType, obj any) *Timer {
+func (ego *TimerManager) AddAbsTimerMilli(epochMillis int64, repCount int64, repDura uint32, executor uint8, cb datatype.TaskFuncType, obj any) *Timer {
 	nowTs := datetime.GetRealTimeMilli()
 	diff := epochMillis - nowTs
 	if diff < 0 {
@@ -58,7 +58,7 @@ func (ego *TimerManager) AddAbsTimerMilli(epochMillis int64, repCount int64, rep
 	return ego.AddRelTimerMilli(diff, repCount, repDura, executor, cb, obj)
 }
 
-func (ego *TimerManager) AddAbsTimerSecond(epochSeconds int64, repCount int64, repDura uint32, executor uint8, cb sched.TaskFuncType, obj any) *Timer {
+func (ego *TimerManager) AddAbsTimerSecond(epochSeconds int64, repCount int64, repDura uint32, executor uint8, cb datatype.TaskFuncType, obj any) *Timer {
 	nowTs := datetime.GetRealTimeMilli()
 	diff := (epochSeconds*1000 - nowTs) / 1000
 	if diff < 0 {
@@ -67,12 +67,12 @@ func (ego *TimerManager) AddAbsTimerSecond(epochSeconds int64, repCount int64, r
 	return ego.AddRelTimerSecond(uint32(diff), repCount, repDura, executor, cb, obj)
 }
 
-func (ego *TimerManager) AddRelTimerMilli(millis int64, repCount int64, repDura uint32, executor uint8, cb sched.TaskFuncType, obj any) *Timer {
+func (ego *TimerManager) AddRelTimerMilli(millis int64, repCount int64, repDura uint32, executor uint8, cb datatype.TaskFuncType, obj any) *Timer {
 	d := uint32(millis / 10)
 	return ego._timewheel.AddTimer(d, repCount, repDura, executor, cb, obj)
 }
 
-func (ego *TimerManager) AddRelTimerSecond(duration uint32, repCount int64, repDura uint32, executor uint8, cb sched.TaskFuncType, obj any) *Timer {
+func (ego *TimerManager) AddRelTimerSecond(duration uint32, repCount int64, repDura uint32, executor uint8, cb datatype.TaskFuncType, obj any) *Timer {
 	return ego._timewheelSec.AddTimer(duration, repCount, repDura, executor, cb, obj)
 }
 

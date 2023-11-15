@@ -9,3 +9,5 @@ const (
 	TASK_EXEC_CURRENT_ROUTINE = uint8(1)
 	TASK_EXEC_NEO_ROUTINE     = uint8(2)
 )
+
+type TaskFuncType = func(any) int32

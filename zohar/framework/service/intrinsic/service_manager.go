@@ -5,8 +5,8 @@ import (
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config/intrinsic"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/logging"
-	"xeno/zohar/core/sched"
 )
 
 var _serviceManagerInstance ServiceManager
@@ -105,7 +105,7 @@ func (ego *ServiceManager) AddService(name string, key any, svc IService) int32 
 	return g.AddService(key, svc)
 }
 
-func (ego *ServiceManager) AddCronTask(which string, spec string, cmd sched.TaskFuncType, a any, executor uint8) int32 {
+func (ego *ServiceManager) AddCronTask(which string, spec string, cmd datatype.TaskFuncType, a any, executor uint8) int32 {
 	grp := ego.GetGroup("Cron")
 	if grp == nil {
 		logging.Log(core.LL_ERR, "Cron Service Group Not Found")

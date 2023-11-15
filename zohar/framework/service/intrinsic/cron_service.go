@@ -3,7 +3,7 @@ package intrinsic
 import (
 	"time"
 	"xeno/zohar/core"
-	"xeno/zohar/core/sched"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/sched/cron"
 )
 
@@ -13,7 +13,7 @@ type CronService struct {
 	_shuttingDown   bool
 }
 
-func (ego *CronService) AddCron(spec string, cmd sched.TaskFuncType, a any, executor uint8) int32 {
+func (ego *CronService) AddCron(spec string, cmd datatype.TaskFuncType, a any, executor uint8) int32 {
 	err := ego._cron.AddFunc(spec, cmd, a, executor)
 	if err != nil {
 		return core.MkErr(core.EC_ELEMENT_NOT_FOUND, 1)
