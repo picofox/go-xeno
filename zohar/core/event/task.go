@@ -6,7 +6,6 @@ import (
 )
 
 type Task struct {
-	_id       int64
 	_executor uint8
 	_function datatype.TaskFuncType
 	_arg      any
@@ -67,9 +66,8 @@ func (ego *Task) SetFunction(e datatype.TaskFuncType) {
 //	return false
 //}
 
-func NeoTask(id int64, e uint8, f datatype.TaskFuncType, a any) *Task {
+func NeoTask(e uint8, f datatype.TaskFuncType, a any) *Task {
 	t := Task{
-		_id:       id,
 		_executor: e,
 		_function: f,
 		_arg:      a,

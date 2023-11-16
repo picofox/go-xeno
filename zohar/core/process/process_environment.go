@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 	"xeno/zohar/core"
-	"xeno/zohar/core/fs"
 )
 
 const (
@@ -143,13 +142,13 @@ func Initialize(cwdPath string) int32 {
 	__g_prog_conf_dir_path = filepath.Join(__g_prog_base, "conf")
 	__g_prog_bin_dir_path = filepath.Join(__g_prog_base, "bin")
 
-	if core.Err(fs.EnsureDir(__g_prog_log_dir_path, 0755, false)) {
+	if core.Err(EnsureDir(__g_prog_log_dir_path, 0755, false)) {
 		return core.MkErr(core.EC_ENSURE_DIR_FAILED, 1)
 	}
-	if core.Err(fs.EnsureDir(__g_prog_tmp_dir_path, 0755, false)) {
+	if core.Err(EnsureDir(__g_prog_tmp_dir_path, 0755, false)) {
 		return core.MkErr(core.EC_ENSURE_DIR_FAILED, 2)
 	}
-	if core.Err(fs.EnsureDir(__g_prog_conf_dir_path, 0755, false)) {
+	if core.Err(EnsureDir(__g_prog_conf_dir_path, 0755, false)) {
 		return core.MkErr(core.EC_ENSURE_DIR_FAILED, 1)
 	}
 

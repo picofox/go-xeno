@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
 	"time"
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
-	"xeno/zohar/core/datatype"
-	"xeno/zohar/core/event"
+	"xeno/zohar/core/fs"
 	"xeno/zohar/core/logging"
-	"xeno/zohar/core/sched/timer"
 	"xeno/zohar/framework"
 	_ "xeno/zohar/framework"
 )
@@ -18,17 +17,18 @@ func SetValues(f string, args ...any) {
 	fmt.Println(args)
 }
 
-func TimerCB(a any) {
-	fmt.Printf("%s -> TimerCB : (%s)\n", time.Now().String(), a.(*timer.Timer))
+func FSWCB(a any) int32 {
+	fmt.Printf("%s -> FSWCB : (%d) (%s)\n", time.Now().String(), a.([]any)[0], a.([]any)[1])
+	return 0
 }
 
 func EventCB(a any) int32 {
-	fmt.Printf("%s -> EventCB : (%s)\n", time.Now().String(), a.(string))
+	fmt.Printf("%s -> Trigger Event : (%s)\n", time.Now().String(), a.(string))
 	return 0
 }
 
 func CronCB(a any) int32 {
-	fmt.Printf("CRonCB (%s)\t", a.(string))
+	fmt.Printf("Trigger Event (%s)\t", a.(string))
 	return 0
 }
 
@@ -44,15 +44,15 @@ func main() {
 		logging.LogFixedWidth(core.LL_SYS, 70, false, errString, "Kadamony Application Initializing ...")
 	}
 
-	go func() {
-		event.GetDefaultEventManager().Register("down", datatype.TASK_EXEC_EXECUTOR_POOL, EventCB, "event trgiiger")
-		for {
-			time.Sleep(1000 * time.Second)
-		}
-	}()
+	fsw := fs.NeoFileSystemWatcher()
 
-	time.Sleep(1 * time.Second)
-	event.GetDefaultEventManager().Fire("down", 0xff)
+	path, _ := filepath.Abs(".")
+	fmt.Println("wathc +" + path)
 
+	fsw.AddDir(path)
+	fsw.RegisterHandler(0, FSWCB)
+
+	fsw.Start()
+	fsw.Stop()
 	framework.WaitAll()
 }

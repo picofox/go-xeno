@@ -2,24 +2,21 @@ package event
 
 import (
 	"container/list"
+	"reflect"
 	"sync"
 	"xeno/zohar/core/datatype"
-	"xeno/zohar/core/unique"
 )
 
 type EventManager struct {
 	_events map[string]*list.List
-	_seq    unique.SequentialGenerator
 	_lock   sync.RWMutex
 }
 
-func (ego *EventManager) Register(eventName string, e uint8, f datatype.TaskFuncType, a any) int64 {
+func (ego *EventManager) Register(eventName string, e uint8, f datatype.TaskFuncType, a any) {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
-	uid := ego._seq.Next()
-	t := NeoTask(uid, e, f, a)
+	t := NeoTask(e, f, a)
 	ego.registerTask(eventName, t)
-	return uid
 }
 
 func (ego *EventManager) registerTask(eventName string, task *Task) {
@@ -33,7 +30,7 @@ func (ego *EventManager) registerTask(eventName string, task *Task) {
 	}
 }
 
-func (ego *EventManager) Unregister(eventName string, uid int64) bool {
+func (ego *EventManager) Unregister(eventName string, f datatype.TaskFuncType) bool {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
 	tq, ok := ego._events[eventName]
@@ -41,9 +38,14 @@ func (ego *EventManager) Unregister(eventName string, uid int64) bool {
 		return false
 	} else {
 		for i := tq.Front(); i != nil; i = i.Next() {
-			tq.Remove(i)
-			return true
+			if reflect.ValueOf(i.Value.(*Task)._function).Pointer() == reflect.ValueOf(f).Pointer() {
+				tq.Remove(i)
+			}
 		}
+		if tq.Len() < 1 {
+			delete(ego._events, eventName)
+		}
+
 	}
 	return false
 }
@@ -65,7 +67,6 @@ func (ego *EventManager) Fire(eventName string, overrideExecutor uint8) bool {
 				i.Value.(*Task).ExecuteBy(overrideExecutor)
 			}
 		}
-		return true
 	}
 	return true
 }
