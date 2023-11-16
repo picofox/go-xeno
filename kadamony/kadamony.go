@@ -53,6 +53,6 @@ func main() {
 	fsw.RegisterHandler(0, FSWCB)
 
 	fsw.Start()
-	fsw.Stop()
+
 	framework.WaitAll()
 }
