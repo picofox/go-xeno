@@ -30,8 +30,12 @@ func (ego *FileSystemWatcher) RegisterHandler(e uint8, f datatype.TaskFuncType) 
 	ego._handler = event.NeoTask(e, f, arg)
 }
 
-func (ego *FileSystemWatcher) AddDir(path string) {
+func (ego *FileSystemWatcher) AddWatch(path string) {
 	ego._watcher.Add(path)
+}
+
+func (ego *FileSystemWatcher) RemoveWatch(path string) {
+	ego._watcher.Remove(path)
 }
 
 func (ego *FileSystemWatcher) loop() {
@@ -81,10 +85,8 @@ func (ego *FileSystemWatcher) loop() {
 					logging.Log(core.LL_ERR, "File Watcher Stopped")
 					runtime.Goexit()
 				}
-
 			}
 		}
-
 	}
 }
 

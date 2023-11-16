@@ -147,6 +147,7 @@ func (ego *IntrinsicConfig) String() string {
 	}
 	ss.WriteString(ego.GoExecutorPool.String())
 	ss.WriteString(ego.IntrinsicService.String())
+
 	ss.WriteString("------------------------------- IntrinsicConfig -------------------------------\n")
 	return ss.String()
 }
@@ -217,8 +218,18 @@ func MakeDefaultIntrinsicConfig(file *io.File) int32 {
 	}
 	cronGrpCfg.Params["default"] = cronCfgDfl
 	cronGrpCfg.Params["utc0"] = cronCfgUtc0
+
+	fswCfg := FileSystemWatcherServiceConfig{
+		Dirs: []string{"conf", "bin"},
+	}
+	fswGrpCfg := FileSystemWatcherServiceGroupConfig{
+		Params: make(map[string]FileSystemWatcherServiceConfig),
+	}
+	fswGrpCfg.Params["default"] = fswCfg
+
 	intrinSvcConfig := IntrinsicServiceConfig{
-		Cron: cronGrpCfg,
+		Cron:              cronGrpCfg,
+		FileSystemWatcher: fswGrpCfg,
 	}
 	IntrinConfig.IntrinsicService = intrinSvcConfig
 

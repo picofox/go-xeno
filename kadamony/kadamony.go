@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"path/filepath"
 	"time"
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
-	"xeno/zohar/core/fs"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/framework"
 	_ "xeno/zohar/framework"
+	"xeno/zohar/framework/service/intrinsic"
 )
 
 func SetValues(f string, args ...any) {
@@ -44,15 +43,7 @@ func main() {
 		logging.LogFixedWidth(core.LL_SYS, 70, false, errString, "Kadamony Application Initializing ...")
 	}
 
-	fsw := fs.NeoFileSystemWatcher()
-
-	path, _ := filepath.Abs(".")
-	fmt.Println("wathc +" + path)
-
-	fsw.AddDir(path)
-	fsw.RegisterHandler(0, FSWCB)
-
-	fsw.Start()
+	intrinsic.GetServiceManager().RegisterFileSystemWatcherHandler(0, FSWCB)
 
 	framework.WaitAll()
 }

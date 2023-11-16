@@ -39,7 +39,15 @@
 					"Offset": 0
 				}
 			}
-		}
+		},
+		"FileSystemWatcher" : {
+			"Params": {
+				"default": {
+					"Dirs" : ["conf", "bin"]
+				}
+			}
+		}	
+		
 	}
 }
 

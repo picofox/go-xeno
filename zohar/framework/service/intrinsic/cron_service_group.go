@@ -13,6 +13,19 @@ type CronServiceGroup struct {
 	_manager  *ServiceManager
 }
 
+func (ego *CronServiceGroup) FindAnyServiceByKey(key any) IService {
+	svc, ok := ego._services[key.(string)]
+	if ok {
+		return svc
+	}
+	if len(ego._services) > 0 {
+		for _, v := range ego._services {
+			return v
+		}
+	}
+	return nil
+}
+
 func (ego *CronServiceGroup) AddService(key any, svc IService) int32 {
 	_, ok := ego._services[key.(string)]
 	if ok {

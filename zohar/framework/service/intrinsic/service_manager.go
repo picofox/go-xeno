@@ -55,12 +55,23 @@ func (ego *ServiceManager) Initialize() int32 {
 		return core.MkErr(core.EC_NULL_VALUE, 1)
 	}
 
+	fswGrp := NeoFileSystemWatcherGroup(ego)
+	if fswGrp == nil {
+		return core.MkErr(core.EC_NULL_VALUE, 1)
+	}
+
 	rc := grp.Initialize()
 	if core.Err(rc) {
 		return rc
 	}
 
+	rc = fswGrp.Initialize()
+	if core.Err(rc) {
+		return rc
+	}
+
 	ego.AddGroup(grp)
+	ego.AddGroup(fswGrp)
 
 	return core.MkSuccess(0)
 }
@@ -103,6 +114,15 @@ func (ego *ServiceManager) AddService(name string, key any, svc IService) int32 
 		ego.AddGroup(g)
 	}
 	return g.AddService(key, svc)
+}
+
+func (ego *ServiceManager) RegisterFileSystemWatcherHandler(executor uint8, f datatype.TaskFuncType) int32 {
+	svc := ego.GetGroup("FileSystemWatcher").FindAnyServiceByKey("default")
+	if svc == nil {
+		return core.MkErr(core.EC_ELEMENT_NOT_FOUND, 1)
+	}
+	svc.(*FileSystemWatcherService).RegisterHandler(0, f)
+	return core.MkSuccess(0)
 }
 
 func (ego *ServiceManager) AddCronTask(which string, spec string, cmd datatype.TaskFuncType, a any, executor uint8) int32 {

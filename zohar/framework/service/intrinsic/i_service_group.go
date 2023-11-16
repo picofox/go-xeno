@@ -8,4 +8,5 @@ type IServiceGroup interface {
 	Stop() int32
 	Finalize() int32
 	FindServiceByKey(key any) IService
+	FindAnyServiceByKey(key any) IService
 }
