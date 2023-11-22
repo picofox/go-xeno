@@ -1070,3 +1070,857 @@ GoExecutorPool:
 2023-11-23	01:11:47.824871400	1700673107824	[SYS]	6408	1	Default Timer Manager...                                              [Stopped]
 2023-11-23	01:11:47.824871400	1700673107824	[SYS]	6408	1	Default Executor Pool ...                                             [Stopped]
 2023-11-23	01:11:47.824871400	1700673107824	[SYS]	6408	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	03:58:24.84299300	1700683104084	[SYS]	5192	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	03:58:24.84299300	1700683104084	[SYS]	5192	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	03:58:24.84299300	1700683104084	[SYS]	5192	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	03:58:24.84299300	1700683104084	[SYS]	5192	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	03:58:24.84299300	1700683104084	[SYS]	5192	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	03:58:24.85274500	1700683104085	[SYS]	5192	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	03:58:24.85274500	1700683104085	[SYS]	5192	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	03:59:16.119815700	1700683156119	[ERROR]	5192	1	failed	@kadamony.go:77
+2023-11-23	03:59:16.119815700	1700683156119	[SYS]	5192	1	start	@kadamony.go:80
+2023-11-23	03:59:16.133852000	1700683156133	[SYS]	5192	7	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	03:59:16.134860300	1700683156134	[SYS]	5192	7	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	03:59:16.134860300	1700683156134	[SYS]	5192	15	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	03:59:16.134860300	1700683156134	[SYS]	5192	7	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	03:59:16.134860300	1700683156134	[SYS]	5192	7	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	03:59:16.134860300	1700683156134	[SYS]	5192	7	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	03:59:16.152902800	1700683156152	[WARN]	5192	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.006200 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	03:59:16.159367000	1700683156159	[WARN]	5192	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.464100 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	03:59:16.167950100	1700683156167	[WARN]	5192	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 8.583200 - SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gamedb' AND table_name = 'products' AND table_type = 'BASE TABLE' 	@callbacks.go:134
+2023-11-23	03:59:16.169790900	1700683156169	[WARN]	5192	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.840800 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	03:59:16.174482900	1700683156174	[WARN]	5192	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.692000 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	03:59:16.176780800	1700683156176	[WARN]	5192	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.297800 - SELECT * FROM `products` LIMIT 1 	@callbacks.go:134
+2023-11-23	03:59:16.184807200	1700683156184	[WARN]	5192	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 8.026500 - SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gamedb' AND table_name = 'products' ORDER BY ORDINAL_POSITION 	@callbacks.go:134
+2023-11-23	03:59:16.186814600	1700683156186	[WARN]	5192	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.007300 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	03:59:16.190824600	1700683156190	[WARN]	5192	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.010000 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	03:59:16.195858900	1700683156195	[WARN]	5192	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.034400 - SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gamedb' AND table_name = 'products' AND index_name = 'idx_products_deleted_at' 	@callbacks.go:134
+2023-11-23	03:59:16.195858900	1700683156195	[INFO]	5192	1	Connecting Database For Pool: DBP0	@pool_manager.go:50
+2023-11-23	03:59:16.208374200	1700683156208	[INFO]	5192	1	Connect_0 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	03:59:16.224639400	1700683156224	[INFO]	5192	1	Connect_1 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	03:59:16.235668900	1700683156235	[SYS]	5192	7	Default Timer Manager...                                              [Stopped]
+2023-11-23	03:59:16.235668900	1700683156235	[SYS]	5192	7	Default Executor Pool ...                                             [Stopped]
+2023-11-23	03:59:16.235668900	1700683156235	[SYS]	5192	7	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	03:59:18.106989400	1700683158106	[SYS]	7492	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	03:59:18.106989400	1700683158106	[SYS]	7492	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	03:59:18.106989400	1700683158106	[SYS]	7492	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	03:59:18.106989400	1700683158106	[SYS]	7492	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	03:59:18.106989400	1700683158106	[SYS]	7492	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	03:59:18.107992600	1700683158107	[SYS]	7492	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	03:59:18.107992600	1700683158107	[SYS]	7492	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	03:59:41.547866600	1700683181547	[ERROR]	7492	1	failed	@kadamony.go:77
+2023-11-23	03:59:41.547866600	1700683181547	[SYS]	7492	1	start	@kadamony.go:80
+2023-11-23	03:59:41.562414500	1700683181562	[SYS]	7492	7	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	03:59:41.562414500	1700683181562	[SYS]	7492	7	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	03:59:41.562909100	1700683181562	[SYS]	7492	7	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	03:59:41.562909100	1700683181562	[SYS]	7492	7	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	03:59:41.562909100	1700683181562	[SYS]	7492	18	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	03:59:41.562909100	1700683181562	[SYS]	7492	7	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	03:59:41.579307100	1700683181579	[WARN]	7492	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.004700 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	03:59:41.594610400	1700683181594	[WARN]	7492	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 SlowLog:SLOW SQL >= 10ms 15.303300 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	03:59:41.610759300	1700683181610	[WARN]	7492	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 SlowLog:SLOW SQL >= 10ms 16.148800 - SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gamedb' AND table_name = 'products' AND table_type = 'BASE TABLE' 	@callbacks.go:134
+2023-11-23	03:59:41.612728400	1700683181612	[WARN]	7492	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.969200 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	03:59:41.616837700	1700683181616	[WARN]	7492	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.109300 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	03:59:41.619747200	1700683181619	[WARN]	7492	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.909500 - SELECT * FROM `products` LIMIT 1 	@callbacks.go:134
+2023-11-23	03:59:41.631863200	1700683181631	[WARN]	7492	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 SlowLog:SLOW SQL >= 10ms 12.116000 - SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gamedb' AND table_name = 'products' ORDER BY ORDINAL_POSITION 	@callbacks.go:134
+2023-11-23	03:59:41.634897700	1700683181634	[WARN]	7492	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 3.034400 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	03:59:41.638908700	1700683181638	[WARN]	7492	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.011000 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	03:59:41.648933600	1700683181648	[WARN]	7492	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 SlowLog:SLOW SQL >= 10ms 10.025000 - SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gamedb' AND table_name = 'products' AND index_name = 'idx_products_deleted_at' 	@callbacks.go:134
+2023-11-23	03:59:41.649911200	1700683181649	[INFO]	7492	1	Connecting Database For Pool: DBP0	@pool_manager.go:50
+2023-11-23	03:59:41.659466800	1700683181659	[INFO]	7492	1	Connect_0 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	03:59:41.663502100	1700683181663	[SYS]	7492	7	Default Timer Manager...                                              [Stopped]
+2023-11-23	03:59:41.663502100	1700683181663	[SYS]	7492	7	Default Executor Pool ...                                             [Stopped]
+2023-11-23	03:59:41.663502100	1700683181663	[SYS]	7492	7	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	03:59:43.542414100	1700683183542	[SYS]	8392	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	03:59:43.542414100	1700683183542	[SYS]	8392	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	03:59:43.542414100	1700683183542	[SYS]	8392	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	03:59:43.542414100	1700683183542	[SYS]	8392	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	03:59:43.542414100	1700683183542	[SYS]	8392	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	03:59:43.543416600	1700683183543	[SYS]	8392	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	03:59:43.543416600	1700683183543	[SYS]	8392	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	04:00:41.861539800	1700683241861	[ERROR]	8392	1	failed	@kadamony.go:77
+2023-11-23	04:00:41.861539800	1700683241861	[SYS]	8392	1	start	@kadamony.go:80
+2023-11-23	04:00:41.875596200	1700683241875	[SYS]	8392	7	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	04:00:41.875596200	1700683241875	[SYS]	8392	7	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	04:00:41.875596200	1700683241875	[SYS]	8392	20	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	04:00:41.875596200	1700683241875	[SYS]	8392	7	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	04:00:41.875596200	1700683241875	[SYS]	8392	7	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	04:00:41.875596200	1700683241875	[SYS]	8392	7	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	04:00:41.878608200	1700683241878	[WARN]	8392	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.028200 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:00:41.884601300	1700683241884	[WARN]	8392	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.993100 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:00:41.890624100	1700683241890	[WARN]	8392	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.022900 - SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gamedb' AND table_name = 'products' AND table_type = 'BASE TABLE' 	@callbacks.go:134
+2023-11-23	04:00:41.894664100	1700683241894	[WARN]	8392	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.040000 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:00:41.898693200	1700683241898	[WARN]	8392	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.029100 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:00:41.900698200	1700683241900	[WARN]	8392	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.005000 - SELECT * FROM `products` LIMIT 1 	@callbacks.go:134
+2023-11-23	04:00:41.907058300	1700683241907	[WARN]	8392	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.360000 - SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gamedb' AND table_name = 'products' ORDER BY ORDINAL_POSITION 	@callbacks.go:134
+2023-11-23	04:00:41.909814900	1700683241909	[WARN]	8392	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.756600 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:00:41.913824900	1700683241913	[WARN]	8392	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.010000 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:00:41.918872200	1700683241918	[WARN]	8392	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.047300 - SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gamedb' AND table_name = 'products' AND index_name = 'idx_products_deleted_at' 	@callbacks.go:134
+2023-11-23	04:00:41.918872200	1700683241918	[INFO]	8392	1	Connecting Database For Pool: DBP0	@pool_manager.go:50
+2023-11-23	04:00:41.929097100	1700683241929	[INFO]	8392	1	Connect_0 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:00:41.938383100	1700683241938	[INFO]	8392	1	Connect_1 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:00:41.948116200	1700683241948	[INFO]	8392	1	Connect_2 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:00:41.957179600	1700683241957	[INFO]	8392	1	Connect_3 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:00:41.957179600	1700683241957	[SYS]	8392	1	Intrinsic Services ...                                                [Stopped]
+2023-11-23	04:00:41.957179600	1700683241957	[SYS]	8392	1	Default Timer Manager...                                              [Stopped]
+2023-11-23	04:00:41.957179600	1700683241957	[SYS]	8392	1	Default Executor Pool ...                                             [Stopped]
+2023-11-23	04:00:41.957179600	1700683241957	[SYS]	8392	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:04:05.200852900	1700683445200	[SYS]	9008	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:04:05.200852900	1700683445200	[SYS]	9008	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:04:05.200852900	1700683445200	[SYS]	9008	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:04:05.200852900	1700683445200	[SYS]	9008	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:04:05.200852900	1700683445200	[SYS]	9008	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:04:05.201830900	1700683445201	[SYS]	9008	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:04:05.201830900	1700683445201	[SYS]	9008	1	Starting Intrinsic Services ...                                       [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:04:15.225787000	1700683455225	[SYS]	7796	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:04:15.225787000	1700683455225	[SYS]	7796	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:04:15.225787000	1700683455225	[SYS]	7796	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:04:15.225787000	1700683455225	[SYS]	7796	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:04:15.225787000	1700683455225	[SYS]	7796	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:04:15.230799800	1700683455230	[SYS]	7796	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:04:15.230799800	1700683455230	[SYS]	7796	1	Starting Intrinsic Services ...                                       [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:04:33.650258700	1700683473650	[SYS]	13896	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:04:33.650258700	1700683473650	[SYS]	13896	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:04:33.650258700	1700683473650	[SYS]	13896	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:04:33.651234200	1700683473651	[SYS]	13896	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:04:33.651234200	1700683473651	[SYS]	13896	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:04:33.652237400	1700683473652	[SYS]	13896	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:04:33.652237400	1700683473652	[SYS]	13896	1	Starting Intrinsic Services ...                                       [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:04:51.401353800	1700683491401	[SYS]	8308	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:04:51.401353800	1700683491401	[SYS]	8308	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:04:51.401353800	1700683491401	[SYS]	8308	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:04:51.401353800	1700683491401	[SYS]	8308	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:04:51.402356600	1700683491402	[SYS]	8308	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:04:51.402356600	1700683491402	[SYS]	8308	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:04:51.402356600	1700683491402	[SYS]	8308	1	Starting Intrinsic Services ...                                       [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:05:41.307123600	1700683541307	[SYS]	1688	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:05:41.307123600	1700683541307	[SYS]	1688	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:05:41.307123600	1700683541307	[SYS]	1688	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:05:41.307123600	1700683541307	[SYS]	1688	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:05:41.307123600	1700683541307	[SYS]	1688	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:05:41.308126100	1700683541308	[SYS]	1688	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:05:41.308126100	1700683541308	[SYS]	1688	1	Starting Intrinsic Services ...                                       [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:06:02.950653700	1700683562950	[SYS]	3832	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:06:02.950653700	1700683562950	[SYS]	3832	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:06:02.950653700	1700683562950	[SYS]	3832	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:06:02.950653700	1700683562950	[SYS]	3832	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:06:02.950653700	1700683562950	[SYS]	3832	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:06:02.951641500	1700683562951	[SYS]	3832	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:06:02.951641500	1700683562951	[SYS]	3832	1	Starting Intrinsic Services ...                                       [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:06:13.469507400	1700683573469	[SYS]	6836	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:06:13.469507400	1700683573469	[SYS]	6836	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:06:13.469507400	1700683573469	[SYS]	6836	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:06:13.470509900	1700683573470	[SYS]	6836	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:06:13.470509900	1700683573470	[SYS]	6836	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:06:13.470509900	1700683573470	[SYS]	6836	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:06:13.470509900	1700683573470	[SYS]	6836	1	Starting Intrinsic Services ...                                       [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:06:33.245404100	1700683593245	[SYS]	8720	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:06:33.245404100	1700683593245	[SYS]	8720	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:06:33.245404100	1700683593245	[SYS]	8720	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:06:33.245404100	1700683593245	[SYS]	8720	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:06:33.245404100	1700683593245	[SYS]	8720	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:06:33.245904500	1700683593245	[SYS]	8720	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:06:33.245904500	1700683593245	[SYS]	8720	1	Starting Intrinsic Services ...                                       [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:07:00.989103500	1700683620989	[SYS]	10852	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:07:00.989103500	1700683620989	[SYS]	10852	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:07:00.989103500	1700683620989	[SYS]	10852	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:07:00.989103500	1700683620989	[SYS]	10852	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:07:00.989103500	1700683620989	[SYS]	10852	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:07:00.990111500	1700683620990	[SYS]	10852	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:07:00.990111500	1700683620990	[SYS]	10852	1	Starting Intrinsic Services ...                                       [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:07:08.15710400	1700683628015	[SYS]	6264	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:07:08.15710400	1700683628015	[SYS]	6264	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:07:08.15710400	1700683628015	[SYS]	6264	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:07:08.15710400	1700683628015	[SYS]	6264	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:07:08.15710400	1700683628015	[SYS]	6264	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:07:08.16713900	1700683628016	[SYS]	6264	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:07:08.16713900	1700683628016	[SYS]	6264	1	Starting Intrinsic Services ...                                       [Success]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:07:34.520496100	1700683654520	[SYS]	5316	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:07:34.520496100	1700683654520	[SYS]	5316	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:07:34.520496100	1700683654520	[SYS]	5316	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:07:34.520496100	1700683654520	[SYS]	5316	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:07:34.520496100	1700683654520	[SYS]	5316	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:07:34.521498600	1700683654521	[SYS]	5316	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:07:34.521498600	1700683654521	[SYS]	5316	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	04:07:57.580029700	1700683677580	[ERROR]	5316	1	failed	@kadamony.go:77
+2023-11-23	04:07:57.580029700	1700683677580	[SYS]	5316	1	start	@kadamony.go:80
+2023-11-23	04:07:57.594066400	1700683677594	[SYS]	5316	5	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	04:07:57.594066400	1700683677594	[SYS]	5316	5	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	04:07:57.594066400	1700683677594	[SYS]	5316	5	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	04:07:57.594066400	1700683677594	[SYS]	5316	5	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	04:07:57.594066400	1700683677594	[SYS]	5316	5	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	04:07:57.594066400	1700683677594	[SYS]	5316	20	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	04:07:57.598077700	1700683677598	[WARN]	5316	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 0.977300 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:07:57.603225000	1700683677603	[WARN]	5316	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.147300 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:07:57.610366400	1700683677610	[WARN]	5316	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 7.141300 - SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gamedb' AND table_name = 'products' AND table_type = 'BASE TABLE' 	@callbacks.go:134
+2023-11-23	04:07:57.612434900	1700683677612	[WARN]	5316	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.068500 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:07:57.616545900	1700683677616	[WARN]	5316	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.111000 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:07:57.618549200	1700683677618	[WARN]	5316	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.003300 - SELECT * FROM `products` LIMIT 1 	@callbacks.go:134
+2023-11-23	04:07:57.627519100	1700683677627	[WARN]	5316	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 8.969900 - SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gamedb' AND table_name = 'products' ORDER BY ORDINAL_POSITION 	@callbacks.go:134
+2023-11-23	04:07:57.629487900	1700683677629	[WARN]	5316	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.968800 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:07:57.633513200	1700683677633	[WARN]	5316	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.025400 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:07:57.639914900	1700683677639	[WARN]	5316	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.401700 - SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gamedb' AND table_name = 'products' AND index_name = 'idx_products_deleted_at' 	@callbacks.go:134
+2023-11-23	04:07:57.639914900	1700683677639	[INFO]	5316	1	Connecting Database For Pool: DBP0	@pool_manager.go:50
+2023-11-23	04:07:57.649037400	1700683677649	[INFO]	5316	1	Connect_0 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:07:57.660473700	1700683677660	[INFO]	5316	1	Connect_1 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:07:57.669494800	1700683677669	[INFO]	5316	1	Connect_2 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:07:57.678797900	1700683677678	[INFO]	5316	1	Connect_3 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:07:57.678797900	1700683677678	[SYS]	5316	1	Intrinsic Services ...                                                [Stopped]
+2023-11-23	04:07:57.678797900	1700683677678	[SYS]	5316	1	Default Timer Manager...                                              [Stopped]
+2023-11-23	04:07:57.678797900	1700683677678	[SYS]	5316	1	Default Executor Pool ...                                             [Stopped]
+2023-11-23	04:07:57.678797900	1700683677678	[SYS]	5316	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:07:59.971654900	1700683679971	[SYS]	11960	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:07:59.971654900	1700683679971	[SYS]	11960	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:07:59.971654900	1700683679971	[SYS]	11960	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:07:59.972156700	1700683679972	[SYS]	11960	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:07:59.972156700	1700683679972	[SYS]	11960	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:07:59.972658800	1700683679972	[SYS]	11960	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:07:59.972658800	1700683679972	[SYS]	11960	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	04:08:50.165110900	1700683730165	[ERROR]	11960	1	failed	@kadamony.go:77
+2023-11-23	04:08:50.165110900	1700683730165	[SYS]	11960	1	start	@kadamony.go:80
+2023-11-23	04:08:50.180150400	1700683730180	[SYS]	11960	7	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	04:08:50.180150400	1700683730180	[SYS]	11960	7	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	04:08:50.180150400	1700683730180	[SYS]	11960	20	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	04:08:50.180150400	1700683730180	[SYS]	11960	7	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	04:08:50.180150400	1700683730180	[SYS]	11960	7	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	04:08:50.180150400	1700683730180	[SYS]	11960	7	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	04:08:50.280166800	1700683730280	[SYS]	11960	7	Default Timer Manager...                                              [Stopped]
+2023-11-23	04:08:50.280166800	1700683730280	[SYS]	11960	7	Default Executor Pool ...                                             [Stopped]
+2023-11-23	04:08:50.280166800	1700683730280	[SYS]	11960	7	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:10:13.330798800	1700683813330	[SYS]	1452	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:10:13.330798800	1700683813330	[SYS]	1452	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:10:13.330798800	1700683813330	[SYS]	1452	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:10:13.330798800	1700683813330	[SYS]	1452	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:10:13.330798800	1700683813330	[SYS]	1452	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:10:13.330798800	1700683813330	[SYS]	1452	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:10:13.330798800	1700683813330	[SYS]	1452	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	04:10:13.441119100	1700683813441	[SYS]	1452	1	start	@kadamony.go:80
+2023-11-23	04:10:13.470443700	1700683813470	[WARN]	1452	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.004300 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:10:13.478468400	1700683813478	[WARN]	1452	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 8.024800 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:10:13.486491500	1700683813486	[WARN]	1452	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 8.023000 - SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gamedb' AND table_name = 'products' AND table_type = 'BASE TABLE' 	@callbacks.go:134
+2023-11-23	04:10:13.488491300	1700683813488	[WARN]	1452	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.999900 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:10:13.492502700	1700683813492	[WARN]	1452	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.011300 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:10:13.495510800	1700683813495	[WARN]	1452	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 3.008200 - SELECT * FROM `products` LIMIT 1 	@callbacks.go:134
+2023-11-23	04:10:13.501552100	1700683813501	[WARN]	1452	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.041300 - SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gamedb' AND table_name = 'products' ORDER BY ORDINAL_POSITION 	@callbacks.go:134
+2023-11-23	04:10:13.504534000	1700683813504	[WARN]	1452	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.004600 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:10:13.508545700	1700683813508	[WARN]	1452	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.011700 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:10:13.514561000	1700683813514	[WARN]	1452	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.015300 - SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gamedb' AND table_name = 'products' AND index_name = 'idx_products_deleted_at' 	@callbacks.go:134
+2023-11-23	04:10:13.514561000	1700683813514	[INFO]	1452	1	Connecting Database For Pool: DBP0	@pool_manager.go:50
+2023-11-23	04:10:13.525590500	1700683813525	[INFO]	1452	1	Connect_0 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:10:13.535617100	1700683813535	[INFO]	1452	1	Connect_1 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:10:13.546648000	1700683813546	[INFO]	1452	1	Connect_2 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:10:13.557176100	1700683813557	[INFO]	1452	1	Connect_3 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:10:15.90636100	1700683815090	[SYS]	1452	20	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	04:10:15.90636100	1700683815090	[SYS]	1452	20	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	04:10:15.90636100	1700683815090	[SYS]	1452	1	Intrinsic Services ...                                                [Stopped]
+2023-11-23	04:10:15.90636100	1700683815090	[SYS]	1452	28	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	04:10:15.90636100	1700683815090	[SYS]	1452	20	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	04:10:15.90636100	1700683815090	[SYS]	1452	20	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	04:10:15.90636100	1700683815090	[SYS]	1452	20	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	04:10:15.91639000	1700683815091	[SYS]	1452	1	Default Timer Manager...                                              [Stopped]
+2023-11-23	04:10:15.91639000	1700683815091	[SYS]	1452	1	Default Executor Pool ...                                             [Stopped]
+2023-11-23	04:10:15.91639000	1700683815091	[SYS]	1452	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:10:17.419600700	1700683817419	[SYS]	8324	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:10:17.419600700	1700683817419	[SYS]	8324	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:10:17.420603600	1700683817420	[SYS]	8324	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:10:17.420603600	1700683817420	[SYS]	8324	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:10:17.420603600	1700683817420	[SYS]	8324	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:10:17.420603600	1700683817420	[SYS]	8324	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:10:17.421606100	1700683817421	[SYS]	8324	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	04:10:51.627840900	1700683851627	[SYS]	8324	1	start	@kadamony.go:80
+2023-11-23	04:10:51.642381000	1700683851642	[SYS]	8324	20	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	04:10:51.642381000	1700683851642	[SYS]	8324	20	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	04:10:51.642381000	1700683851642	[SYS]	8324	36	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	04:10:51.642882100	1700683851642	[SYS]	8324	20	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	04:10:51.642882100	1700683851642	[SYS]	8324	20	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	04:10:51.642882100	1700683851642	[SYS]	8324	20	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	04:10:51.657858800	1700683851657	[WARN]	8324	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.056100 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:10:51.663878900	1700683851663	[WARN]	8324	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.020100 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:10:51.675009100	1700683851675	[WARN]	8324	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 SlowLog:SLOW SQL >= 10ms 11.130200 - SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gamedb' AND table_name = 'products' AND table_type = 'BASE TABLE' 	@callbacks.go:134
+2023-11-23	04:10:51.677912100	1700683851677	[WARN]	8324	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.005400 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:10:51.680924000	1700683851680	[WARN]	8324	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 3.011900 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:10:51.684201500	1700683851684	[WARN]	8324	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.278800 - SELECT * FROM `products` LIMIT 1 	@callbacks.go:134
+2023-11-23	04:10:51.689950900	1700683851689	[WARN]	8324	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.749400 - SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gamedb' AND table_name = 'products' ORDER BY ORDINAL_POSITION 	@callbacks.go:134
+2023-11-23	04:10:51.692082900	1700683851692	[WARN]	8324	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.132000 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:10:51.696196700	1700683851696	[WARN]	8324	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.113700 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:10:51.701210800	1700683851701	[WARN]	8324	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.014200 - SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gamedb' AND table_name = 'products' AND index_name = 'idx_products_deleted_at' 	@callbacks.go:134
+2023-11-23	04:10:51.702112600	1700683851702	[INFO]	8324	1	Connecting Database For Pool: DBP0	@pool_manager.go:50
+2023-11-23	04:10:51.711232000	1700683851711	[INFO]	8324	1	Connect_0 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:10:51.720159300	1700683851720	[INFO]	8324	1	Connect_1 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:10:51.734195900	1700683851734	[INFO]	8324	1	Connect_2 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:10:51.743091000	1700683851743	[INFO]	8324	1	Connect_3 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:10:51.743091000	1700683851743	[SYS]	8324	1	Intrinsic Services ...                                                [Stopped]
+2023-11-23	04:10:51.743091000	1700683851743	[SYS]	8324	20	Default Timer Manager...                                              [Stopped]
+2023-11-23	04:10:51.743091000	1700683851743	[SYS]	8324	20	Default Executor Pool ...                                             [Stopped]
+2023-11-23	04:10:51.743091000	1700683851743	[SYS]	8324	20	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:10:57.334708500	1700683857334	[SYS]	5156	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:10:57.335741300	1700683857335	[SYS]	5156	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:10:57.335741300	1700683857335	[SYS]	5156	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:10:57.335741300	1700683857335	[SYS]	5156	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:10:57.335741300	1700683857335	[SYS]	5156	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:10:57.335741300	1700683857335	[SYS]	5156	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:10:57.335741300	1700683857335	[SYS]	5156	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	04:13:22.363417600	1700684002363	[SYS]	5156	1	start	@kadamony.go:80
+2023-11-23	04:13:22.378463600	1700684002378	[SYS]	5156	7	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	04:13:22.378463600	1700684002378	[SYS]	5156	7	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	04:13:22.378463600	1700684002378	[SYS]	5156	20	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	04:13:22.378463600	1700684002378	[SYS]	5156	7	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	04:13:22.378463600	1700684002378	[SYS]	5156	7	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	04:13:22.378463600	1700684002378	[SYS]	5156	7	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	04:13:22.395226800	1700684002395	[WARN]	5156	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.653100 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:13:22.401658600	1700684002401	[WARN]	5156	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.431700 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:13:22.407939800	1700684002407	[WARN]	5156	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.281200 - SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gamedb' AND table_name = 'products' AND table_type = 'BASE TABLE' 	@callbacks.go:134
+2023-11-23	04:13:22.409947200	1700684002409	[WARN]	5156	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.007400 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:13:22.413960900	1700684002413	[WARN]	5156	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.013700 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:13:22.415962500	1700684002415	[WARN]	5156	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.001600 - SELECT * FROM `products` LIMIT 1 	@callbacks.go:134
+2023-11-23	04:13:22.423112400	1700684002423	[WARN]	5156	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 7.149900 - SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gamedb' AND table_name = 'products' ORDER BY ORDINAL_POSITION 	@callbacks.go:134
+2023-11-23	04:13:22.428099600	1700684002428	[WARN]	5156	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.010600 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:13:22.431354500	1700684002431	[WARN]	5156	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 3.255000 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:13:22.437371900	1700684002437	[WARN]	5156	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.017400 - SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gamedb' AND table_name = 'products' AND index_name = 'idx_products_deleted_at' 	@callbacks.go:134
+2023-11-23	04:13:22.437371900	1700684002437	[INFO]	5156	1	Connecting Database For Pool: DBP0	@pool_manager.go:50
+2023-11-23	04:13:22.447631000	1700684002447	[INFO]	5156	1	Connect_0 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:13:22.462654800	1700684002462	[INFO]	5156	1	Connect_1 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:13:22.473901700	1700684002473	[INFO]	5156	1	Connect_2 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:13:22.478821400	1700684002478	[SYS]	5156	7	Default Timer Manager...                                              [Stopped]
+2023-11-23	04:13:22.478821400	1700684002478	[SYS]	5156	7	Default Executor Pool ...                                             [Stopped]
+2023-11-23	04:13:22.478821400	1700684002478	[SYS]	5156	7	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:13:24.177526600	1700684004177	[SYS]	13208	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:13:24.177526600	1700684004177	[SYS]	13208	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:13:24.177526600	1700684004177	[SYS]	13208	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:13:24.177526600	1700684004177	[SYS]	13208	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:13:24.177526600	1700684004177	[SYS]	13208	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:13:24.178529400	1700684004178	[SYS]	13208	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:13:24.178529400	1700684004178	[SYS]	13208	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	04:13:24.288827100	1700684004288	[SYS]	13208	1	start	@kadamony.go:80
+2023-11-23	04:13:24.319319100	1700684004319	[WARN]	13208	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.004700 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:13:24.325338500	1700684004325	[WARN]	13208	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.019400 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:13:24.333412400	1700684004333	[WARN]	13208	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 8.073900 - SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gamedb' AND table_name = 'products' AND table_type = 'BASE TABLE' 	@callbacks.go:134
+2023-11-23	04:13:24.335421500	1700684004335	[WARN]	13208	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.009000 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:13:24.339401400	1700684004339	[WARN]	13208	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 3.980000 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:13:24.341417000	1700684004341	[WARN]	13208	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.015600 - SELECT * FROM `products` LIMIT 1 	@callbacks.go:134
+2023-11-23	04:13:24.347428900	1700684004347	[WARN]	13208	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.011900 - SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gamedb' AND table_name = 'products' ORDER BY ORDINAL_POSITION 	@callbacks.go:134
+2023-11-23	04:13:24.349434600	1700684004349	[WARN]	13208	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.005600 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:13:24.354446700	1700684004354	[WARN]	13208	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.012200 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:13:24.359493700	1700684004359	[WARN]	13208	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.046900 - SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gamedb' AND table_name = 'products' AND index_name = 'idx_products_deleted_at' 	@callbacks.go:134
+2023-11-23	04:13:24.359493700	1700684004359	[INFO]	13208	1	Connecting Database For Pool: DBP0	@pool_manager.go:50
+2023-11-23	04:13:24.370522800	1700684004370	[INFO]	13208	1	Connect_0 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:13:24.381552300	1700684004381	[INFO]	13208	1	Connect_1 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:13:24.392431600	1700684004392	[INFO]	13208	1	Connect_2 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:13:24.405466800	1700684004405	[INFO]	13208	1	Connect_3 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:13:25.523017900	1700684005523	[SYS]	13208	7	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	04:13:25.523017900	1700684005523	[SYS]	13208	7	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	04:13:25.523017900	1700684005523	[SYS]	13208	1	Intrinsic Services ...                                                [Stopped]
+2023-11-23	04:13:25.523017900	1700684005523	[SYS]	13208	7	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	04:13:25.523017900	1700684005523	[SYS]	13208	7	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	04:13:25.523017900	1700684005523	[SYS]	13208	7	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	04:13:25.523017900	1700684005523	[SYS]	13208	20	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	04:13:25.525022500	1700684005525	[SYS]	13208	1	Default Timer Manager...                                              [Stopped]
+2023-11-23	04:13:25.525022500	1700684005525	[SYS]	13208	1	Default Executor Pool ...                                             [Stopped]
+2023-11-23	04:13:25.525022500	1700684005525	[SYS]	13208	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:14:53.897495800	1700684093897	[SYS]	13572	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:14:53.898473400	1700684093898	[SYS]	13572	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:14:53.898473400	1700684093898	[SYS]	13572	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:14:53.898473400	1700684093898	[SYS]	13572	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:14:53.898473400	1700684093898	[SYS]	13572	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:14:53.899476600	1700684093899	[SYS]	13572	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:14:53.899476600	1700684093899	[SYS]	13572	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	04:16:04.572221700	1700684164572	[SYS]	13572	1	start	@kadamony.go:80
+2023-11-23	04:16:04.587428100	1700684164587	[SYS]	13572	7	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	04:16:04.587428100	1700684164587	[SYS]	13572	7	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	04:16:04.587428100	1700684164587	[SYS]	13572	15	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	04:16:04.587428100	1700684164587	[SYS]	13572	7	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	04:16:04.587428100	1700684164587	[SYS]	13572	7	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	04:16:04.587428100	1700684164587	[SYS]	13572	7	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	04:16:04.588425100	1700684164588	[WARN]	13572	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.002500 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:16:04.594543200	1700684164594	[WARN]	13572	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.118100 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:16:04.601461000	1700684164601	[WARN]	13572	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.917800 - SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gamedb' AND table_name = 'products' AND table_type = 'BASE TABLE' 	@callbacks.go:134
+2023-11-23	04:16:04.603602200	1700684164603	[WARN]	13572	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.136900 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:16:04.607626500	1700684164607	[WARN]	13572	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 3.008500 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:16:04.609618500	1700684164609	[WARN]	13572	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.992000 - SELECT * FROM `products` LIMIT 1 	@callbacks.go:134
+2023-11-23	04:16:04.622677600	1700684164622	[WARN]	13572	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 SlowLog:SLOW SQL >= 10ms 13.059000 - SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gamedb' AND table_name = 'products' ORDER BY ORDINAL_POSITION 	@callbacks.go:134
+2023-11-23	04:16:04.625685400	1700684164625	[WARN]	13572	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.014900 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:16:04.629672200	1700684164629	[WARN]	13572	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 3.986700 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:16:04.635687800	1700684164635	[WARN]	13572	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 6.015700 - SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gamedb' AND table_name = 'products' AND index_name = 'idx_products_deleted_at' 	@callbacks.go:134
+2023-11-23	04:16:04.635687800	1700684164635	[INFO]	13572	1	Connecting Database For Pool: DBP0	@pool_manager.go:50
+2023-11-23	04:16:04.648722700	1700684164648	[INFO]	13572	1	Connect_0 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:16:04.658749300	1700684164658	[INFO]	13572	1	Connect_1 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:16:04.671284500	1700684164671	[INFO]	13572	1	Connect_2 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:16:04.682658700	1700684164682	[INFO]	13572	1	Connect_3 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:16:04.682658700	1700684164682	[SYS]	13572	1	Intrinsic Services ...                                                [Stopped]
+2023-11-23	04:16:04.682658700	1700684164682	[SYS]	13572	1	Default Timer Manager...                                              [Stopped]
+2023-11-23	04:16:04.682658700	1700684164682	[SYS]	13572	1	Default Executor Pool ...                                             [Stopped]
+2023-11-23	04:16:04.682658700	1700684164682	[SYS]	13572	1	Default Log Manager ...                                               [Stopped]
+D:\projects\svn_repo\default\go\xeno\output\xeno\bin\kadamony.exefull spec:
+	debug-mode -> 1:100:debug-mode:1-1:ST_U8(5)
+	version -> 1:118:version:0-0:F(0)
+	credential-file -> 1:0:credential-file:1-1:ST_STR(13)
+	server-list -> 1:115:server-list:1-128:LT_STR(29)
+	params -> 1:112:params:1-128:DT_STRT_STR(45)
+	log-level -> 1:108:log-level:1-1:ST_U8(5)
+Short Args Specs:
+	d -> 1:100:debug-mode:1-1:ST_U8(5)
+	l -> 1:108:log-level:1-1:ST_U8(5)
+	p -> 1:112:params:1-128:DT_STRT_STR(45)
+	s -> 1:115:server-list:1-128:LT_STR(29)
+	v -> 1:118:version:0-0:F(0)
+Target Spec:
+	1:0::1-100:INV(13)
+Full Input:
+Targets List:
+
+GoExecutorPool:
+	Worker Count: 0
+	Shutting Down: false
+2023-11-23	04:16:19.902943200	1700684179902	[SYS]	11700	1	Zohar Core Initializing ...                                           [Success]
+2023-11-23	04:16:19.902943200	1700684179902	[SYS]	11700	1	Starting Default Log Manager  ...                                     [Success]
+2023-11-23	04:16:19.902943200	1700684179902	[SYS]	11700	1	Starting Default Executor Pool ...                                    [Success]
+2023-11-23	04:16:19.902943200	1700684179902	[SYS]	11700	1	Starting Default Timer Manager ...                                    [Success]
+2023-11-23	04:16:19.902943200	1700684179902	[SYS]	11700	1	Zohar Framework Initializing ... 	@initialize.go:40
+2023-11-23	04:16:19.904449100	1700684179904	[SYS]	11700	1	Initialize Intrinsic Services ...                                     [Success]
+2023-11-23	04:16:19.904449100	1700684179904	[SYS]	11700	1	Starting Intrinsic Services ...                                       [Success]
+2023-11-23	04:16:29.851070800	1700684189851	[SYS]	11700	1	start	@kadamony.go:80
+2023-11-23	04:16:29.864130200	1700684189864	[SYS]	11700	20	Catch Sig interrupt	@core_initialization.go:50
+2023-11-23	04:16:29.864130200	1700684189864	[SYS]	11700	20	Stopping Intrinsic Services	@initialize.go:20
+2023-11-23	04:16:29.865108100	1700684189865	[SYS]	11700	7	File Watcher Stopped	@filesystem_watcher.go:97
+2023-11-23	04:16:29.865108100	1700684189865	[SYS]	11700	20	Stopping Default Timer Manager ... 	@core_initialization.go:61
+2023-11-23	04:16:29.865108100	1700684189865	[SYS]	11700	20	Stopping Default Executor Pool 	@core_initialization.go:63
+2023-11-23	04:16:29.865108100	1700684189865	[SYS]	11700	20	Stopping Default Log Manager 	@core_initialization.go:65
+2023-11-23	04:16:29.881017600	1700684189881	[WARN]	11700	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.103000 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:16:29.887015200	1700684189887	[WARN]	11700	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.997600 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:16:29.892224300	1700684189892	[WARN]	11700	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.209000 - SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gamedb' AND table_name = 'products' AND table_type = 'BASE TABLE' 	@callbacks.go:134
+2023-11-23	04:16:29.894230000	1700684189894	[WARN]	11700	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.100800 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:16:29.899024000	1700684189899	[WARN]	11700	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.794000 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:16:29.901115000	1700684189901	[WARN]	11700	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 2.091000 - SELECT * FROM `products` LIMIT 1 	@callbacks.go:134
+2023-11-23	04:16:29.908290800	1700684189908	[WARN]	11700	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 7.175900 - SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gamedb' AND table_name = 'products' ORDER BY ORDINAL_POSITION 	@callbacks.go:134
+2023-11-23	04:16:29.911274100	1700684189911	[WARN]	11700	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 1.075600 - SELECT DATABASE() 	@callbacks.go:134
+2023-11-23	04:16:29.915284800	1700684189915	[WARN]	11700	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 4.010700 1 SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gamedb%' ORDER BY SCHEMA_NAME='gamedb' DESC,SCHEMA_NAME limit 1 	@finisher_api.go:539
+2023-11-23	04:16:29.921071700	1700684189921	[WARN]	11700	1	Line:D:/projects/svn_repo/default/go/xeno/kadamony/kadamony.go:88 5.787000 - SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gamedb' AND table_name = 'products' AND index_name = 'idx_products_deleted_at' 	@callbacks.go:134
+2023-11-23	04:16:29.921071700	1700684189921	[INFO]	11700	1	Connecting Database For Pool: DBP0	@pool_manager.go:50
+2023-11-23	04:16:29.930632100	1700684189930	[INFO]	11700	1	Connect_0 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:16:29.939010800	1700684189939	[INFO]	11700	1	Connect_1 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:16:29.949040200	1700684189949	[INFO]	11700	1	Connect_2 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:16:29.958065400	1700684189958	[INFO]	11700	1	Connect_3 to orm 				[Success:(fox:nopass@tcp(192.168.0.151:7336)/gamedb?charset=utf8mb4&parseTime=true)]	@mysql_connection.go:1024
+2023-11-23	04:16:29.958065400	1700684189958	[SYS]	11700	1	Intrinsic Services ...                                                [Stopped]
+2023-11-23	04:16:29.958065400	1700684189958	[SYS]	11700	1	Default Timer Manager...                                              [Stopped]
+2023-11-23	04:16:29.958065400	1700684189958	[SYS]	11700	1	Default Executor Pool ...                                             [Stopped]
+2023-11-23	04:16:29.958065400	1700684189958	[SYS]	11700	1	Default Log Manager ...                                               [Stopped]

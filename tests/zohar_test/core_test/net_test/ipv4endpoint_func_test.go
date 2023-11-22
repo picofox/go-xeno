@@ -10,7 +10,7 @@ func Test_IPV4EndPoint_Functional_Basic(t *testing.T) {
 	ipe := net.NeoIPV4EndPointByStrIP(net.EP_PROTO_TCP, 0, 255, "192.168.0.100", 10000)
 
 	if !ipe.Valid() {
-		t.Errorf("Invalid data of ipe %d", ipe.Data())
+		t.Errorf("Invalid data of ipe %d", ipe.Identifier())
 	}
 
 	if ipe.IPV4Str() != "192.168.0.100" {
@@ -22,7 +22,7 @@ func Test_IPV4EndPoint_Functional_Basic(t *testing.T) {
 	}
 
 	if !ipe.Valid() {
-		t.Errorf("Invalid data of ipe %d", ipe.Data())
+		t.Errorf("Invalid data of ipe %d", ipe.Identifier())
 	}
 
 	ipe.SetIPV4Str("255.255.255.255")
@@ -31,7 +31,7 @@ func Test_IPV4EndPoint_Functional_Basic(t *testing.T) {
 	}
 
 	if !ipe.Valid() {
-		t.Errorf("Invalid data of ipe %d", ipe.Data())
+		t.Errorf("Invalid data of ipe %d", ipe.Identifier())
 	}
 
 	if ipe.Port() != 10000 {
@@ -43,7 +43,7 @@ func Test_IPV4EndPoint_Functional_Basic(t *testing.T) {
 	}
 
 	if !ipe.Valid() {
-		t.Errorf("Invalid data of ipe %d", ipe.Data())
+		t.Errorf("Invalid data of ipe %d", ipe.Identifier())
 	}
 	ipe.SetPort(65535)
 	if ipe.Port() != 65535 {
@@ -51,7 +51,7 @@ func Test_IPV4EndPoint_Functional_Basic(t *testing.T) {
 	}
 
 	if !ipe.Valid() {
-		t.Errorf("Invalid data of ipe %d", ipe.Data())
+		t.Errorf("Invalid data of ipe %d", ipe.Identifier())
 	}
 
 	if ipe.Extra() != 255 {
@@ -63,7 +63,7 @@ func Test_IPV4EndPoint_Functional_Basic(t *testing.T) {
 	}
 
 	if !ipe.Valid() {
-		t.Errorf("Invalid data of ipe %d", ipe.Data())
+		t.Errorf("Invalid data of ipe %d", ipe.Identifier())
 	}
 
 	if ipe.Mask() != 0 {
@@ -75,7 +75,7 @@ func Test_IPV4EndPoint_Functional_Basic(t *testing.T) {
 	}
 
 	if !ipe.Valid() {
-		t.Errorf("Invalid data of ipe %d", ipe.Data())
+		t.Errorf("Invalid data of ipe %d", ipe.Identifier())
 	}
 
 	if ipe.Proto() != 1 {
@@ -87,8 +87,9 @@ func Test_IPV4EndPoint_Functional_Basic(t *testing.T) {
 	}
 
 	if !ipe.Valid() {
-		t.Errorf("Invalid data of ipe %d", ipe.Data())
+		t.Errorf("Invalid data of ipe %d", ipe.Identifier())
 	}
 
 	fmt.Println(ipe.String())
+
 }

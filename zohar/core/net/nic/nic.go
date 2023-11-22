@@ -1,9 +1,12 @@
 package nic
 
 import (
+	"fmt"
 	"net"
 	"strconv"
 	"strings"
+	"xeno/zohar/core"
+	"xeno/zohar/core/strs"
 )
 
 //net: add FlagRunning to the Flags of struct Interface, to exactly reflect the states of an interface or NIC.
@@ -19,6 +22,27 @@ import (
 type NIC struct {
 	_if  net.Interface
 	_ips []IINetAddress
+}
+
+func (ego *NIC) FindNetInfoByIPV4Address(ipU32 uint32) IINetAddress {
+	for _, ip := range ego._ips {
+		fmt.Printf("compare %s vs %s\n", ip.AddressString(), strs.IPV4UIntToString(ipU32))
+		if ip.Type() == INET_ADDRESS_TYPE_IPV4 {
+			ipv4, rc := strs.IPV4Addr2UIntBE(ip.AddressString())
+			if core.Err(rc) {
+				return nil
+			}
+
+			if ip.AddressString() == "192.168.0.100" {
+				fmt.Printf("x")
+			}
+
+			if ipv4 == ipU32 {
+				return ip
+			}
+		}
+	}
+	return nil
 }
 
 func (ego *NIC) String() string {

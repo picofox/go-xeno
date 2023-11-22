@@ -13,8 +13,18 @@ type NICManager struct {
 	_nicsMap map[int]*NIC
 }
 
-var sNICManager NICManager
-var sNICManagerOne sync.Once
+func (ego *NICManager) FindNICByIpV4Address(ipv4 uint32) IINetAddress {
+	for _, nic := range ego._nics {
+		na := nic.FindNetInfoByIPV4Address(ipv4)
+		if na != nil {
+			return na
+		}
+	}
+	return nil
+}
+
+var sNICManagerInstance *NICManager
+var sNICManagerOnce sync.Once
 
 func (ego *NICManager) clear() {
 	for k, _ := range ego._nicsMap {
@@ -79,16 +89,14 @@ func (ego *NICManager) String() string {
 }
 
 func GetNICManager() *NICManager {
-
-	nm := NICManager{
-		_nics:    make([]*NIC, 0),
-		_nicsMap: make(map[int]*NIC),
-	}
-
-	sNICManagerOne.Do(
+	sNICManagerOnce.Do(
 		func() {
-			nm.Update()
+			sNICManagerInstance = &NICManager{
+				_nics:    make([]*NIC, 0),
+				_nicsMap: make(map[int]*NIC),
+			}
+			sNICManagerInstance.Update()
 		},
 	)
-	return &nm
+	return sNICManagerInstance
 }

@@ -30,7 +30,7 @@ func (ego *IPV4Net) AddressString() string {
 }
 
 func (ego *IPV4Net) NetMaskStr() string {
-	return ego.NetMaskStr()
+	return strs.IPV4UIntToString(ego._mask)
 }
 
 func (ego *IPV4Net) String() string {

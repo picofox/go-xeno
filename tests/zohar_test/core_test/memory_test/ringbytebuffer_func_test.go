@@ -90,7 +90,7 @@ func Test_RingByteBuffer_Functional_ReSpace(t *testing.T) {
 	}
 	str := string(dstBa[0:20])
 	if strings.Compare(str, "01234567890123456789") != 0 {
-		t.Errorf("Data Validate Failed")
+		t.Errorf("Identifier Validate Failed")
 	}
 
 	rc = buf.WriteRawBytes([]byte("abcdefghijklmnopqrst"), 0, 20)
@@ -110,7 +110,7 @@ func Test_RingByteBuffer_Functional_ReSpace(t *testing.T) {
 	str = string(dstBa[0:40])
 
 	if strings.Compare(str, "abcdefghijklmnopqrstABCDEFGHIJKLMNOPARST") != 0 {
-		t.Errorf("Data Validate Failed")
+		t.Errorf("Identifier Validate Failed")
 	}
 
 }

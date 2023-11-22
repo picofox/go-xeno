@@ -9,6 +9,7 @@ import (
 	"xeno/zohar/core/db"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/logging/logger_adapter"
+	"xeno/zohar/core/net/server"
 	"xeno/zohar/core/sched/timer"
 	"xeno/zohar/framework"
 	_ "xeno/zohar/framework"
@@ -69,6 +70,11 @@ func main() {
 	rc, errString := config.LoadKadamonyConfig()
 	if core.Err(rc) {
 		logging.LogFixedWidth(core.LL_SYS, 70, false, errString, "Kadamony Application Initializing ...")
+	}
+
+	server := server.NeoTcpServer("192.168.0.100", 10000)
+	if server == nil {
+		logging.Log(core.LL_ERR, "failed")
 	}
 
 	logging.Log(core.LL_SYS, "start")
