@@ -15,9 +15,10 @@
 			"VolumeLimit": 1000,
 			"Type": 0,
 			"SplitMode": 0,
+			"Depth": 2,
 			"DefaultLevel": 5,
 			"FileNamePattern": "kadamony-%YYYY%MM%DD",
-			"LinePattern": ["date", "time", "nano", "ts", "lv", "pid", "goid"]
+			"LinePattern": ["date", "time", "nano", "ts", "lv", "pid", "goid", "spos"]
 		}
 	},
 	"GoExecutorPool": {

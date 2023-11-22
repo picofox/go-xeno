@@ -2,14 +2,20 @@ package main
 
 import (
 	"fmt"
+	"gorm.io/gorm/logger"
 	"math/bits"
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
+	"xeno/zohar/core/db"
 	"xeno/zohar/core/logging"
+	"xeno/zohar/core/logging/logger_adapter"
 	"xeno/zohar/core/sched/timer"
 	"xeno/zohar/framework"
 	_ "xeno/zohar/framework"
 	"xeno/zohar/framework/service/intrinsic"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func doSomething(a any) int32 {
@@ -50,6 +56,12 @@ func Task(a any) int32 {
 	return 0
 }
 
+type Product struct {
+	gorm.Model
+	Code  string
+	Price uint
+}
+
 func main() {
 	framework.Initialize()
 	intrinsic.GetServiceManager().RegisterFileSystemWatcherHandler(0, OnFileSystemChanged)
@@ -58,6 +70,20 @@ func main() {
 	if core.Err(rc) {
 		logging.LogFixedWidth(core.LL_SYS, 70, false, errString, "Kadamony Application Initializing ...")
 	}
+
+	logging.Log(core.LL_SYS, "start")
+	var iface logger.Interface = logger_adapter.NeoGORMLoggerAdapter(logging.GetLoggerManager().GetDefaultLogger())
+	orm, err := gorm.Open(mysql.Open(config.GetKadamonyConfig().DB.Pools["DBP0"].DSN.String()), &gorm.Config{
+		Logger: iface,
+	})
+	if err != nil {
+		panic("error")
+	}
+	orm.AutoMigrate(&Product{})
+
+	cfg := &config.GetKadamonyConfig().DB
+	db.GetPoolManager().Initialize(cfg)
+	db.GetPoolManager().ConnectDatabase()
 	//
 	//intrinsic.GetServiceManager().AddCronTask("default", "*/5 * * * * *", CronCB, "dislike you", datatype.TASK_EXEC_EXECUTOR_POOL)
 	////

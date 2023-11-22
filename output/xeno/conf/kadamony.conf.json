@@ -3,14 +3,17 @@
 		"Pools": {
 			"DBP0": {
 				"type":0,
-				"MaxTries":0,
-				"IPV4Addr": "192.168.0.151",
-				"TcpPort": 7336,
-				"KeepAlive": 60,
-				"DB": "gamedb",
-				"Username": "fox",
-				"Password": "nopass",
-				"ConnParam": "charset=utf8mb4",
+				"MaxTries":0,				
+				"KeepAlive": 60,				
+				"DSN": {
+					"Username": "fox",
+					"Password": "nopass",
+					"Protocol":	"tcp",					
+					"IP": "192.168.0.151",
+					"Port": 7336,							
+					"DB": "gamedb",	
+					"ParamString": "charset=utf8mb4"
+				},
 				"Connections": [{
 						"Tables": ["account", "role"]
 					},

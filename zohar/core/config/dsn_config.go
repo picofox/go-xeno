@@ -1,6 +1,9 @@
 package config
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 type DSNConfig struct {
 	Username    string            `json:"Username"`
@@ -27,6 +30,15 @@ func (ego *DSNConfig) String() string {
 	}
 	if len(ego.Protocol) > 0 {
 		ss.WriteString(ego.Protocol)
+		ss.WriteString("(")
+		if len(ego.IP) > 0 {
+			ss.WriteString(ego.IP)
+		} else {
+			ss.WriteString("127.0.0.1")
+		}
+		ss.WriteString(":")
+		ss.WriteString(strconv.Itoa(int(ego.Port)))
+		ss.WriteString(")")
 	}
 	ss.WriteString("/")
 	if len(ego.DB) > 0 {
@@ -70,8 +82,12 @@ func (ego *DSNConfig) String() string {
 	return ss.String()
 }
 
-func (ego *DSNConfig) AddParam(k string, v string) {
+func (ego *DSNConfig) AddParam(k string, v string) *DSNConfig {
+	if ego.Params == nil {
+		ego.Params = make(map[string]string)
+	}
 	ego.Params[k] = v
+	return ego
 }
 
 func NeoDSN(name string, pass string, proto string, ip string, port uint16, db string, paramStr string) *DSNConfig {
@@ -80,6 +96,9 @@ func NeoDSN(name string, pass string, proto string, ip string, port uint16, db s
 		Password:    pass,
 		Protocol:    proto,
 		DB:          db,
+		IP:          ip,
+		Port:        port,
 		ParamString: paramStr,
+		Params:      make(map[string]string),
 	}
 }

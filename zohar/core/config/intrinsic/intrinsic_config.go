@@ -24,6 +24,7 @@ type LoggerConfig struct {
 	VolumeLimit     int32    `json:"VolumeLimit"`
 	Type            int8     `json:"Type"`
 	SplitMode       int8     `json:"SplitMode"`
+	Depth           int8     `json:"SplitMode"`
 	DefaultLevel    int8     `json:"DefaultLevel"`
 	FileNamePattern string   `json:"FileNamePattern"`
 	LinePattern     []string `json:"LinePattern"`
@@ -75,6 +76,10 @@ func (ego *LoggerConfig) String() string {
 	ss.WriteString("       ")
 	ss.WriteString("Type:(")
 	ss.WriteString(strconv.Itoa(int(ego.Type)))
+	ss.WriteString(")\n")
+	ss.WriteString("       ")
+	ss.WriteString("Depth:(")
+	ss.WriteString(strconv.Itoa(int(ego.Depth)))
 	ss.WriteString(")\n")
 	ss.WriteString("       ")
 	ss.WriteString("BaseOnCWD:(")
@@ -192,6 +197,7 @@ func MakeDefaultIntrinsicConfig(file *io.File) int32 {
 		VolumeLimit:     1000,
 		Type:            0,
 		SplitMode:       0,
+		Depth:           8,
 		DefaultLevel:    core.LL_DEBUG,
 		FileNamePattern: fileNamePattern,
 		LinePattern:     []string{"date", "time", "nano", "ts", "lv", "pid", "goid"},

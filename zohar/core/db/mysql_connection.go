@@ -1008,29 +1008,30 @@ func (ego *MysqlConnection) CreateDataBase(name string, chaset string, ci string
 func (ego *MysqlConnection) Connect() int32 {
 	var nTries uint16 = 0
 	for {
-		connStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s&parseTime=true", ego._cfgPool.Username, ego._cfgPool.Password, ego._cfgPool.IPV4Addr, ego._cfgPool.TcpPort, ego._cfgPool.DB, ego._cfgPool.ConnParam)
+		//connStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s&parseTime=true", ego._cfgPool.DSN.Username, ego._cfgPool.DSN.Password, ego._cfgPool.DSN.IP, ego._cfgPool.DSN.Port, ego._cfgPool.DSN.DB, ego._cfgPool.DSN.ParamString)
+		connStr := ego._cfgPool.DSN.AddParam("parseTime", "true").String()
 		var err error = nil
 		ego._conn, err = sql.Open("mysql", connStr)
 		if err == nil {
 			rc := ego.ConnectionTest()
 			if core.Err(rc) {
-				logging.Log(core.LL_INFO, "Connect_%d to db \t\t\t\t[Failed:(%s)]", ego._index, connStr)
+				logging.Log(core.LL_INFO, "Connect_%d to orm \t\t\t\t[Failed:(%s)]", ego._index, connStr)
 			} else {
 				ego._conn.SetMaxOpenConns(1)
 				ego._conn.SetMaxIdleConns(1)
 				ego._conn.SetConnMaxIdleTime(time.Second * time.Duration(ego._cfgPool.KeepAlive))
 
-				logging.Log(core.LL_INFO, "Connect_%d to db \t\t\t\t[Success:(%s)]", ego._index, connStr)
+				logging.Log(core.LL_INFO, "Connect_%d to orm \t\t\t\t[Success:(%s)]", ego._index, connStr)
 				return core.MkSuccess(0)
 			}
 		} else {
-			logging.Log(core.LL_INFO, "Connect_%d to db \t\t\t\t[Failed:(%s) Maybe Syntax?]", ego._index, connStr)
+			logging.Log(core.LL_INFO, "Connect_%d to orm \t\t\t\t[Failed:(%s) Maybe Syntax?]", ego._index, connStr)
 		}
 
 		time.Sleep(1000 * time.Millisecond)
 		nTries++
 		if ego._cfgPool.MaxTries > 0 && nTries >= ego._cfgPool.MaxTries {
-			logging.Log(core.LL_INFO, "Connect_%d to db Failed and Retry reached Max Time %d", ego._index, ego._cfgPool.MaxTries)
+			logging.Log(core.LL_INFO, "Connect_%d to orm Failed and Retry reached Max Time %d", ego._index, ego._cfgPool.MaxTries)
 			return core.MkErr(core.EC_CONNECT_DB_FAILED, 1)
 		}
 	}

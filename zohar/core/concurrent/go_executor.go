@@ -34,6 +34,7 @@ func (ego *GoExecutor) onRunning() {
 
 	timeout := time.After(1000 * time.Millisecond)
 	for {
+
 		select {
 		case <-timeout:
 

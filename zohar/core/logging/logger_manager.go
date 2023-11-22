@@ -111,6 +111,10 @@ func (ego *LoggerManager) Get(name string) ILogger {
 	return v2
 }
 
+func (ego *LoggerManager) GetDefaultLogger() ILogger {
+	return ego.defaultLogger
+}
+
 var lmInstance LoggerManager
 var once sync.Once
 

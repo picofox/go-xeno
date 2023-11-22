@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -21,6 +22,7 @@ type LocalSyncTextLogger struct {
 	_lineBuffer strings.Builder
 	_lock       sync.RWMutex
 
+	_depth          int
 	_level          int
 	_filename       string
 	_name           string
@@ -31,8 +33,10 @@ type LocalSyncTextLogger struct {
 	_nextShiftEpoch int64
 }
 
+func (ego *LocalSyncTextLogger) SetDepth(dep int) {
+	ego._depth = dep
+}
 func (ego *LocalSyncTextLogger) SetLevel(lv int) {
-	//TODO implement me
 	ego._level = lv
 }
 
@@ -90,6 +94,10 @@ func NeoLocalSyncTextLogger(name string, cfg *intrinsic.LoggerConfig) *LocalSync
 			elemes |= LINE_HEADER_ELEM_PID
 		} else if strings.ToLower(cfg.LinePattern[i]) == "goid" {
 			elemes |= LINE_HEADER_ELEM_GOID
+		} else if strings.ToLower(cfg.LinePattern[i]) == "lpos" {
+			elemes |= LINE_TAILER_ELEM_LPOS
+		} else if strings.ToLower(cfg.LinePattern[i]) == "spos" {
+			elemes |= LINE_TAILER_ELEM_SPOS
 		}
 	}
 
@@ -102,7 +110,7 @@ func NeoLocalSyncTextLogger(name string, cfg *intrinsic.LoggerConfig) *LocalSync
 	}
 
 	l := LocalSyncTextLogger{
-
+		_depth:          2,
 		_level:          core.LL_DEBUG,
 		_name:           name,
 		_header:         elemes,
@@ -249,6 +257,7 @@ func (ego *LocalSyncTextLogger) LogFixedWidth(lv int, leftLen int, ok bool, fail
 		ego._lineBuffer.WriteString(")]")
 	}
 	s := ego._lineBuffer.String()
+
 	ego._logFile.WriteLineBared(s)
 	if ego._config.ToConsole {
 		fmt.Println(s)
@@ -276,6 +285,21 @@ func (ego *LocalSyncTextLogger) Log(lv int, format string, arg ...any) {
 
 	ego.writeHeader(&tm, lv)
 	ego._lineBuffer.WriteString(fmt.Sprintf(format, arg...))
+
+	if ego._header&LINE_TAILER_ELEM_LPOS != 0 {
+		_, file, line, _ := runtime.Caller(ego._depth)
+		ego._lineBuffer.WriteString("\t@")
+		ego._lineBuffer.WriteString(file)
+		ego._lineBuffer.WriteString(":")
+		ego._lineBuffer.WriteString(strconv.Itoa(line))
+	} else if ego._header&LINE_TAILER_ELEM_SPOS != 0 {
+		_, file, line, _ := runtime.Caller(ego._depth)
+		ego._lineBuffer.WriteString("\t@")
+		ego._lineBuffer.WriteString(filepath.Base(file))
+		ego._lineBuffer.WriteString(":")
+		ego._lineBuffer.WriteString(strconv.Itoa(line))
+	}
+
 	s := ego._lineBuffer.String()
 	ego._logFile.WriteLineBared(s)
 	if ego._config.ToConsole {

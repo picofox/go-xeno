@@ -5,16 +5,18 @@ go 1.21.1
 require (
 	github.com/bytedance/gopkg v0.0.0-20220413063733-65bf48ffb3a7
 	github.com/fsnotify/fsnotify v1.7.0
-	github.com/tHinqa/outside-windows v0.0.0-20131225231147-79e174abeec9
 	github.com/xuri/excelize/v2 v2.8.0
 	golang.org/x/sys v0.14.0
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0
+	gorm.io/driver/mysql v1.5.2
+	gorm.io/gorm v1.25.5
 )
 
 require (
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/tHinqa/outside v0.0.0-20131227223926-48a9c99b2195 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231106174013-bbf56f31fb17 // indirect
 )
 

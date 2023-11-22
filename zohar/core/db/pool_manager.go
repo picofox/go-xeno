@@ -13,7 +13,7 @@ var pmOnce sync.Once
 
 type PoolManager struct {
 	_pools  map[string]*ConnectionPool
-	_config config.DBConfig
+	_config *config.DBConfig
 }
 
 func GetPoolManager() *PoolManager {
@@ -34,7 +34,7 @@ func (ego *PoolManager) GetPool(name string) *ConnectionPool {
 }
 
 func (ego *PoolManager) Initialize(cfgDB *config.DBConfig) (int32, string) {
-	ego._config = *cfgDB
+	ego._config = cfgDB
 	for k, v := range ego._config.Pools {
 		pool, rc := NeoConnectionPool(k, v)
 		if core.Err(rc) {
