@@ -52,7 +52,6 @@ func (ego *CronServiceGroup) Initialize() int32 {
 		}
 		ego.AddService(k, svc)
 	}
-
 	return core.MkSuccess(0)
 }
 

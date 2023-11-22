@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 	"xeno/zohar/core"
+	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/cms"
 	"xeno/zohar/core/datatype"
-	"xeno/zohar/core/datetime"
 )
 
 type TimerManager struct {
@@ -22,7 +22,7 @@ type TimerManager struct {
 
 func (ego *TimerManager) _onRunning() {
 	ego._shuttingDown = false
-	ego._secondLevelTs = datetime.GetRealTimeMilli()
+	ego._secondLevelTs = chrono.GetRealTimeMilli()
 	defer ego._waitGroup.Done()
 	defer func() {
 		if err := recover(); err != nil {
@@ -39,7 +39,7 @@ func (ego *TimerManager) _onRunning() {
 			ego._timewheel.UpdateTime()
 			time.Sleep(2500 * time.Microsecond)
 
-			curr := datetime.GetRealTimeMilli()
+			curr := chrono.GetRealTimeMilli()
 			diff := curr - ego._secondLevelTs
 			if diff > 1000 {
 				ego._timewheelSec.UpdateTime()
@@ -50,7 +50,7 @@ func (ego *TimerManager) _onRunning() {
 }
 
 func (ego *TimerManager) AddAbsTimerMilli(epochMillis int64, repCount int64, repDura uint32, executor uint8, cb datatype.TaskFuncType, obj any) *Timer {
-	nowTs := datetime.GetRealTimeMilli()
+	nowTs := chrono.GetRealTimeMilli()
 	diff := epochMillis - nowTs
 	if diff < 0 {
 		diff = 0
@@ -59,7 +59,7 @@ func (ego *TimerManager) AddAbsTimerMilli(epochMillis int64, repCount int64, rep
 }
 
 func (ego *TimerManager) AddAbsTimerSecond(epochSeconds int64, repCount int64, repDura uint32, executor uint8, cb datatype.TaskFuncType, obj any) *Timer {
-	nowTs := datetime.GetRealTimeMilli()
+	nowTs := chrono.GetRealTimeMilli()
 	diff := (epochSeconds*1000 - nowTs) / 1000
 	if diff < 0 {
 		diff = 0
@@ -69,6 +69,7 @@ func (ego *TimerManager) AddAbsTimerSecond(epochSeconds int64, repCount int64, r
 
 func (ego *TimerManager) AddRelTimerMilli(millis int64, repCount int64, repDura uint32, executor uint8, cb datatype.TaskFuncType, obj any) *Timer {
 	d := uint32(millis / 10)
+	repDura = uint32(repDura / 10)
 	return ego._timewheel.AddTimer(d, repCount, repDura, executor, cb, obj)
 }
 

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sync"
 	"xeno/zohar/core"
+	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/cms"
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/datatype"
@@ -22,6 +23,7 @@ type GoExecutorPool struct {
 	_config       *intrinsic.GoExecutorPoolConfig
 	_lock         sync.Mutex
 	_shuttingDown bool
+	_ic           *chrono.IntervalCounter
 }
 
 func (ego *GoExecutorPool) String() string {
@@ -69,19 +71,21 @@ func (ego *GoExecutorPool) PostTask(proc datatype.TaskFuncType, obj any) {
 		return
 	}
 
-	qLen := len(ego._channel)
-	if qLen > ego._config.HighWaterMark {
-		ego._lock.Lock()
-		if wc < ego._config.MaxCount {
-			ego.SetWorkerCount(int32(wc) + 1)
+	if ego._ic.UpdateNow() {
+		qLen := len(ego._channel)
+		if qLen > ego._config.HighWaterMark {
+			ego._lock.Lock()
+			if wc < ego._config.MaxCount {
+				ego.SetWorkerCount(int32(wc) + 1)
+			}
+			ego._lock.Unlock()
+		} else if qLen <= ego._config.LowWaterMark {
+			ego._lock.Lock()
+			if wc > ego._config.MinCount {
+				ego.SetWorkerCount(int32(wc) - 1)
+			}
+			ego._lock.Unlock()
 		}
-		ego._lock.Unlock()
-	} else if qLen <= ego._config.LowWaterMark {
-		ego._lock.Lock()
-		if wc > ego._config.MinCount {
-			ego.SetWorkerCount(int32(wc) - 1)
-		}
-		ego._lock.Unlock()
 	}
 
 	task := cms.NeoCMSGoWorkerTask(proc, obj)
@@ -124,6 +128,7 @@ func (ego *GoExecutorPool) Stop() {
 
 func NeoGoExecutorPool() *GoExecutorPool {
 	cfg := &intrinsic.GetIntrinsicConfig().GoExecutorPool
+	interval := cfg.CheckInterval
 	wp := &GoExecutorPool{
 		_name:         cfg.Name,
 		_initCount:    cfg.InitialCount,
@@ -133,6 +138,7 @@ func NeoGoExecutorPool() *GoExecutorPool {
 		_config:       cfg,
 		_waitGroup:    sync.WaitGroup{},
 		_shuttingDown: false,
+		_ic:           chrono.NeoIntervalCounter(interval),
 	}
 
 	return wp

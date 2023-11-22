@@ -13,10 +13,16 @@ type ACCServer struct {
 }
 
 func (ego *ACCServer) OnRegister(ctx context.Context, register *account.AccountRegister) (*account.AccountRegisterResult, error) {
+	fmt.Println("reg get")
 	return &account.AccountRegisterResult{
 		Ok:  false,
 		Uid: 0,
 	}, nil
+}
+
+func MyUnaryServerInterceptor(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
+	fmt.Println("lanjie le ")
+	return handler(ctx, req)
 }
 
 func main() {
@@ -30,8 +36,8 @@ func main() {
 	//
 	//newReq := pbs.AccountRegister{}
 	//proto.Unmarshal(rsp, &newReq)
-
-	gs := grpc.NewServer()
+	opt := grpc.UnaryInterceptor(MyUnaryServerInterceptor)
+	gs := grpc.NewServer(opt)
 	account.RegisterAccountServiceServer(gs, &ACCServer{})
 	listen, err := net.Listen("tcp", "localhost:9090")
 	if err != nil {

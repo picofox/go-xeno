@@ -3,8 +3,8 @@ package timer
 import (
 	"fmt"
 	"sync"
+	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/datatype"
-	"xeno/zohar/core/datetime"
 )
 
 const (
@@ -28,7 +28,7 @@ type TimeWheel struct {
 }
 
 func (ego *TimeWheel) getTime() uint64 {
-	monoNano := datetime.GetMonotonicNano()
+	monoNano := chrono.GetMonotonicNano()
 	sec := monoNano / 1000000000
 	nsec := monoNano - (sec * 1000000000)
 	t := sec * (1000 / int64(ego._milliInUnit))
@@ -37,7 +37,7 @@ func (ego *TimeWheel) getTime() uint64 {
 }
 
 func (ego *TimeWheel) systime(sec *uint32, cs *uint32) {
-	tv := datetime.GetRealTimeNano()
+	tv := chrono.GetRealTimeNano()
 	*sec = uint32(tv / 1000000000)
 	*cs = uint32((tv - (int64(ego._startTime) * 1000000000)) / 1000000 * int64(ego._milliInUnit))
 }

@@ -1,8 +1,8 @@
 {
 	"CWD": "",
 	"CmdSpecRestrict": false,
-	"CmdParamSpec": "l:log-level:u8:1:1:true, d:debug-mode:u8:1:1:true, v:version::0:0:true, :credential-file:str:1:1:true,  s:server-list:Lstr:1:128:true,  p:params:Dstr-str:1:128:true",
-	"CmdTargetSpec":"str:1:100",
+	"CmdParamSpec": "",
+	"CmdTargetSpec": "",
 	"Logging": {
 		"default": {
 			"BaseOnCWD": false,

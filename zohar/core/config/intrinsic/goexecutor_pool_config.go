@@ -14,6 +14,7 @@ type GoExecutorPoolConfig struct {
 	QueueSize     int    `json:"QueueSize"`
 	HighWaterMark int    `json:"HighWaterMark"`
 	LowWaterMark  int    `json:"LowWaterMark"`
+	CheckInterval int64  `json:"CheckInterval"`
 }
 
 func (ego *GoExecutorPoolConfig) String() string {

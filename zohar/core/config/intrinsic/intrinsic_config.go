@@ -206,6 +206,7 @@ func MakeDefaultIntrinsicConfig(file *io.File) int32 {
 	IntrinConfig.GoExecutorPool.QueueSize = 1024
 	IntrinConfig.GoExecutorPool.HighWaterMark = 512
 	IntrinConfig.GoExecutorPool.LowWaterMark = 0
+	IntrinConfig.GoExecutorPool.CheckInterval = 1000
 
 	cronCfgDfl := CronServiceConfig{
 		Offset: 0,
