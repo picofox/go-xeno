@@ -3,11 +3,11 @@ package net_test
 import (
 	"fmt"
 	"testing"
-	"xeno/zohar/core/net"
+	"xeno/zohar/core/inet"
 )
 
 func Test_IPV4EndPoint_Functional_Basic(t *testing.T) {
-	ipe := net.NeoIPV4EndPointByStrIP(net.EP_PROTO_TCP, 0, 255, "192.168.0.100", 10000)
+	ipe := inet.NeoIPV4EndPointByStrIP(inet.EP_PROTO_TCP, 0, 255, "192.168.0.100", 10000)
 
 	if !ipe.Valid() {
 		t.Errorf("Invalid data of ipe %d", ipe.Identifier())

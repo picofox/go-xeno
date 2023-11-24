@@ -9,7 +9,7 @@ import (
 	"xeno/zohar/core/strs"
 )
 
-//net: add FlagRunning to the Flags of struct Interface, to exactly reflect the states of an interface or NIC.
+//inet: add FlagRunning to the Flags of struct Interface, to exactly reflect the states of an interface or NIC.
 //
 //And a new flag(FlagRunning), and correctly set this flag while parsing the syscall result.
 //

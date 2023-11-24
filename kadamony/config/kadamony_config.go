@@ -10,7 +10,8 @@ import (
 )
 
 type KadamonyConfig struct {
-	DB config.DBConfig `json:"DB"`
+	DB      config.DBConfig      `json:"DB"`
+	Network config.NetworkConfig `json:"Network"`
 }
 
 var kadamonyConfigInstance *KadamonyConfig = nil

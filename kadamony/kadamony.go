@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"gorm.io/gorm/logger"
 	"math/bits"
+	"reflect"
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
+	"xeno/zohar/core/inet/server"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/logging/logger_adapter"
-	"xeno/zohar/core/net/server"
+	"xeno/zohar/core/mp"
 	"xeno/zohar/core/sched/timer"
 	"xeno/zohar/framework"
 	_ "xeno/zohar/framework"
@@ -72,10 +74,19 @@ func main() {
 		logging.LogFixedWidth(core.LL_SYS, 70, false, errString, "Kadamony Application Initializing ...")
 	}
 
-	server := server.NeoTcpServer("192.168.0.100", 10000)
+	var output []reflect.Value = make([]reflect.Value, 0, 10)
+	mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "NeoO1L15COT15DecodeServerHandler")
+	hdl := output[0].Interface().(*server.O1L15COT15DecodeServerHandler)
+	if hdl == nil {
+		fmt.Printf("shabile")
+	}
+
+	server := server.NeoTcpServer("0.0.0.0", 10000)
 	if server == nil {
 		logging.Log(core.LL_ERR, "failed")
 	}
+	server.Listen()
+	server.Start()
 
 	logging.Log(core.LL_SYS, "start")
 	var iface logger.Interface = logger_adapter.NeoGORMLoggerAdapter(logging.GetLoggerManager().GetDefaultLogger())

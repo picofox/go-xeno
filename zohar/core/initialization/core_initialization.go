@@ -13,8 +13,10 @@ import (
 	"xeno/zohar/core/concurrent"
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/finalization"
+	"xeno/zohar/core/inet/server"
 	"xeno/zohar/core/io"
 	"xeno/zohar/core/logging"
+	"xeno/zohar/core/mp"
 	"xeno/zohar/core/process"
 	"xeno/zohar/core/sched/timer"
 )
@@ -153,6 +155,8 @@ func Initialize() {
 				logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Starting Default Timer Manager ...")
 
 			}
+
+			mp.GetDefaultObjectInvoker().RegisterClass("smh", server.GetHandlerRegistration())
 		},
 	)
 }

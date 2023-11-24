@@ -1,7 +1,9 @@
-package net
+package inet
 
 import (
 	"fmt"
+	"net"
+	"strconv"
 	"strings"
 	"xeno/zohar/core"
 	"xeno/zohar/core/strs"
@@ -37,6 +39,14 @@ func (ego *IPV4EndPoint) Valid() bool {
 
 func (ego *IPV4EndPoint) Proto() int8 {
 	return int8((ego._identifier >> 61) & 0x3)
+}
+
+func (ego *IPV4EndPoint) ProtoName() string {
+	return sProtoName[ego.Proto()]
+}
+
+func (ego *IPV4EndPoint) EndPointString() string {
+	return fmt.Sprintf("%s:%d", ego.IPV4Str(), ego.Port())
 }
 
 func (ego *IPV4EndPoint) SetProto(p int8) {
@@ -116,6 +126,9 @@ func NeoIPV4EndPoint(proto int8, mask int8, extra uint8, ipv4Addr uint32, port u
 }
 
 func NeoIPV4EndPointByStrIP(proto int8, mask int8, extra uint8, ipv4AddrStr string, port uint16) IPV4EndPoint {
+	if strings.ToLower(ipv4AddrStr) == "localhost" {
+		ipv4AddrStr = "0.0.0.0"
+	}
 	var d int64 = 0
 	ipv4Addr, rc := strs.IPV4Addr2UIntBE(ipv4AddrStr)
 	if core.Err(rc) {
@@ -142,4 +155,32 @@ func NeoIPV4EndPointByIdentifier(id int64) IPV4EndPoint {
 	return IPV4EndPoint{
 		_identifier: id,
 	}
+}
+
+func NeoIPV4EndPointByAddr(a net.Addr) IPV4EndPoint {
+	str := a.String()
+	ss := strings.Split(str, ":")
+	if ss == nil || len(ss) < 2 {
+		return IPV4EndPoint{
+			_identifier: -1,
+		}
+	}
+	port, err := strconv.Atoi(ss[1])
+	if err != nil {
+		return IPV4EndPoint{
+			_identifier: -1,
+		}
+	}
+
+	var proto int8
+	if strings.ToLower(a.Network()) == "tcp" {
+		proto = EP_PROTO_TCP
+	} else if strings.ToLower(a.Network()) == "udp" {
+		proto = EP_PROTO_UDP
+	} else {
+		return IPV4EndPoint{
+			_identifier: -1,
+		}
+	}
+	return NeoIPV4EndPointByStrIP(proto, 0, 0, ss[0], uint16(port))
 }

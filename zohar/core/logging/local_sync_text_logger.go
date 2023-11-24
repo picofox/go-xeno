@@ -86,6 +86,10 @@ func NeoLocalSyncTextLogger(name string, cfg *intrinsic.LoggerConfig) *LocalSync
 			elemes |= LINE_HEADER_ELEM_TIME
 		} else if strings.ToLower(cfg.LinePattern[i]) == "nano" {
 			elemes |= LINE_HEADER_ELEM_NANO
+		} else if strings.ToLower(cfg.LinePattern[i]) == "milli" {
+			elemes |= LINE_HEADER_ELEM_MILLI
+		} else if strings.ToLower(cfg.LinePattern[i]) == "micro" {
+			elemes |= LINE_HEADER_ELEM_MICRO
 		} else if strings.ToLower(cfg.LinePattern[i]) == "ts" {
 			elemes |= LINE_HEADER_ELEM_TS
 		} else if strings.ToLower(cfg.LinePattern[i]) == "lv" {
@@ -139,7 +143,11 @@ func (ego *LocalSyncTextLogger) writeHeader(tm *time.Time, lv int) {
 	}
 	if ego._header&LINE_HEADER_ELEM_TIME != 0 {
 		if ego._header&LINE_HEADER_ELEM_NANO != 0 {
-			ego._lineBuffer.WriteString(fmt.Sprintf("%02d:%02d:%02d.%06d\t", tm.Hour(), tm.Minute(), tm.Second(), tm.Nanosecond()))
+			ego._lineBuffer.WriteString(fmt.Sprintf("%02d:%02d:%02d.%09d\t", tm.Hour(), tm.Minute(), tm.Second(), tm.Nanosecond()))
+		} else if ego._header&LINE_HEADER_ELEM_MILLI != 0 {
+			ego._lineBuffer.WriteString(fmt.Sprintf("%02d:%02d:%02d.%03d\t", tm.Hour(), tm.Minute(), tm.Second(), tm.Nanosecond()/1000000))
+		} else if ego._header&LINE_HEADER_ELEM_MICRO != 0 {
+			ego._lineBuffer.WriteString(fmt.Sprintf("%02d:%02d:%02d.%06d\t", tm.Hour(), tm.Minute(), tm.Second(), tm.Nanosecond()/1000))
 		} else {
 			ego._lineBuffer.WriteString(fmt.Sprintf("%02d:%02d:%02d\t", tm.Hour(), tm.Minute(), tm.Second()))
 		}

@@ -12,7 +12,7 @@
 					"IP": "192.168.0.151",
 					"Port": 7336,							
 					"DB": "gamedb",	
-					"ParamString": "charset=utf8mb4",
+					"ParamString": "charset=utf8mb4"
 				},
 				"Connections": [{
 						"Tables": ["account", "role"]
@@ -27,6 +27,28 @@
 						"Tables": ["loot", "task"]
 					}
 				]
+			}
+		}
+	},
+	"Network" : {
+		"Server" : {
+			"TCP" : {
+				"Defaut"  : {
+					"BindAddr" : "",
+					"Port" : 9999,
+					"PubIP" : "192.168.0.100",
+					"PriIP" : "192.168.0.100",
+					"Handlers" : [
+						{
+							"Name" : "O1L15COT15DecodeServerHandler",
+							"Param" : {}
+						},
+						{
+							"Name" : "MessageBufferServerHandlers",
+							"Param" : {}	
+						}
+					] 
+				}
 			}
 		}
 	}

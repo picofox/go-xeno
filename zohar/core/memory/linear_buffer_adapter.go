@@ -5,14 +5,14 @@ import (
 	"xeno/zohar/core/datatype"
 )
 
-type LinearBuffer struct {
+type LinearBufferAdapter struct {
 	_capacity int64
 	_beginPos int64
 	_length   int64
 	_data     []byte
 }
 
-func (ego *LinearBuffer) compact() {
+func (ego *LinearBufferAdapter) compact() {
 	if ego._beginPos > 0 {
 		if ego._length > 0 {
 			copy(ego._data[0:], ego._data[ego._beginPos:ego._beginPos+ego._length])
@@ -21,85 +21,42 @@ func (ego *LinearBuffer) compact() {
 	}
 }
 
-func (ego *LinearBuffer) ResizeTo(newSize int64) int64 {
-	ego.compact()
-	if ego._capacity < newSize {
-		neoData := make([]byte, newSize)
-		copy(neoData, ego._data[ego._beginPos:ego._length])
-		oldCapa := ego._capacity
-		ego._beginPos = 0
-		ego._capacity = newSize
-		ego._data = neoData
-		return newSize - oldCapa
-	} else if ego._capacity > newSize {
-		if newSize > ego._length {
-			neoData := make([]byte, newSize)
-			copy(neoData, ego._data[ego._beginPos:ego._length])
-			oldCapa := ego._capacity
-			ego._beginPos = 0
-			ego._capacity = newSize
-			ego._data = neoData
-			return newSize - oldCapa
-		}
-	}
+func (ego *LinearBufferAdapter) ResizeTo(newSize int64) int64 {
 	return 0
 }
 
-func (ego *LinearBuffer) checkSpace(extraLength int64) int64 {
+func (ego *LinearBufferAdapter) checkSpace(extraLength int64) int64 {
 	ego.compact()
 	wa := ego.WriteAvailable()
 	if wa >= extraLength {
 		return 0
-	} else {
-		atLeastToAlloc := int64(0)
-		if ego._capacity < 512 {
-			atLeastToAlloc = ego._capacity
-		} else {
-			atLeastToAlloc = 512
-		}
-		if atLeastToAlloc < extraLength-wa {
-			atLeastToAlloc = extraLength - wa
-		}
-		totolLen := ego._capacity + atLeastToAlloc
-		neoData := make([]byte, totolLen)
-		copy(neoData, ego._data[ego._beginPos:ego._length])
-		ego._beginPos = 0
-		ego._capacity = totolLen
-		ego._data = neoData
-		return atLeastToAlloc
 	}
+	return -1
 }
 
-func (ego *LinearBuffer) WritePos() int64 {
+func (ego *LinearBufferAdapter) WritePos() int64 {
 	wp := ego._beginPos + ego._length
 	return wp
 }
 
-func (ego *LinearBuffer) Capacity() int64 {
+func (ego *LinearBufferAdapter) Capacity() int64 {
 	return ego._capacity
 }
 
-func (ego *LinearBuffer) ReadAvailable() int64 {
+func (ego *LinearBufferAdapter) ReadAvailable() int64 {
 	return ego._length
 }
 
-func (ego *LinearBuffer) WriteAvailable() int64 {
+func (ego *LinearBufferAdapter) WriteAvailable() int64 {
 	return ego._capacity - ego._length
 }
 
-func (ego *LinearBuffer) Clear() {
+func (ego *LinearBufferAdapter) Clear() {
 	ego._beginPos = 0
 	ego._length = 0
 }
 
-func (ego *LinearBuffer) Reset() {
-	ego._beginPos = 0
-	ego._length = 0
-	ego._capacity = 0
-	ego._data = make([]byte, 0)
-}
-
-func (ego *LinearBuffer) PeekRawBytes(ba []byte, baOff int64, peekLength int64, isStrict bool) (int64, int64, int64) {
+func (ego *LinearBufferAdapter) PeekRawBytes(ba []byte, baOff int64, peekLength int64, isStrict bool) (int64, int64, int64) {
 	if ego._length < peekLength {
 		if isStrict {
 			return 0, -1, -1
@@ -120,7 +77,7 @@ func (ego *LinearBuffer) PeekRawBytes(ba []byte, baOff int64, peekLength int64, 
 	}
 }
 
-func (ego *LinearBuffer) ReadRawBytes(ba []byte, baOff int64, readLength int64, isStrict bool) int64 {
+func (ego *LinearBufferAdapter) ReadRawBytes(ba []byte, baOff int64, readLength int64, isStrict bool) int64 {
 	if ego._length < readLength {
 		if isStrict {
 			return 0
@@ -143,7 +100,7 @@ func (ego *LinearBuffer) ReadRawBytes(ba []byte, baOff int64, readLength int64, 
 
 }
 
-func (ego *LinearBuffer) WriteRawBytes(ba []byte, srcOff int64, srcLength int64) int32 {
+func (ego *LinearBufferAdapter) WriteRawBytes(ba []byte, srcOff int64, srcLength int64) int32 {
 	if srcLength < 0 {
 		srcLength = int64(len(ba))
 	}
@@ -156,7 +113,7 @@ func (ego *LinearBuffer) WriteRawBytes(ba []byte, srcOff int64, srcLength int64)
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekFloat32() (float32, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekFloat32() (float32, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 4 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -169,7 +126,7 @@ func (ego *LinearBuffer) PeekFloat32() (float32, int32, int64, int64) {
 	return f32, core.MkSuccess(0), beg, ego._length - 4
 }
 
-func (ego *LinearBuffer) ReadFloat32() (float32, int32) {
+func (ego *LinearBufferAdapter) ReadFloat32() (float32, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 4 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -183,7 +140,7 @@ func (ego *LinearBuffer) ReadFloat32() (float32, int32) {
 	return rc, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteFloat32(fv float32) int32 {
+func (ego *LinearBufferAdapter) WriteFloat32(fv float32) int32 {
 	if ego.checkSpace(4) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -193,7 +150,7 @@ func (ego *LinearBuffer) WriteFloat32(fv float32) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekFloat64() (float64, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekFloat64() (float64, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 8 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -206,7 +163,7 @@ func (ego *LinearBuffer) PeekFloat64() (float64, int32, int64, int64) {
 	return f64, core.MkSuccess(0), beg, ego._length - 8
 }
 
-func (ego *LinearBuffer) ReadFloat64() (float64, int32) {
+func (ego *LinearBufferAdapter) ReadFloat64() (float64, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 8 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -220,7 +177,7 @@ func (ego *LinearBuffer) ReadFloat64() (float64, int32) {
 	return rc, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteFloat64(fv float64) int32 {
+func (ego *LinearBufferAdapter) WriteFloat64(fv float64) int32 {
 	if ego.checkSpace(8) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -230,7 +187,7 @@ func (ego *LinearBuffer) WriteFloat64(fv float64) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekBool() (bool, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekBool() (bool, int32, int64, int64) {
 	iv, rc, beg, rLen := ego.PeekInt8()
 	if core.Err(rc) {
 		return false, rc, beg, rLen
@@ -241,7 +198,7 @@ func (ego *LinearBuffer) PeekBool() (bool, int32, int64, int64) {
 	return false, rc, beg, rLen
 }
 
-func (ego *LinearBuffer) ReadBool() (bool, int32) {
+func (ego *LinearBufferAdapter) ReadBool() (bool, int32) {
 	iv, rc := ego.ReadInt8()
 	if core.Err(rc) {
 		return false, rc
@@ -252,7 +209,7 @@ func (ego *LinearBuffer) ReadBool() (bool, int32) {
 	return false, rc
 }
 
-func (ego *LinearBuffer) WriteBool(b bool) int32 {
+func (ego *LinearBufferAdapter) WriteBool(b bool) int32 {
 	if ego.checkSpace(1) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -266,7 +223,7 @@ func (ego *LinearBuffer) WriteBool(b bool) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekInt8() (int8, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekInt8() (int8, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 1 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -275,7 +232,7 @@ func (ego *LinearBuffer) PeekInt8() (int8, int32, int64, int64) {
 	return rc, core.MkSuccess(0), ego._beginPos + 1, ego._length - 1
 }
 
-func (ego *LinearBuffer) ReadInt8() (int8, int32) {
+func (ego *LinearBufferAdapter) ReadInt8() (int8, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 1 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -286,7 +243,7 @@ func (ego *LinearBuffer) ReadInt8() (int8, int32) {
 	return rc, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteInt8(iv int8) int32 {
+func (ego *LinearBufferAdapter) WriteInt8(iv int8) int32 {
 	if ego.checkSpace(1) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -296,7 +253,7 @@ func (ego *LinearBuffer) WriteInt8(iv int8) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekUInt8() (uint8, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekUInt8() (uint8, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 1 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -305,7 +262,7 @@ func (ego *LinearBuffer) PeekUInt8() (uint8, int32, int64, int64) {
 	return rc, core.MkSuccess(0), ego._beginPos + 1, ego._length - 1
 }
 
-func (ego *LinearBuffer) ReadUInt8() (uint8, int32) {
+func (ego *LinearBufferAdapter) ReadUInt8() (uint8, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 1 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -316,7 +273,7 @@ func (ego *LinearBuffer) ReadUInt8() (uint8, int32) {
 	return rc, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteUInt8(u uint8) int32 {
+func (ego *LinearBufferAdapter) WriteUInt8(u uint8) int32 {
 	if ego.checkSpace(1) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -326,7 +283,7 @@ func (ego *LinearBuffer) WriteUInt8(u uint8) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekInt16() (int16, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekInt16() (int16, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 2 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -339,7 +296,7 @@ func (ego *LinearBuffer) PeekInt16() (int16, int32, int64, int64) {
 	return rc, core.MkSuccess(0), beg, ego._length - 2
 }
 
-func (ego *LinearBuffer) ReadInt16() (int16, int32) {
+func (ego *LinearBufferAdapter) ReadInt16() (int16, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 2 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -353,7 +310,7 @@ func (ego *LinearBuffer) ReadInt16() (int16, int32) {
 	return rc, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteInt16(iv int16) int32 {
+func (ego *LinearBufferAdapter) WriteInt16(iv int16) int32 {
 	if ego.checkSpace(2) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -365,7 +322,7 @@ func (ego *LinearBuffer) WriteInt16(iv int16) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekUInt16() (uint16, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekUInt16() (uint16, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 2 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -378,7 +335,7 @@ func (ego *LinearBuffer) PeekUInt16() (uint16, int32, int64, int64) {
 	return rc, core.MkSuccess(0), beg, ego._length - 2
 }
 
-func (ego *LinearBuffer) ReadUInt16() (uint16, int32) {
+func (ego *LinearBufferAdapter) ReadUInt16() (uint16, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 2 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -392,7 +349,7 @@ func (ego *LinearBuffer) ReadUInt16() (uint16, int32) {
 	return rc, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteUInt16(uv uint16) int32 {
+func (ego *LinearBufferAdapter) WriteUInt16(uv uint16) int32 {
 	if ego.checkSpace(2) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -404,7 +361,7 @@ func (ego *LinearBuffer) WriteUInt16(uv uint16) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekInt32() (int32, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekInt32() (int32, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 4 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -417,7 +374,7 @@ func (ego *LinearBuffer) PeekInt32() (int32, int32, int64, int64) {
 	return rc, core.MkSuccess(0), beg, ego._length - 4
 }
 
-func (ego *LinearBuffer) ReadInt32() (int32, int32) {
+func (ego *LinearBufferAdapter) ReadInt32() (int32, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 4 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -431,7 +388,7 @@ func (ego *LinearBuffer) ReadInt32() (int32, int32) {
 	return rc, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteInt32(iv int32) int32 {
+func (ego *LinearBufferAdapter) WriteInt32(iv int32) int32 {
 	if ego.checkSpace(4) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -441,7 +398,7 @@ func (ego *LinearBuffer) WriteInt32(iv int32) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekUInt32() (uint32, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekUInt32() (uint32, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 4 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -454,7 +411,7 @@ func (ego *LinearBuffer) PeekUInt32() (uint32, int32, int64, int64) {
 	return rc, core.MkSuccess(0), beg, ego._length - 4
 }
 
-func (ego *LinearBuffer) ReadUInt32() (uint32, int32) {
+func (ego *LinearBufferAdapter) ReadUInt32() (uint32, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 4 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -468,7 +425,7 @@ func (ego *LinearBuffer) ReadUInt32() (uint32, int32) {
 	return rc, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteUInt32(uv uint32) int32 {
+func (ego *LinearBufferAdapter) WriteUInt32(uv uint32) int32 {
 	if ego.checkSpace(4) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -478,7 +435,7 @@ func (ego *LinearBuffer) WriteUInt32(uv uint32) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekInt64() (int64, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekInt64() (int64, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 8 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -491,7 +448,7 @@ func (ego *LinearBuffer) PeekInt64() (int64, int32, int64, int64) {
 	return rc, core.MkSuccess(0), beg, ego._length - 8
 }
 
-func (ego *LinearBuffer) ReadInt64() (int64, int32) {
+func (ego *LinearBufferAdapter) ReadInt64() (int64, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 8 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -505,7 +462,7 @@ func (ego *LinearBuffer) ReadInt64() (int64, int32) {
 	return rc, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteInt64(iv int64) int32 {
+func (ego *LinearBufferAdapter) WriteInt64(iv int64) int32 {
 	if ego.checkSpace(8) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -515,7 +472,7 @@ func (ego *LinearBuffer) WriteInt64(iv int64) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekUInt64() (uint64, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekUInt64() (uint64, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 8 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -528,7 +485,7 @@ func (ego *LinearBuffer) PeekUInt64() (uint64, int32, int64, int64) {
 	return rc, core.MkSuccess(0), beg, ego._length - 8
 }
 
-func (ego *LinearBuffer) ReadUInt64() (uint64, int32) {
+func (ego *LinearBufferAdapter) ReadUInt64() (uint64, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 8 {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -542,7 +499,7 @@ func (ego *LinearBuffer) ReadUInt64() (uint64, int32) {
 	return rc, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteUInt64(uv uint64) int32 {
+func (ego *LinearBufferAdapter) WriteUInt64(uv uint64) int32 {
 	if ego.checkSpace(8) < 0 {
 		return core.MkErr(core.EC_RESPACE_FAILED, 1)
 	}
@@ -552,7 +509,7 @@ func (ego *LinearBuffer) WriteUInt64(uv uint64) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekBytes() ([]byte, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekBytes() ([]byte, int32, int64, int64) {
 	readable := ego.ReadAvailable()
 	if readable < 4 {
 		return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1), -1, -1
@@ -589,7 +546,7 @@ func (ego *LinearBuffer) PeekBytes() ([]byte, int32, int64, int64) {
 	return nil, core.MkSuccess(0), updateBeg, updateLen
 }
 
-func (ego *LinearBuffer) ReadBytes() ([]byte, int32) {
+func (ego *LinearBufferAdapter) ReadBytes() ([]byte, int32) {
 	readable := ego.ReadAvailable()
 	if readable < 4 {
 		return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -616,7 +573,7 @@ func (ego *LinearBuffer) ReadBytes() ([]byte, int32) {
 	return nil, core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteBytes(srcBA []byte) int32 {
+func (ego *LinearBufferAdapter) WriteBytes(srcBA []byte) int32 {
 	blen := len(srcBA)
 	if blen > datatype.INT32_MAX {
 		return core.MkErr(core.EC_INDEX_OOB, 0)
@@ -631,7 +588,7 @@ func (ego *LinearBuffer) WriteBytes(srcBA []byte) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) PeekString() (string, int32, int64, int64) {
+func (ego *LinearBufferAdapter) PeekString() (string, int32, int64, int64) {
 	rBA, rc, beg, rLen := ego.PeekBytes()
 	if core.Err(rc) {
 		return "", rc, -1, -1
@@ -645,7 +602,7 @@ func (ego *LinearBuffer) PeekString() (string, int32, int64, int64) {
 
 }
 
-func (ego *LinearBuffer) ReadString() (string, int32) {
+func (ego *LinearBufferAdapter) ReadString() (string, int32) {
 	rBA, rc := ego.ReadBytes()
 	if core.Err(rc) {
 		return "", rc
@@ -659,7 +616,7 @@ func (ego *LinearBuffer) ReadString() (string, int32) {
 	return string(rBA), core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) WriteString(str string) int32 {
+func (ego *LinearBufferAdapter) WriteString(str string) int32 {
 	ba := []byte(str)
 	rc := ego.WriteBytes(ba)
 	if core.Err(rc) {
@@ -668,19 +625,26 @@ func (ego *LinearBuffer) WriteString(str string) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) BytesRef() ([]byte, []byte) {
+func (ego *LinearBufferAdapter) BytesRef() ([]byte, []byte) {
 	if ego._length < 1 {
 		return nil, nil
 	}
 	return ego._data[ego._beginPos : ego._beginPos+ego._length], nil
 }
 
-func NeoLinearBuffer(capacity int64) *LinearBuffer {
-	bf := &LinearBuffer{
-		_capacity: capacity,
-		_beginPos: 0,
-		_length:   0,
-		_data:     make([]byte, capacity),
+func (ego *LinearBufferAdapter) SliceOf(length int64) []byte {
+	if ego._length < 1 {
+		return ego._data[ego._beginPos:ego._beginPos]
+	}
+	return ego._data[ego._beginPos : ego._beginPos+length]
+}
+
+func NeoLinearBufferAdapter(data []byte, beginPos int64, length int64, capa int64) *LinearBufferAdapter {
+	bf := &LinearBufferAdapter{
+		_capacity: capa,
+		_beginPos: beginPos,
+		_length:   length,
+		_data:     data,
 	}
 	return bf
 }
