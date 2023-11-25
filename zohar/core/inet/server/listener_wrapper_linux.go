@@ -15,8 +15,6 @@ type ListenerWrapper struct {
 	file  *os.File
 }
 
-var _ Listener = &ListenerWrapper{}
-
 type Listener interface {
 	net.Listener
 
@@ -24,8 +22,10 @@ type Listener interface {
 	Fd() (fd int)
 }
 
+var _ Listener = &ListenerWrapper{}
+
 // Accept implements Listener.
-func (ego *ListenerWrapper) Accept() (net.Conn, int32) {
+func (ego *ListenerWrapper) Accept() (net.Conn, error) {
 	// udp
 	if ego.pconn != nil {
 		return ego.UDPAccept()
@@ -34,21 +34,21 @@ func (ego *ListenerWrapper) Accept() (net.Conn, int32) {
 	var fd, sa, err = syscall.Accept(ego.fd)
 	if err != nil {
 		if err == syscall.EAGAIN {
-			return nil, core.MkErr(core.EC_TRY_AGAIN, 1)
+			return nil, nil
 		}
-		return nil, core.MkErr(core.EC_NULL_VALUE, 2)
+		return nil, err
 	}
 	var nfd = &netFD{}
 	nfd.fd = fd
 	nfd.localAddr = ego.addr
 	nfd.network = ego.addr.Network()
 	nfd.remoteAddr = sockaddrToAddr(sa)
-	return nfd, core.MkSuccess(0)
+	return nfd, nil
 }
 
 // TODO: UDPAccept Not implemented.
-func (ego *ListenerWrapper) UDPAccept() (net.Conn, int32) {
-	return nil, core.MkErr(core.EC_NULL_VALUE, 1)
+func (ego *ListenerWrapper) UDPAccept() (net.Conn, error) {
+	return nil, Exception(ErrUnsupported, "UDP")
 }
 
 // Close implements Listener.
