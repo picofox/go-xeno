@@ -1,12 +1,21 @@
 package main
 
-import "net"
+import (
+	"github.com/cloudwego/netpoll"
+	"time"
+)
 
 func main() {
-	net.Listen()
+
 	//listener, err := netpoll.CreateListener("tcp", "0.0.0.0")
 	//if err != nil {
 	//	panic("create netpoll listener failed")
 	//}
 	//.
+
+	eventLoop, _ := netpoll.NewEventLoop(
+		handle,
+		netpoll.WithOnPrepare(prepare),
+		netpoll.WithReadTimeout(time.Second),
+	)
 }

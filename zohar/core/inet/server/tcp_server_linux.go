@@ -63,12 +63,12 @@ func NeoTcpServer(tcpConfig *config.NetworkServerTCPConfig) *TcpServer {
 		nb := memory.NumberOfOneInInt32(int32(m))
 		tcpServer._bindAddress.SetMask(nb)
 	}
-
-	eventLoop, _ = netpoll.NewEventLoop(
-		handle,
-		netpoll.WithOnPrepare(prepare),
-		netpoll.WithReadTimeout(time.Second),
-	)
+	//
+	//ego._eventLoop, _ = netpoll.NewEventLoop(
+	//	handle,
+	//	netpoll.WithOnPrepare(prepare),
+	//	netpoll.WithReadTimeout(time.Second),
+	//)
 
 	return &tcpServer
 }
