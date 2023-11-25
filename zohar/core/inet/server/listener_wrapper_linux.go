@@ -38,7 +38,7 @@ func (ego *ListenerWrapper) Accept() (net.Conn, error) {
 		}
 		return nil, err
 	}
-	var nfd = &netFD{}
+	var nfd = &newSocketFileDescriptor{}
 	nfd.fd = fd
 	nfd.localAddr = ego.addr
 	nfd.network = ego.addr.Network()
