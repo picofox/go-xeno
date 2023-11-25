@@ -3,17 +3,17 @@ module xeno
 go 1.21.1
 
 require (
-	github.com/bytedance/gopkg v0.0.0-20220413063733-65bf48ffb3a7
+	github.com/cloudwego/netpoll v0.5.1
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/xuri/excelize/v2 v2.8.0
 	golang.org/x/sys v0.14.0
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0
-	gorm.io/driver/mysql v1.5.2
 	gorm.io/gorm v1.25.5
 )
 
 require (
+	github.com/bytedance/gopkg v0.0.0-20220413063733-65bf48ffb3a7 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
