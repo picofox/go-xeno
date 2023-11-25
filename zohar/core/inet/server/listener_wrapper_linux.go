@@ -15,7 +15,7 @@ type ListenerWrapper struct {
 	file  *os.File
 }
 
-var _ net.Listener = &ListenerWrapper{}
+var _ Listener = &ListenerWrapper{}
 
 type Listener interface {
 	net.Listener
