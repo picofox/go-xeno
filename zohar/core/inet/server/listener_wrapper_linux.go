@@ -15,6 +15,15 @@ type ListenerWrapper struct {
 	file  *os.File
 }
 
+var _ net.Listener = &ListenerWrapper{}
+
+type Listener interface {
+	net.Listener
+
+	// Fd return listener's fd, used by poll.
+	Fd() (fd int)
+}
+
 // Accept implements Listener.
 func (ego *ListenerWrapper) Accept() (net.Conn, int32) {
 	// udp

@@ -18,7 +18,7 @@ type TcpServer struct {
 	_eventLoop   netpoll.EventLoop
 }
 
-func (ego *TcpServer) createListener(network string, addr string) (ListenerWrapper, int32) {
+func (ego *TcpServer) createListener(network string, addr string) (server.Listener, int32) {
 	if network == "udp" {
 		// TODO: udp listener.
 		panic("unimplemented ")
