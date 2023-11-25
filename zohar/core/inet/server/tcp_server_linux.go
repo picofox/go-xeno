@@ -16,13 +16,14 @@ type TcpServer struct {
 	_config      *config.NetworkServerTCPConfig
 }
 
-func (ego *TcpServer) Start() {
+func (ego *TcpServer) Start() int32 {
 	lis, err := netpoll.CreateListener(ego._bindAddress.ProtoName(), ego._bindAddress.EndPointString())
 	if err != nil {
 		logging.Log(core.LL_ERR, "TcpServer: Listen Failed of <%s>", ego._bindAddress.String())
-		return nil
+		return core.MkErr(core.EC_NULL_VALUE, 1)
 	}
 	ego._listener = lis
+	return core.MkSuccess(0)
 }
 
 func NeoTcpServer(tcpConfig *config.NetworkServerTCPConfig) *TcpServer {
