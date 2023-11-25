@@ -52,7 +52,7 @@ func (ego *ListenerWrapper) UDPAccept() (net.Conn, error) {
 }
 
 // Close implements Listener.
-func (ego *ListenerWrapper) Close() int32 {
+func (ego *ListenerWrapper) Close() error {
 	if ego.fd != 0 {
 		syscall.Close(ego.fd)
 	}
@@ -65,7 +65,7 @@ func (ego *ListenerWrapper) Close() int32 {
 	if ego.pconn != nil {
 		ego.pconn.Close()
 	}
-	return core.MkSuccess(0)
+	return nil
 }
 
 // Addr implements Listener.
