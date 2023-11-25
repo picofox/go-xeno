@@ -18,16 +18,33 @@ type TcpServer struct {
 	_eventLoop   netpoll.EventLoop
 }
 
-func (ego *TcpServer) createListener(network string, addr string) (net.Listener, error) {
+func (ego *TcpServer) createListener(network string, addr string) (ListenerWrapper, int32) {
 	if network == "udp" {
 		// TODO: udp listener.
 		panic("unimplemented ")
 	}
 	// tcp, tcp4, tcp6, unix
-	ln, err := net.Listen(network, addr)
-	if err != nil {
-		return nil, err
+	ln, rc := net.Listen(network, addr)
+	if core.Err(rc) {
+		return nil, rc
 	}
+
+	return convertListener(ln)
+
+}
+
+func convertListener(l net.Listener) (nl Listener, rc int32) {
+	if tmp, ok := l.(Listener); ok {
+		return tmp, core.MkSuccess(0)
+	}
+	w := &ListenerWrapper{}
+	w.ln = l
+	w.addr = l.Addr()
+	rc = ln.parseFD()
+	if core.Err(rc) {
+		return nil, rc
+	}
+	return ln, syscall.SetNonblock(ln.fd, true)
 }
 
 func (ego *TcpServer) Start() int32 {
