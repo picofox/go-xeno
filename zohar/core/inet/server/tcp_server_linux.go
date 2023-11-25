@@ -24,13 +24,11 @@ func (ego *TcpServer) createListener(network string, addr string) (ListenerWrapp
 		panic("unimplemented ")
 	}
 	// tcp, tcp4, tcp6, unix
-	ln, rc := net.Listen(network, addr)
-	if core.Err(rc) {
-		return nil, rc
+	ln, err := net.Listen(network, addr)
+	if err != nil {
+		return nil, core.MkErr(core.EC_INVALID_STATE, 1)
 	}
-
 	return convertListener(ln)
-
 }
 
 func convertListener(l net.Listener) (nl Listener, rc int32) {
