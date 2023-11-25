@@ -2,23 +2,16 @@ package main
 
 import (
 	"fmt"
-	"gorm.io/gorm/logger"
+	"gorm.io/gorm"
 	"math/bits"
-	"reflect"
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
-	"xeno/zohar/core/inet/server"
 	"xeno/zohar/core/logging"
-	"xeno/zohar/core/logging/logger_adapter"
-	"xeno/zohar/core/mp"
 	"xeno/zohar/core/sched/timer"
 	"xeno/zohar/framework"
 	_ "xeno/zohar/framework"
 	"xeno/zohar/framework/service/intrinsic"
-
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 func doSomething(a any) int32 {
@@ -74,29 +67,18 @@ func main() {
 		logging.LogFixedWidth(core.LL_SYS, 70, false, errString, "Kadamony Application Initializing ...")
 	}
 
-	var output []reflect.Value = make([]reflect.Value, 0, 10)
-	mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "NeoO1L15COT15DecodeServerHandler")
-	hdl := output[0].Interface().(*server.O1L15COT15DecodeServerHandler)
-	if hdl == nil {
-		fmt.Printf("shabile")
-	}
+	//server.GetDefaultTcpServerManager().Initialize(&config.GetKadamonyConfig().Network.Server)
+	//server.GetDefaultTcpServerManager().Start()
 
-	server := server.NeoTcpServer("0.0.0.0", 10000)
-	if server == nil {
-		logging.Log(core.LL_ERR, "failed")
-	}
-	server.Listen()
-	server.Start()
-
-	logging.Log(core.LL_SYS, "start")
-	var iface logger.Interface = logger_adapter.NeoGORMLoggerAdapter(logging.GetLoggerManager().GetDefaultLogger())
-	orm, err := gorm.Open(mysql.Open(config.GetKadamonyConfig().DB.Pools["DBP0"].DSN.String()), &gorm.Config{
-		Logger: iface,
-	})
-	if err != nil {
-		panic("error")
-	}
-	orm.AutoMigrate(&Product{})
+	//logging.Log(core.LL_SYS, "start")
+	//var iface logger.Interface = logger_adapter.NeoGORMLoggerAdapter(logging.GetLoggerManager().GetDefaultLogger())
+	//orm, err := gorm.Open(mysql.Open(config.GetKadamonyConfig().DB.Pools["DBP0"].DSN.String()), &gorm.Config{
+	//	Logger: iface,
+	//})
+	//if err != nil {
+	//	panic("error")
+	//}
+	//orm.AutoMigrate(&Product{})
 
 	cfg := &config.GetKadamonyConfig().DB
 	db.GetPoolManager().Initialize(cfg)

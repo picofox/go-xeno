@@ -7,7 +7,7 @@ import (
 
 type NetworkServerTCPConfig struct {
 	BindAddr string                          `json:"BindAddr"`
-	Port     int                             `json:"Port"`
+	Port     uint16                          `json:"Port"`
 	PubIP    string                          `json:"PubIP"`
 	PriIP    string                          `json:"PriIP"`
 	Handlers []NetworkServerTCPHandlerConfig `json:"Handlers"`

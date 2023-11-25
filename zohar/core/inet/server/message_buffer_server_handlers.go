@@ -1,6 +1,8 @@
 package server
 
-import "xeno/zohar/core"
+import (
+	"xeno/zohar/core"
+)
 
 type MessageBufferServerHandlers struct {
 }
@@ -17,4 +19,9 @@ func (ego *MessageBufferServerHandlers) OnReceive(connection *TcpServerConnectio
 	}
 
 	return core.MkSuccess(0), nil, nil
+}
+
+func (ego *HandlerRegistration) NeoMessageBufferServerHandlers() *MessageBufferServerHandlers {
+	dec := MessageBufferServerHandlers{}
+	return &dec
 }

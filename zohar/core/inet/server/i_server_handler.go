@@ -1,5 +1,5 @@
 package server
 
 type IServerHandler interface {
-	OnReceive(connection *TcpServerConnection, obj any) int32
+	OnReceive(*TcpServerConnection, any, any) (int32, any, any)
 }

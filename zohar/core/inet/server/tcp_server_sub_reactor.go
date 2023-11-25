@@ -14,6 +14,15 @@ type TcpServerSubReactor struct {
 	_server          *TcpServer
 }
 
+func (ego *TcpServerSubReactor) Stop() {
+	ego._connections.Range(func(key, value interface{}) bool {
+		c := value.(*TcpServerConnection)
+		logging.Log(core.LL_INFO, "Connection <%s> Shutting Down ...", c.String())
+		c.Shutdown()
+		return true
+	})
+}
+
 func (ego *TcpServerSubReactor) Start() {
 	go func() {
 		for {
@@ -25,6 +34,7 @@ func (ego *TcpServerSubReactor) Start() {
 					c.Shutdown()
 					ego._connections.Delete(clientId)
 					logging.Log(core.LL_INFO, "Connection <%s> Removed from Reactor ", c.String())
+					return false
 				}
 				c.SetNextReadTimeout(time.Now().Add(ego._server._readTimeout))
 				return true

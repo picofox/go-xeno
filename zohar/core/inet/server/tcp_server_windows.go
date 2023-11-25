@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 	"xeno/zohar/core"
+	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/nic"
 	"xeno/zohar/core/logging"
@@ -23,6 +24,7 @@ type TcpServer struct {
 	_subReactors []*TcpServerSubReactor
 	_lock        sync.RWMutex
 	_readTimeout time.Duration
+	_config      *config.NetworkServerTCPConfig
 }
 
 func (ego *TcpServer) AddConnectionFailOver(c *TcpServerConnection) int32 {
@@ -54,7 +56,7 @@ func (ego *TcpServer) AddConnection(c *TcpServerConnection) int32 {
 	return core.MkErr(core.EC_REACH_LIMIT, 1)
 }
 
-func (ego *TcpServer) Listen() *TcpServer {
+func (ego *TcpServer) listen() *TcpServer {
 	lis, err := net.Listen(ego._bindAddress.ProtoName(), ego._bindAddress.EndPointString())
 	if err != nil {
 		logging.Log(core.LL_ERR, "TcpServer: Listen Failed of <%s>", ego._bindAddress.String())
@@ -64,7 +66,13 @@ func (ego *TcpServer) Listen() *TcpServer {
 	return ego
 }
 
+func (ego *TcpServer) Stop() {
+	ego._listener.Close()
+
+}
+
 func (ego *TcpServer) Start() {
+	ego.listen()
 	for {
 		conn, err := ego._listener.Accept()
 		if err != nil {
@@ -72,7 +80,7 @@ func (ego *TcpServer) Start() {
 			break
 		}
 		conn.SetReadDeadline(time.Now().Add(ego._readTimeout))
-		connWrapper := NeoTcpServerConnection(conn)
+		connWrapper := NeoTcpServerConnection(conn, ego._config)
 		rc := ego.AddConnection(connWrapper)
 		if core.Err(rc) {
 			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
@@ -86,14 +94,18 @@ func (ego *TcpServer) Start() {
 		}
 	}
 }
-func NeoTcpServer(ipstr string, port uint16) *TcpServer {
+func NeoTcpServer(tcpConfig *config.NetworkServerTCPConfig) *TcpServer {
+	bindAddr := tcpConfig.BindAddr
+	if bindAddr == "" {
+		bindAddr = "0.0.0.0"
+	}
 	tcpServer := TcpServer{
-		_bindAddress: inet.NeoIPV4EndPointByStrIP(inet.EP_PROTO_TCP, 0, 0, ipstr, port),
+		_bindAddress: inet.NeoIPV4EndPointByStrIP(inet.EP_PROTO_TCP, 0, 0, bindAddr, tcpConfig.Port),
 		_listener:    nil,
 		_subReactors: make([]*TcpServerSubReactor, 0, 1024),
+		_readTimeout: 1 * time.Millisecond,
+		_config:      tcpConfig,
 	}
-
-	tcpServer._readTimeout = 1 * time.Millisecond
 
 	for i := 0; i < INITIAL_REACTORS; i++ {
 		r := NeoTcpServerSubReactor(&tcpServer)
