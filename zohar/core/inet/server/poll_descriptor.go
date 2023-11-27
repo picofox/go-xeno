@@ -19,12 +19,13 @@ package server
 
 import (
 	"context"
+	"fmt"
 )
 
 func newPollDescriptor(fd int) *PollDescriptor {
 	pd := &PollDescriptor{}
 	poll := pollmanager.Pick()
-	pd.operator = &FDOperator{
+	pd.operator = &FileDescriptorOperator{
 		poll:    poll,
 		FD:      fd,
 		OnWrite: pd.onwrite,
@@ -36,7 +37,7 @@ func newPollDescriptor(fd int) *PollDescriptor {
 }
 
 type PollDescriptor struct {
-	operator *FDOperator
+	operator *FileDescriptorOperator
 	// The write event is OneShot, then mark the writable to skip duplicate calling.
 	writeTrigger chan struct{}
 	closeTrigger chan struct{}
@@ -47,7 +48,7 @@ func (pd *PollDescriptor) WaitWrite(ctx context.Context) (err error) {
 	if pd.operator.isUnused() {
 		// add ET|Write|Hup
 		if err = pd.operator.Control(PollWritable); err != nil {
-			logger.Printf("NETPOLL: PollDescriptor register operator failed: %v", err)
+			fmt.Printf("NETPOLL: PollDescriptor register operator failed: %v", err)
 			return err
 		}
 	}
