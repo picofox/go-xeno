@@ -25,6 +25,19 @@ type TcpServer struct {
 	_lock        sync.RWMutex
 	_readTimeout time.Duration
 	_config      *config.NetworkServerTCPConfig
+	_logger      logging.ILogger
+}
+
+func (ego *TcpServer) Log(lv int, fmt string, arg ...any) {
+	if ego._logger != nil {
+		ego._logger.Log(lv, fmt, arg...)
+	}
+}
+
+func (ego *TcpServer) LogFixedWidth(lv int, leftLen int, ok bool, failStr string, format string, arg ...any) {
+	if ego._logger != nil {
+		ego._logger.LogFixedWidth(lv, leftLen, ok, failStr, format, arg...)
+	}
 }
 
 func (ego *TcpServer) AddConnectionFailOver(c *TcpServerConnection) int32 {
@@ -71,7 +84,7 @@ func (ego *TcpServer) Stop() {
 
 }
 
-func (ego *TcpServer) Start() {
+func (ego *TcpServer) Start() int32 {
 	ego.listen()
 	for {
 		conn, err := ego._listener.Accept()
@@ -93,18 +106,17 @@ func (ego *TcpServer) Start() {
 			}
 		}
 	}
+	return 0
 }
-func NeoTcpServer(tcpConfig *config.NetworkServerTCPConfig) *TcpServer {
-	bindAddr := tcpConfig.BindAddr
-	if bindAddr == "" {
-		bindAddr = "0.0.0.0"
-	}
+func NeoTcpServer(tcpConfig *config.NetworkServerTCPConfig, logger logging.ILogger) *TcpServer {
+	bindAddr := inet.NeoIPV4EndPointByEPStr(inet.EP_PROTO_TCP, 0, 0, tcpConfig.ListenerEndPoints[0])
 	tcpServer := TcpServer{
-		_bindAddress: inet.NeoIPV4EndPointByStrIP(inet.EP_PROTO_TCP, 0, 0, bindAddr, tcpConfig.Port),
+		_bindAddress: bindAddr,
 		_listener:    nil,
 		_subReactors: make([]*TcpServerSubReactor, 0, 1024),
 		_readTimeout: 1 * time.Millisecond,
 		_config:      tcpConfig,
+		_logger:      logger,
 	}
 
 	for i := 0; i < INITIAL_REACTORS; i++ {

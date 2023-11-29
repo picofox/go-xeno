@@ -1,31 +1,26 @@
 package config
 
 import (
-	"strconv"
 	"strings"
 )
 
 type NetworkServerTCPConfig struct {
-	BindAddr string                          `json:"BindAddr"`
-	Port     uint16                          `json:"Port"`
-	PubIP    string                          `json:"PubIP"`
-	PriIP    string                          `json:"PriIP"`
-	Handlers []NetworkServerTCPHandlerConfig `json:"Handlers"`
+	ListenerEndPoints          []string                        `json:"ListenerEndPoints"`
+	PublicConnectingEndPoints  []string                        `json:"PublicConnectingEndPoints"`
+	PrivateConnectingEndPoints []string                        `json:"PrivateConnectingEndPoints"`
+	Handlers                   []NetworkServerTCPHandlerConfig `json:"Handlers"`
 }
 
 func (ego *NetworkServerTCPConfig) String() string {
 	var ss strings.Builder
-	ss.WriteString("BindAddr=")
-	ss.WriteString(ego.BindAddr)
+	ss.WriteString("ListenerEndPoints=")
+	ss.WriteString(strings.Join(ego.ListenerEndPoints, ","))
 	ss.WriteString("\n")
-	ss.WriteString("Port=")
-	ss.WriteString(strconv.Itoa(int(ego.Port)))
+	ss.WriteString("PublicConnectingEndPoints=")
+	ss.WriteString(strings.Join(ego.PublicConnectingEndPoints, ","))
 	ss.WriteString("\n")
-	ss.WriteString("PubIP=")
-	ss.WriteString(ego.PubIP)
-	ss.WriteString("\n")
-	ss.WriteString("PriIP=")
-	ss.WriteString(ego.PriIP)
+	ss.WriteString("PrivateConnectingEndPoints=")
+	ss.WriteString(strings.Join(ego.PrivateConnectingEndPoints, ","))
 	ss.WriteString("\n")
 	for _, elem := range ego.Handlers {
 		ss.WriteString("Handlers=")

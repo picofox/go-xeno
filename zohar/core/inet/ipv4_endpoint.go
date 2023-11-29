@@ -125,9 +125,26 @@ func NeoIPV4EndPoint(proto int8, mask int8, extra uint8, ipv4Addr uint32, port u
 	}
 }
 
+func NeoIPV4EndPointByEPStr(proto int8, mask int8, extra uint8, ipv4AddrStr string) IPV4EndPoint {
+	ss := strings.Split(ipv4AddrStr, ":")
+	if ss == nil || len(ss) < 2 {
+		return IPV4EndPoint{
+			_identifier: -1,
+		}
+	}
+	port, err := strconv.Atoi(ss[1])
+	if err != nil {
+		return IPV4EndPoint{
+			_identifier: -1,
+		}
+	}
+
+	return NeoIPV4EndPointByStrIP(proto, mask, extra, ss[0], uint16(port))
+}
+
 func NeoIPV4EndPointByStrIP(proto int8, mask int8, extra uint8, ipv4AddrStr string, port uint16) IPV4EndPoint {
 	if strings.ToLower(ipv4AddrStr) == "localhost" {
-		ipv4AddrStr = "0.0.0.0"
+		ipv4AddrStr = "127.0.0.1"
 	}
 	var d int64 = 0
 	ipv4Addr, rc := strs.IPV4Addr2UIntBE(ipv4AddrStr)
