@@ -1,8 +1,6 @@
 package server
 
 import (
-	"github.com/cloudwego/netpoll"
-	"net"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
@@ -13,50 +11,33 @@ import (
 
 type TcpServer struct {
 	_bindAddress inet.IPV4EndPoint
-	_listener    netpoll.Listener
+	_listener    *ListenWrapper
 	_config      *config.NetworkServerTCPConfig
-	_eventLoop   netpoll.EventLoop
+	_logger      logging.ILogger
+	_eventLoop   *EventLoop
 }
 
-func (ego *TcpServer) createListener(network string, addr string) (Listener, int32) {
-	if network == "udp" {
-		// TODO: udp listener.
-		panic("unimplemented ")
+func (ego *TcpServer) Log(lv int, fmt string, arg ...any) {
+	if ego._logger != nil {
+		ego._logger.Log(lv, fmt, arg...)
 	}
-	// tcp, tcp4, tcp6, unix
-	ln, err := net.Listen(network, addr)
-	if err != nil {
-		return nil, core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return convertListener(ln)
 }
 
-func convertListener(l net.Listener) (nl Listener, rc int32) {
-	if tmp, ok := l.(Listener); ok {
-		return tmp, core.MkSuccess(0)
+func (ego *TcpServer) LogFixedWidth(lv int, leftLen int, ok bool, failStr string, format string, arg ...any) {
+	if ego._logger != nil {
+		ego._logger.LogFixedWidth(lv, leftLen, ok, failStr, format, arg...)
 	}
-	w := &ListenerWrapper{}
-	w.ln = l
-	w.addr = l.Addr()
-	rc = ln.parseFD()
-	if core.Err(rc) {
-		return nil, rc
-	}
-	return ln, syscall.SetNonblock(ln.fd, true)
 }
 
 func (ego *TcpServer) Start() int32 {
-	logging.Log(core.LL_SYS, "TcpServer Start: Listening <%s>", ego._bindAddress.String())
-	lis, err := ego.createListener(ego._bindAddress.ProtoName(), ego._bindAddress.EndPointString())
-	if err != nil {
-		logging.Log(core.LL_ERR, "TcpServer: Listen Failed of <%s>", ego._bindAddress.String())
-		return core.MkErr(core.EC_NULL_VALUE, 1)
-	}
-	ego._listener = lis
-	return core.MkSuccess(0)
+	return 0
 }
 
-func NeoTcpServer(tcpConfig *config.NetworkServerTCPConfig) *TcpServer {
+func (ego *TcpServer) Wait() {
+
+}
+
+func NeoTcpServer(tcpConfig *config.NetworkServerTCPConfig, logger logging.ILogger) *TcpServer {
 	bindAddr := tcpConfig.BindAddr
 	if bindAddr == "" {
 		bindAddr = "0.0.0.0"
@@ -65,12 +46,14 @@ func NeoTcpServer(tcpConfig *config.NetworkServerTCPConfig) *TcpServer {
 		_bindAddress: inet.NeoIPV4EndPointByStrIP(inet.EP_PROTO_TCP, 0, 0, bindAddr, tcpConfig.Port),
 		_listener:    nil,
 		_config:      tcpConfig,
+		_logger:      logger,
 	}
 
 	if tcpServer._bindAddress.IPV4() != 0 {
 		nic.GetNICManager().Update()
 		InetAddress := nic.GetNICManager().FindNICByIpV4Address(tcpServer._bindAddress.IPV4())
 		if InetAddress == nil {
+			tcpServer.Log(core.LL_ERR, "NeoTcpServer FindNICByIpV4Address <%s> Failed", tcpServer._bindAddress.EndPointString())
 			return nil
 		}
 		nm := InetAddress.NetMask()
@@ -78,12 +61,14 @@ func NeoTcpServer(tcpConfig *config.NetworkServerTCPConfig) *TcpServer {
 		nb := memory.NumberOfOneInInt32(int32(m))
 		tcpServer._bindAddress.SetMask(nb)
 	}
-	//
-	//ego._eventLoop, _ = netpoll.NewEventLoop(
-	//	handle,
-	//	netpoll.WithOnPrepare(prepare),
-	//	netpoll.WithReadTimeout(time.Second),
-	//)
+
+	tcpServer._listener = NeoListenWrapper(&tcpServer)
+	if tcpServer._listener == nil {
+		tcpServer.Log(core.LL_ERR, "NeoTcpServer NeoListenWrapper <%s> Failed", tcpServer._bindAddress.EndPointString())
+		return nil
+	}
+
+	tcpServer.LogFixedWidth(core.LL_SYS, 70, true, "", "NeoTcpServer <%s>", tcpServer._bindAddress.EndPointString())
 
 	return &tcpServer
 }

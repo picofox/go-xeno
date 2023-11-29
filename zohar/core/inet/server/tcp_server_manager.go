@@ -12,7 +12,7 @@ type TcpServerManager struct {
 
 func (ego *TcpServerManager) Initialize(cfg *config.NetworkServerConfig) int32 {
 	for cName, perCFG := range cfg.TCP {
-		svr := NeoTcpServer(&perCFG)
+		svr := NeoTcpServer(&perCFG, nil)
 		ego._servers[cName] = svr
 	}
 	return core.MkSuccess(0)

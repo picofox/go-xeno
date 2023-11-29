@@ -1,21 +1,36 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"github.com/cloudwego/netpoll"
 	"time"
 )
 
+func OnReq(ctx context.Context, connection netpoll.Connection) error {
+	return nil
+}
+
+func OnPrepare(connection netpoll.Connection) context.Context {
+	return context.Background()
+}
+
 func main() {
 
-	//listener, err := netpoll.CreateListener("tcp", "0.0.0.0")
-	//if err != nil {
-	//	panic("create netpoll listener failed")
-	//}
-	//.
+	listener, err := netpoll.CreateListener("tcp", "0.0.0.0:9999")
+	if err != nil {
+		panic("create netpoll listener failed")
+	}
 
-	eventLoop, _ := netpoll.NewEventLoop(
-		handle,
-		netpoll.WithOnPrepare(prepare),
-		netpoll.WithReadTimeout(time.Second),
-	)
+	if listener == nil {
+		return
+	}
+
+	el, _ := netpoll.NewEventLoop(OnReq, netpoll.WithOnPrepare(OnPrepare), netpoll.WithReadTimeout(time.Second))
+	if el == nil {
+		fmt.Print("fail")
+	}
+
+	el.Serve(listener)
+
 }

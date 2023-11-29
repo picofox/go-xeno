@@ -7,6 +7,7 @@ import (
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
+	"xeno/zohar/core/inet/server"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/sched/timer"
 	"xeno/zohar/framework"
@@ -79,6 +80,13 @@ func main() {
 	//	panic("error")
 	//}
 	//orm.AutoMigrate(&Product{})
+
+	svr := server.NeoTcpServer(config.GetKadamonyConfig().Network.Server.GetTCP("Defaut"), logging.GetLoggerManager().GetDefaultLogger())
+	if svr == nil {
+		fmt.Printf("Failed")
+	}
+	rc = svr.Start()
+	fmt.Println(rc)
 
 	cfg := &config.GetKadamonyConfig().DB
 	db.GetPoolManager().Initialize(cfg)
