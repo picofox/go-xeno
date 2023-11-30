@@ -15,8 +15,8 @@ type ListenWrapper struct {
 	_file        *os.File
 }
 
-func NeoListenWrapper(tcpServer *TcpServer) *ListenWrapper {
-	l, err := net.Listen(tcpServer._bindAddress.ProtoName(), tcpServer._bindAddress.EndPointString())
+func NeoListenWrapper(tcpServer *TcpServer, ep inet.IPV4EndPoint) *ListenWrapper {
+	l, err := net.Listen(tcpServer._bindAddress.ProtoName(), ep.EndPointString())
 	file, err := l.(*net.TCPListener).File()
 	if err != nil {
 		tcpServer.Log(core.LL_ERR, "File From Listen Failed: %s", err.Error())
@@ -31,9 +31,10 @@ func NeoListenWrapper(tcpServer *TcpServer) *ListenWrapper {
 	}
 
 	w := ListenWrapper{
-		_listen: l,
-		_fd:     fd,
-		_file:   file,
+		_listen:      l,
+		_fd:          fd,
+		_file:        file,
+		_bindAddress: ep,
 	}
 	return &w
 }
