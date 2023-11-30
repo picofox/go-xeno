@@ -37,6 +37,10 @@ func (ego *IPV4EndPoint) Valid() bool {
 	return ego._identifier > 0
 }
 
+func (ego *IPV4EndPoint) SetInvalid() {
+	ego._identifier = -1
+}
+
 func (ego *IPV4EndPoint) Proto() int8 {
 	return int8((ego._identifier >> 61) & 0x3)
 }
@@ -99,6 +103,18 @@ func (ego *IPV4EndPoint) SetIPV4Str(ips string) bool {
 	return true
 }
 
+func (ego *IPV4EndPoint) ToTCPAddr() *net.TCPAddr {
+	if ego.Proto() != EP_PROTO_TCP {
+		return nil
+	}
+
+	ret, err := net.ResolveTCPAddr("tcp", ego.EndPointString())
+	if err != nil {
+		return nil
+	}
+	return ret
+}
+
 func (ego *IPV4EndPoint) String() string {
 	return fmt.Sprintf("%s://%s:%d (mask:%d extra:%d)", sProtoName[ego.Proto()], ego.IPV4Str(), ego.Port(), ego.Mask(), ego.Extra())
 }
@@ -139,13 +155,30 @@ func NeoIPV4EndPointByEPStr(proto int8, mask int8, extra uint8, ipv4AddrStr stri
 		}
 	}
 
+	addrsList, err := net.LookupIP(ss[0])
+	if err != nil {
+		return IPV4EndPoint{
+			_identifier: -1,
+		}
+	}
+	ss[0] = addrsList[0].String()
+
 	return NeoIPV4EndPointByStrIP(proto, mask, extra, ss[0], uint16(port))
 }
 
 func NeoIPV4EndPointByStrIP(proto int8, mask int8, extra uint8, ipv4AddrStr string, port uint16) IPV4EndPoint {
 	if strings.ToLower(ipv4AddrStr) == "localhost" {
 		ipv4AddrStr = "127.0.0.1"
+	} else {
+		addrsList, err := net.LookupIP(ipv4AddrStr)
+		if err != nil {
+			return IPV4EndPoint{
+				_identifier: -1,
+			}
+		}
+		ipv4AddrStr = addrsList[0].String()
 	}
+
 	var d int64 = 0
 	ipv4Addr, rc := strs.IPV4Addr2UIntBE(ipv4AddrStr)
 	if core.Err(rc) {
