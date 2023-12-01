@@ -50,8 +50,12 @@ const (
 	EC_REACH_LIMIT
 	EC_TRY_AGAIN
 	EC_EPOLL_WAIT_ERROR
+<<<<<<< HEAD
 	EC_ACCEPT_ERROR
 	EC_TCP_SEND_FAILED
+=======
+	EC_TCP_CONNECT_ERROR
+>>>>>>> 404260fed2e5b5373b39167aec892f58590cd8e8
 
 	EC_ERROR_COUNT
 )
@@ -104,8 +108,12 @@ var g_error_str = [EC_ERROR_COUNT]string{
 	"EC_REACH_LIMIT",
 	"EC_TRY_AGAIN",
 	"EC_EPOLL_WAIT_ERROR",
+<<<<<<< HEAD
 	"EC_ACCEPT_ERROR",
 	"EC_TCP_SEND_FAILED",
+=======
+	"EC_TCP_CONNECT_ERROR",
+>>>>>>> 404260fed2e5b5373b39167aec892f58590cd8e8
 }
 
 func MkErr(et int32, mark int32) int32 {
