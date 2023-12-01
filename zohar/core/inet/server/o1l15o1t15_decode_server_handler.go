@@ -13,11 +13,11 @@ type O1L15COT15DecodeServerHandler struct {
 }
 
 func (ego *O1L15COT15DecodeServerHandler) OnReceive(connection *TcpServerConnection, obj any, param1 any) (int32, any, any) {
-	if connection.BufferLength() < 4 {
+	if connection.RecvBufferLength() < 4 {
 		return core.MkErr(core.EC_TRY_AGAIN, 1), nil, nil
 	}
 	data := obj.([]byte)
-	lba := memory.NeoLinearBufferAdapter(data, 0, connection.BufferLength(), connection.BufferCapacity())
+	lba := memory.NeoLinearBufferAdapter(data, 0, connection.RecvBufferLength(), connection.RecvBufferCapacity())
 	o1AndLen, _ := lba.ReadUInt16()
 	frameLength := int64(o1AndLen & 0x7FFF)
 	if lba.ReadAvailable() < int64(frameLength) {

@@ -1,5 +1,10 @@
 package memory
 
+const (
+	BUFFER_SEEK_CUR = 0
+	BUFFER_SEEK_SET = 1
+)
+
 type IByteBuffer interface {
 	Capacity() int64
 	ResizeTo(int64) int64

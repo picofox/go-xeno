@@ -50,6 +50,8 @@ const (
 	EC_REACH_LIMIT
 	EC_TRY_AGAIN
 	EC_EPOLL_WAIT_ERROR
+	EC_ACCEPT_ERROR
+	EC_TCP_SEND_FAILED
 
 	EC_ERROR_COUNT
 )
@@ -102,6 +104,8 @@ var g_error_str = [EC_ERROR_COUNT]string{
 	"EC_REACH_LIMIT",
 	"EC_TRY_AGAIN",
 	"EC_EPOLL_WAIT_ERROR",
+	"EC_ACCEPT_ERROR",
+	"EC_TCP_SEND_FAILED",
 }
 
 func MkErr(et int32, mark int32) int32 {

@@ -16,6 +16,14 @@ func IPV4UIntToString(ip uint32) string {
 	return strings.Join(str, ".")
 }
 
+func IPV4BytesToString(ip []byte) string {
+	str := make([]string, 4)
+	for i := 0; i < 4; i++ {
+		str[i] = strconv.Itoa(int((ip)[i]))
+	}
+	return strings.Join(str, ".")
+}
+
 func IPV4Addr2UIntBE(str string) (uint32, int32) {
 	is := strings.Split(str, ".")
 	if len(is) != 4 {

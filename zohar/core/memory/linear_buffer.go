@@ -75,6 +75,26 @@ func (ego *LinearBuffer) WritePos() int64 {
 	return wp
 }
 
+func (ego *LinearBuffer) ReadPos() int64 {
+	return ego._beginPos
+}
+
+func (ego *LinearBuffer) ReaderSeek(whence int, offset int64) bool {
+	if whence == BUFFER_SEEK_CUR {
+		absPosTest := ego._beginPos + offset
+		if absPosTest < 0 || absPosTest >= ego._beginPos+ego._length {
+			return false
+		}
+		ego._beginPos += offset
+	} else if whence == BUFFER_SEEK_SET {
+		if offset < 0 || offset >= ego._beginPos+ego._length {
+			return false
+		}
+		ego._beginPos = offset
+	}
+	return true
+}
+
 func (ego *LinearBuffer) Capacity() int64 {
 	return ego._capacity
 }

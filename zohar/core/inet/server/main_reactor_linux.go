@@ -21,8 +21,13 @@ func BindMainReactorEventData(ptr unsafe.Pointer, data *EpoolEventDataMainReacto
 
 }
 
+func ExtractMainReactorEventData(ptr unsafe.Pointer) *EpoolEventDataMainReactor {
+	return *(**EpoolEventDataMainReactor)(ptr)
+}
+
 type EpoolEventDataMainReactor struct {
-	FD int
+	FD       int
+	Listener *ListenWrapper
 }
 
 type MainReactor struct {
@@ -32,13 +37,34 @@ type MainReactor struct {
 	_epollDescriptor int
 }
 
+func (ego *MainReactor) Accept(listenFd int) (int, syscall.Sockaddr, int32) {
+	var fd, sa, err = syscall.Accept(listenFd)
+	if err != nil {
+		if err == syscall.EAGAIN {
+			return -1, nil, core.MkErr(core.EC_TRY_AGAIN, 1)
+		}
+		return -1, nil, core.MkErr(core.EC_ACCEPT_ERROR, 1)
+		ego._server.Log(core.LL_ERR, "Accept listenFD (%d) error", listenFd)
+	}
+
+	return fd, sa, core.MkSuccess(0)
+}
+
 func (ego *MainReactor) ResetEvent(size int, caps int) {
 	ego._size, ego._caps = size, caps
 	ego._events = make([]inet.EPollEvent, size)
 }
 
 func (ego *MainReactor) onPullIn(evt *inet.EPollEvent) {
-	ego._server.Log(core.LL_DEBUG, "PullIn: fd:%d")
+	p := ExtractMainReactorEventData(unsafe.Pointer(&evt.Data))
+	fd, sa, rc := ego.Accept(p.FD)
+	if core.Err(rc) {
+		return
+	}
+	conn := NeoTcpServerConnection(fd, sa, p.Listener._bindAddress)
+	ego._server.AddConnection(conn)
+
+	ego._server.Log(core.LL_DEBUG, "PullIn: fd:%d", p.FD)
 }
 func (ego *MainReactor) onPullHup(evt *inet.EPollEvent) {
 	ego._server.Log(core.LL_INFO, "PullHup:")
@@ -66,6 +92,7 @@ func (ego *MainReactor) Loop() int32 {
 		if nReady == ego._size && ego._size < 128*1024 {
 			ego.ResetEvent(ego._size<<1, ego._caps)
 		}
+
 		nReady, err = inet.EpollWait(ego._epollDescriptor, ego._events, msec)
 		if err != nil && err != syscall.EINTR {
 			return core.MkErr(core.EC_EPOLL_WAIT_ERROR, 1)
@@ -106,7 +133,7 @@ func (ego *MainReactor) OnStart() {
 		ego._listener = append(ego._listener, lis)
 
 		ev := inet.EPollEvent{}
-		ev.Events = syscall.EPOLLIN | syscall.EPOLLRDHUP | syscall.EPOLLERR
+		ev.Events = syscall.EPOLLIN | syscall.EPOLLRDHUP | syscall.EPOLLERR | inet.EPOLLET
 		info := &EpoolEventDataMainReactor{
 			FD: lis._fd,
 		}
@@ -115,6 +142,8 @@ func (ego *MainReactor) OnStart() {
 		inet.EpollCtl(ego._epollDescriptor, syscall.EPOLL_CTL_ADD, lis._fd, &ev)
 		ego._server.Log(core.LL_SYS, "Add socket fd %d to main reactor", lis._fd)
 	}
+
+	go ego.Loop()
 
 }
 

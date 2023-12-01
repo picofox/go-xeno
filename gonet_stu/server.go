@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/cloudwego/netpoll"
+	"runtime"
 	"time"
 )
 
@@ -16,7 +17,7 @@ func OnPrepare(connection netpoll.Connection) context.Context {
 }
 
 func main() {
-
+	fmt.Println(runtime.GOMAXPROCS(0))
 	listener, err := netpoll.CreateListener("tcp", "0.0.0.0:9999")
 	if err != nil {
 		panic("create netpoll listener failed")
