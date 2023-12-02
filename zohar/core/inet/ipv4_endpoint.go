@@ -5,7 +5,9 @@ import (
 	"net"
 	"strconv"
 	"strings"
+	"syscall"
 	"xeno/zohar/core"
+	"xeno/zohar/core/memory"
 	"xeno/zohar/core/strs"
 )
 
@@ -164,6 +166,37 @@ func NeoIPV4EndPointByEPStr(proto int8, mask int8, extra uint8, ipv4AddrStr stri
 	ss[0] = addrsList[0].String()
 
 	return NeoIPV4EndPointByStrIP(proto, mask, extra, ss[0], uint16(port))
+}
+func NeoIPV4EndPointBySockAddr(proto int8, mask int8, extra uint8, sockaddr syscall.Sockaddr) IPV4EndPoint {
+	var ip uint32 = 0
+	var port uint16 = uint16(0)
+	ok := false
+	switch sockaddr.(type) {
+	case *syscall.SockaddrInet4:
+		ba := sockaddr.(*syscall.SockaddrInet4).Addr[0:4]
+		ip = memory.BytesToUInt32BE(&ba, 0)
+		port = uint16(sockaddr.(*syscall.SockaddrInet4).Port)
+		ok = true
+	case *syscall.SockaddrInet6:
+		ba := sockaddr.(*syscall.SockaddrInet6).Addr[12:16]
+		ip = memory.BytesToUInt32BE(&ba, 0)
+		port = uint16(sockaddr.(*syscall.SockaddrInet6).Port)
+		ok = true
+	}
+	if !ok {
+		return IPV4EndPoint{
+			_identifier: -1,
+		}
+	}
+	var d int64 = 0
+	d = d | (int64(proto&0x7) << 61)
+	d = d | (int64(mask&0x1F) << 56)
+	d = d | (int64(extra&0xFF) << 48)
+	d = d | (int64(port) << 32)
+	d = d | (int64(ip))
+	return IPV4EndPoint{
+		_identifier: d,
+	}
 }
 
 func NeoIPV4EndPointByStrIP(proto int8, mask int8, extra uint8, ipv4AddrStr string, port uint16) IPV4EndPoint {

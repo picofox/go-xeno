@@ -2,6 +2,7 @@ package server
 
 import (
 	"xeno/zohar/core"
+	"xeno/zohar/core/inet/message_buffer/messages"
 )
 
 type MessageBufferServerHandlers struct {
@@ -18,6 +19,7 @@ func (ego *MessageBufferServerHandlers) OnReceive(connection *TcpServerConnectio
 		return core.MkErr(core.EC_INDEX_OOB, 1), nil, nil
 	}
 
+	messages.GetDefaultMessageBufferDeserializationMapper().Deserialize(paramCMD, paramBA, 0)
 	return core.MkSuccess(0), nil, nil
 }
 

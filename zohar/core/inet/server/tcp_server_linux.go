@@ -2,22 +2,32 @@ package server
 
 import (
 	"sync"
+	"sync/atomic"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/logging"
 )
 
 type TcpServer struct {
-	_mainReactor   *MainReactor
-	_subReactors   []*SubReactor
-	_config        *config.NetworkServerTCPConfig
-	_logger        logging.ILogger
-	_connectionMap sync.Map
+	_mainReactor     *MainReactor
+	_subReactors     []*SubReactor
+	_config          *config.NetworkServerTCPConfig
+	_logger          logging.ILogger
+	_connectionMap   sync.Map
+	_subReactorIndex atomic.Uint32
 }
 
 func (ego *TcpServer) AddConnection(conn *TcpServerConnection) {
-	ego.Log(core.LL_INFO, "Incoming Connection <%s -> %s> Added", conn._remoteEndPoint.EndPointString(), conn._localEndPoint.EndPointString())
+	ego.Log(core.LL_INFO, "Incoming Connection [%d] @ <%s -> %s> Added", conn._fd, conn._remoteEndPoint.EndPointString(), conn._localEndPoint.EndPointString())
 	ego._connectionMap.Store(conn._fd, conn)
+}
+
+func (ego *TcpServer) DispatchConnection(conn *TcpServerConnection) {
+	idx := ego._subReactorIndex.Add(1)
+	if idx > uint32(len(ego._subReactors)) {
+		idx = 0
+	}
+	ego._subReactors[idx].AddConnection(conn)
 }
 
 func (ego *TcpServer) Log(lv int, fmt string, arg ...any) {

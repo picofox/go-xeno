@@ -1,7 +1,6 @@
 package nic
 
 import (
-	"fmt"
 	"net"
 	"strconv"
 	"strings"
@@ -26,15 +25,10 @@ type NIC struct {
 
 func (ego *NIC) FindNetInfoByIPV4Address(ipU32 uint32) IINetAddress {
 	for _, ip := range ego._ips {
-		fmt.Printf("compare %s vs %s\n", ip.AddressString(), strs.IPV4UIntToString(ipU32))
 		if ip.Type() == INET_ADDRESS_TYPE_IPV4 {
 			ipv4, rc := strs.IPV4Addr2UIntBE(ip.AddressString())
 			if core.Err(rc) {
 				return nil
-			}
-
-			if ip.AddressString() == "192.168.0.100" {
-				fmt.Printf("x")
 			}
 
 			if ipv4 == ipU32 {

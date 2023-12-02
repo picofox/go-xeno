@@ -1,24 +1,76 @@
 package server
 
 import (
+	"fmt"
+	"reflect"
 	"sync"
 	"syscall"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/memory"
-	"xeno/zohar/core/strs"
+	"xeno/zohar/core/mp"
 )
 
 type TcpServerConnection struct {
-	_fd              int
-	_localEndPoint   inet.IPV4EndPoint
-	_remoteEndPoint  inet.IPV4EndPoint
-	_recvBuffer      []byte
-	_recvBufferIndex int64
+	_fd             int
+	_localEndPoint  inet.IPV4EndPoint
+	_remoteEndPoint inet.IPV4EndPoint
+	_recvBuffer     *memory.LinearBuffer
+	_sendBuffer     *memory.LinearBuffer
+	_pipeline       []IServerHandler
+	_lock           sync.Mutex
+	_server         *TcpServer
+}
 
-	_sendBuffer *memory.LinearBuffer
-	_pipeline   []IServerHandler
-	_lock       sync.Mutex
+func (ego *TcpServerConnection) checkRecvBufferCapacity() int32 {
+	if ego._recvBuffer.WriteAvailable() < O1L15O1T15_HEADER_SIZE {
+		wa := ego._recvBuffer.Compact()
+		if wa >= O1L15O1T15_HEADER_SIZE {
+			return core.MkSuccess(0)
+		}
+		if ego._recvBuffer.Capacity() < MAX_BUFFER_MAX_CAPACITY {
+			if ego._recvBuffer.ResizeTo(ego._recvBuffer.Capacity()*2) > 0 {
+				return core.MkSuccess(0)
+			}
+			return core.MkErr(core.EC_RESPACE_FAILED, 1)
+		} else {
+			return core.MkErr(core.EC_REACH_LIMIT, 1)
+		}
+	}
+
+	return core.MkSuccess(0)
+}
+
+func (ego *TcpServerConnection) Read() {
+	for {
+		rc := ego.checkRecvBufferCapacity()
+		if core.IsErrType(rc, core.EC_REACH_LIMIT) {
+			ego._server.Log(core.LL_ERR, "[SNH] Buffer reach max")
+			return //TODO close connection
+		}
+		baPtr := ego._recvBuffer.InternalData()
+
+		nDone, rc := inet.SysRead(ego._fd, (*baPtr)[ego._recvBuffer.WritePos():])
+		if nDone < 0 {
+			if core.Err(rc) {
+				fmt.Println("Sysread return error ")
+			}
+			return
+		} else if nDone == 0 {
+			//handle close
+			return
+		} else {
+			var bufParam any = ego._recvBuffer
+			var p2 any = nil
+			for _, handler := range ego._pipeline {
+				rc, bufParam, p2 = handler.OnReceive(ego, bufParam, p2)
+				if core.Err(rc) {
+					return
+				}
+			}
+		}
+	}
+
 }
 
 func (ego *TcpServerConnection) flush() (int64, int32) {
@@ -57,7 +109,7 @@ func (ego *TcpServerConnection) sendNImmediately(ba []byte, offset int64, length
 }
 
 func (ego *TcpServerConnection) sendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
-	if ego._sendBuffer.WritePos()+length >= 32768 {
+	if ego._sendBuffer.WritePos()+length >= MAX_BUFFER_MAX_CAPACITY {
 		ego.flush()
 	}
 	nLeft, rc := ego.sendNImmediately(ba, offset, length)
@@ -69,10 +121,10 @@ func (ego *TcpServerConnection) sendImmediately(ba []byte, offset int64, length 
 func (ego *TcpServerConnection) Send(ba []byte, offset int64, length int64) (int64, int32) {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
-	if ego._sendBuffer.WritePos()+length <= 32768 {
+	if ego._sendBuffer.WritePos()+length <= MAX_BUFFER_MAX_CAPACITY {
 		ego._sendBuffer.WriteRawBytes(ba, offset, length)
 		return length, core.MkSuccess(0)
-	} else if length <= 32768 {
+	} else if length <= MAX_BUFFER_MAX_CAPACITY {
 		nDone, rc := ego.flush()
 		if core.Err(rc) {
 			return nDone, rc
@@ -89,26 +141,26 @@ func (ego *TcpServerConnection) Send(ba []byte, offset int64, length int64) (int
 	}
 }
 
-func (ego *TcpServerConnection) RecvBufferLength() int64 {
-	return ego._recvBufferIndex
-}
-
-func (ego *TcpServerConnection) RecvBufferCapacity() int64 {
-	return int64(cap(ego._recvBuffer))
-}
-
-func NeoTcpServerConnection(fd int, rAddr syscall.Sockaddr, lAddr inet.IPV4EndPoint) *TcpServerConnection {
-	ipv4 := strs.IPV4BytesToString(rAddr.(*syscall.SockaddrInet4).Addr[0:4])
-	port := uint16(rAddr.(*syscall.SockaddrInet4).Port)
-	ra := inet.NeoIPV4EndPointByStrIP(inet.EP_PROTO_TCP, 0, 0, ipv4, port)
+func NeoTcpServerConnection(tcpServer *TcpServer, fd int, rAddr syscall.Sockaddr, lAddr inet.IPV4EndPoint) *TcpServerConnection {
+	ra := inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, rAddr)
 	tsc := TcpServerConnection{
-		_fd:              fd,
-		_localEndPoint:   lAddr,
-		_remoteEndPoint:  ra,
-		_recvBuffer:      make([]byte, 1024),
-		_recvBufferIndex: 0,
-		_sendBuffer:      memory.NeoLinearBuffer(1024),
-		_pipeline:        make([]IServerHandler, 0),
+		_fd:             fd,
+		_localEndPoint:  lAddr,
+		_remoteEndPoint: ra,
+		_recvBuffer:     memory.NeoLinearBuffer(1024),
+		_sendBuffer:     memory.NeoLinearBuffer(1024),
+		_server:         tcpServer,
+		_pipeline:       make([]IServerHandler, 0),
+	}
+
+	var output []reflect.Value = make([]reflect.Value, 0, 1)
+	for _, elem := range tcpServer._config.Handlers {
+		rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+elem.Name)
+		if core.Err(rc) {
+			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
+		}
+		h := output[0].Interface().(IServerHandler)
+		tsc._pipeline = append(tsc._pipeline, h)
 	}
 	return &tsc
 }

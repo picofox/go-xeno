@@ -6,6 +6,17 @@ import (
 	"xeno/zohar/core"
 )
 
+func SysRead(fd int, ba []byte) (int64, int32) {
+	n, err := syscall.Read(fd, ba)
+	if err != nil {
+		if err == syscall.EAGAIN || err == syscall.EINTR {
+			return int64(n), core.MkErr(core.EC_TRY_AGAIN, 1)
+		}
+		return int64(n), core.MkErr(core.EC_FILE_READ_FAILED, 1)
+	}
+	return int64(n), core.MkSuccess(0)
+}
+
 const EPOLLET = -syscall.EPOLLET
 
 type EPollEvent struct {

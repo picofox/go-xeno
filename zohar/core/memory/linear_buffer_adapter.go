@@ -639,6 +639,12 @@ func (ego *LinearBufferAdapter) SliceOf(length int64) []byte {
 	return ego._data[ego._beginPos : ego._beginPos+length]
 }
 
+func (ego *LinearBufferAdapter) Attach(data []byte, beginPos int64, length int64, capa int64) {
+	ego._capacity = capa
+	ego._beginPos = beginPos
+	ego._length = length
+	ego._data = data
+}
 func NeoLinearBufferAdapter(data []byte, beginPos int64, length int64, capa int64) *LinearBufferAdapter {
 	bf := &LinearBufferAdapter{
 		_capacity: capa,

@@ -12,17 +12,17 @@ type LinearBuffer struct {
 	_data     []byte
 }
 
-func (ego *LinearBuffer) compact() {
+func (ego *LinearBuffer) Compact() int64 {
 	if ego._beginPos > 0 {
 		if ego._length > 0 {
 			copy(ego._data[0:], ego._data[ego._beginPos:ego._beginPos+ego._length])
 		}
 		ego._beginPos = 0
 	}
+	return ego.WriteAvailable()
 }
 
 func (ego *LinearBuffer) ResizeTo(newSize int64) int64 {
-	ego.compact()
 	if ego._capacity < newSize {
 		neoData := make([]byte, newSize)
 		copy(neoData, ego._data[ego._beginPos:ego._length])
@@ -46,8 +46,7 @@ func (ego *LinearBuffer) ResizeTo(newSize int64) int64 {
 }
 
 func (ego *LinearBuffer) checkSpace(extraLength int64) int64 {
-	ego.compact()
-	wa := ego.WriteAvailable()
+	wa := ego.Compact()
 	if wa >= extraLength {
 		return 0
 	} else {
@@ -86,13 +85,24 @@ func (ego *LinearBuffer) ReaderSeek(whence int, offset int64) bool {
 			return false
 		}
 		ego._beginPos += offset
-	} else if whence == BUFFER_SEEK_SET {
-		if offset < 0 || offset >= ego._beginPos+ego._length {
-			return false
+		if ego._beginPos >= ego.Capacity() {
+			ego._beginPos = 0
 		}
-		ego._beginPos = offset
+		ego._length -= offset
+	} else if whence == BUFFER_SEEK_SET {
+		delta := offset - ego._beginPos
+		return ego.ReaderSeek(BUFFER_SEEK_CUR, delta)
+
 	}
 	return true
+}
+func (ego *LinearBuffer) SliceOf(length int64) []byte {
+	if ego._length < 1 {
+		return ego._data[ego._beginPos:ego._beginPos]
+	}
+	ba := ego._data[ego._beginPos : ego._beginPos+length]
+	ego.ReaderSeek(BUFFER_SEEK_CUR, length)
+	return ba
 }
 
 func (ego *LinearBuffer) Capacity() int64 {
@@ -693,6 +703,10 @@ func (ego *LinearBuffer) BytesRef() ([]byte, []byte) {
 		return nil, nil
 	}
 	return ego._data[ego._beginPos : ego._beginPos+ego._length], nil
+}
+
+func (ego *LinearBuffer) InternalData() *[]byte {
+	return &ego._data
 }
 
 func NeoLinearBuffer(capacity int64) *LinearBuffer {
