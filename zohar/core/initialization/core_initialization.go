@@ -13,7 +13,7 @@ import (
 	"xeno/zohar/core/concurrent"
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/finalization"
-	"xeno/zohar/core/inet/server"
+	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/io"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/mp"
@@ -66,6 +66,8 @@ func CoreStopAll() {
 	concurrent.GetDefaultGoExecutorPool().Stop()
 	logging.Log(core.LL_SYS, "Stopping Default Log Manager ")
 	logging.GetLoggerManager().Stop()
+	logging.Log(core.LL_SYS, "Stopping Default Poller")
+	transcomm.GetDefaultPoller().Stop()
 
 	WaitAll()
 	os.Exit(0)
@@ -82,6 +84,9 @@ func WaitAll() {
 
 			logging.GetLoggerManager().Wait()
 			logging.LogFixedWidth(core.LL_SYS, 70, true, "[Stopped]", "Default Log Manager ...")
+
+			transcomm.GetDefaultPoller().Wait()
+			logging.LogFixedWidth(core.LL_SYS, 70, true, "[Stopped]", "Default Poller ...")
 
 		},
 	)
@@ -156,7 +161,23 @@ func Initialize() {
 
 			}
 
-			mp.GetDefaultObjectInvoker().RegisterClass("smh", server.GetHandlerRegistration())
+			mp.GetDefaultObjectInvoker().RegisterClass("smh", transcomm.GetHandlerRegistration())
+
+			rc = transcomm.GetDefaultPoller().Initialize()
+			if core.Err(rc) {
+				logging.LogFixedWidth(core.LL_SYS, 70, false, core.ErrStr(rc), "Initializing Default Poller ...")
+				panic("Fatal Can not continue")
+			} else {
+				logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Initializing Default Poller ...")
+			}
+
+			rc = transcomm.GetDefaultPoller().Start()
+			if core.Err(rc) {
+				logging.LogFixedWidth(core.LL_SYS, 70, false, core.ErrStr(rc), "Start Default Poller ...")
+				panic("Fatal Can not continue")
+			} else {
+				logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Start Default Poller ...")
+			}
 		},
 	)
 }

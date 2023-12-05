@@ -7,7 +7,7 @@ import (
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
-	"xeno/zohar/core/inet/server"
+	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/sched/timer"
 	"xeno/zohar/framework"
@@ -68,8 +68,8 @@ func main() {
 		logging.LogFixedWidth(core.LL_SYS, 70, false, errString, "Kadamony Application Initializing ...")
 	}
 
-	//server.GetDefaultTcpServerManager().Initialize(&config.GetKadamonyConfig().Network.Server)
-	//server.GetDefaultTcpServerManager().Start()
+	//transcomm.GetDefaultTcpServerManager().Initialize(&config.GetKadamonyConfig().Network.Server)
+	//transcomm.GetDefaultTcpServerManager().Start()
 
 	//logging.Log(core.LL_SYS, "start")
 	//var iface logger.Interface = logger_adapter.NeoGORMLoggerAdapter(logging.GetLoggerManager().GetDefaultLogger())
@@ -81,10 +81,13 @@ func main() {
 	//}
 	//orm.AutoMigrate(&Product{})
 
-	svr := server.NeoTcpServer(config.GetKadamonyConfig().Network.Server.GetTCP("Defaut"), logging.GetLoggerManager().GetDefaultLogger())
+	svr := transcomm.NeoTcpServer("Default", config.GetKadamonyConfig().Network.Server.GetTCP("Defaut"), logging.GetLoggerManager().GetDefaultLogger())
 	if svr == nil {
 		fmt.Printf("Failed")
 	}
+	transcomm.GetDefaultPoller().RegisterTCPServer(svr)
+
+	rc = svr.Initialize()
 	rc = svr.Start()
 	fmt.Println(rc)
 

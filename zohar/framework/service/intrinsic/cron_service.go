@@ -23,56 +23,48 @@ func (ego *CronService) AddCron(spec string, cmd datatype.TaskFuncType, a any, e
 }
 
 func (ego *CronService) Initialize() int32 {
-	rc := ego.BeginInitializing()
+	rc := ego.SetInitializeState()
 	if core.Err(rc) {
 		return rc
 	}
-	ego.EndInitializing()
-	ego.BeginInitialized()
-	ego.EndInitialized()
+	ego.SetInitializeStateResult(true)
 	return core.MkSuccess(0)
 }
 
 func (ego *CronService) Finalize() int32 {
-	rc := ego.BeginFinalizing()
+	rc := ego.SetFinalizeState()
 	if core.Err(rc) {
 		return rc
 	}
-	ego.EndFinalizing()
-	ego.BeginUninitialized()
-	ego.EndUninitialized()
+	ego.SetFinalizeStateResult(true)
 	return core.MkSuccess(0)
 }
 
 func (ego *CronService) Start() int32 {
-	rc := ego.BeginStarting()
+	rc := ego.SetStartState()
 	if core.Err(rc) {
 		return rc
 	}
-	ego.EndStarting()
 	ego._serviceManager.addRef()
 	ego._cron.Start()
-	ego.BeginStarted()
-	ego.EndStarted()
+	ego.SetStartStateResult(true)
 	return core.MkSuccess(0)
 }
 
 func (ego *CronService) Stop() int32 {
-	rc := ego.BeginStopping()
+	rc := ego.SetStopState()
 	if core.Err(rc) {
 		return rc
 	}
-	ego.EndStopping()
 	ego._cron.Stop()
-	ego.BeginStopped()
-	ego.EndStopped()
+	ego.SetStopStateResult(true)
 	return core.MkSuccess(0)
 }
 
 func NeoCronService(sm *ServiceManager, location *time.Location) *CronService {
 	s := CronService{
 		ServiceCommon: ServiceCommon{
-			_state: datatype.Uninitialized,
+			_stateCode: datatype.StateCode(0),
 		},
 		_cron:           cron.NewWithLocation(location, &sm._waitGroup),
 		_serviceManager: sm,

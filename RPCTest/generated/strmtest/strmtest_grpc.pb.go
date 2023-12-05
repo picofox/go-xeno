@@ -138,7 +138,7 @@ func (x *streamTestDualStreamClient) Recv() (*StreamReply, error) {
 	return m, nil
 }
 
-// StreamTestServer is the server API for StreamTest service.
+// StreamTestServer is the transcomm API for StreamTest service.
 // All implementations must embed UnimplementedStreamTestServer
 // for forward compatibility
 type StreamTestServer interface {

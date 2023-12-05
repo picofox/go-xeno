@@ -4,6 +4,26 @@ import (
 	"strings"
 )
 
+func PinchString(str string, left string, right string) string {
+	l := strings.Index(str, left)
+	if l == -1 {
+		return ""
+	}
+
+	r := strings.Index(str[l+1:], right)
+	if r == -1 {
+		return ""
+	}
+
+	r = r + l + 1
+
+	if (l + 1) >= r {
+		return ""
+	}
+
+	return str[l:r]
+}
+
 func ExtractPinchString(str string, left string, right string) (string, string, bool) {
 	l := strings.Index(str, left)
 	if l == -1 {
