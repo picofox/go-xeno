@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/client"
 )
@@ -16,5 +17,7 @@ func main() {
 	}
 
 	c.Connect()
+
+	time.Sleep(100 * time.Second)
 
 }
