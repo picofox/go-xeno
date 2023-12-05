@@ -11,7 +11,7 @@ import (
 	"xeno/zohar/core/mp"
 )
 
-type TcpServerConnection struct {
+type TCPServerConnection struct {
 	_fd             int
 	_localEndPoint  inet.IPV4EndPoint
 	_remoteEndPoint inet.IPV4EndPoint
@@ -22,11 +22,11 @@ type TcpServerConnection struct {
 	_server         *TCPServer
 }
 
-func (ego *TcpServerConnection) FileDescriptor() int {
+func (ego *TCPServerConnection) FileDescriptor() int {
 	return ego._fd
 }
 
-func (ego *TcpServerConnection) checkRecvBufferCapacity() int32 {
+func (ego *TCPServerConnection) checkRecvBufferCapacity() int32 {
 	if ego._recvBuffer.WriteAvailable() < O1L15O1T15_HEADER_SIZE {
 		wa := ego._recvBuffer.Compact()
 		if wa >= O1L15O1T15_HEADER_SIZE {
@@ -45,7 +45,7 @@ func (ego *TcpServerConnection) checkRecvBufferCapacity() int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *TcpServerConnection) OnIncomingData() {
+func (ego *TCPServerConnection) OnIncomingData() {
 	for {
 		rc := ego.checkRecvBufferCapacity()
 		if core.IsErrType(rc, core.EC_REACH_LIMIT) {
@@ -78,7 +78,7 @@ func (ego *TcpServerConnection) OnIncomingData() {
 
 }
 
-func (ego *TcpServerConnection) flush() (int64, int32) {
+func (ego *TCPServerConnection) flush() (int64, int32) {
 	ba, _ := ego._sendBuffer.BytesRef()
 	n, err := syscall.Write(ego._fd, ba)
 	if err != nil {
@@ -97,7 +97,7 @@ func (ego *TcpServerConnection) flush() (int64, int32) {
 	return int64(n), core.MkSuccess(0)
 }
 
-func (ego *TcpServerConnection) sendNImmediately(ba []byte, offset int64, length int64) (int64, int32) {
+func (ego *TCPServerConnection) sendNImmediately(ba []byte, offset int64, length int64) (int64, int32) {
 	var totalRemain int64 = length
 	for totalRemain > 0 {
 		n, err := syscall.Write(ego._fd, ba[offset:totalRemain])
@@ -113,7 +113,7 @@ func (ego *TcpServerConnection) sendNImmediately(ba []byte, offset int64, length
 	return totalRemain, core.MkSuccess(0)
 }
 
-func (ego *TcpServerConnection) sendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
+func (ego *TCPServerConnection) sendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
 	if ego._sendBuffer.WritePos()+length >= MAX_BUFFER_MAX_CAPACITY {
 		ego.flush()
 	}
@@ -123,7 +123,7 @@ func (ego *TcpServerConnection) sendImmediately(ba []byte, offset int64, length 
 	}
 	return length - nLeft, core.MkSuccess(0)
 }
-func (ego *TcpServerConnection) Send(ba []byte, offset int64, length int64) (int64, int32) {
+func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int64, int32) {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
 	if ego._sendBuffer.WritePos()+length <= MAX_BUFFER_MAX_CAPACITY {
@@ -146,9 +146,9 @@ func (ego *TcpServerConnection) Send(ba []byte, offset int64, length int64) (int
 	}
 }
 
-func NeoTcpServerConnection(tcpServer *TCPServer, fd int, rAddr syscall.Sockaddr, lAddr inet.IPV4EndPoint) *TcpServerConnection {
+func NeoTcpServerConnection(tcpServer *TCPServer, fd int, rAddr syscall.Sockaddr, lAddr inet.IPV4EndPoint) *TCPServerConnection {
 	ra := inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, rAddr)
-	tsc := TcpServerConnection{
+	tsc := TCPServerConnection{
 		_fd:             fd,
 		_localEndPoint:  lAddr,
 		_remoteEndPoint: ra,

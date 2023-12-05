@@ -12,7 +12,7 @@ type O1L15COT15DecodeServerHandler struct {
 	_memoryLow          bool
 }
 
-func (ego *O1L15COT15DecodeServerHandler) OnReceive(connection *TcpServerConnection, obj any, param1 any) (int32, any, any) {
+func (ego *O1L15COT15DecodeServerHandler) OnReceive(connection *TCPServerConnection, obj any, param1 any) (int32, any, any) {
 	if connection._recvBuffer.ReadAvailable() < 4 {
 		return core.MkErr(core.EC_TRY_AGAIN, 1), nil, nil
 	}

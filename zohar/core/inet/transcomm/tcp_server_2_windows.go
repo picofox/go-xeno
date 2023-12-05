@@ -40,7 +40,7 @@ func (ego *TcpServer) LogFixedWidth(lv int, leftLen int, ok bool, failStr string
 	}
 }
 
-func (ego *TcpServer) AddConnectionFailOver(c *TcpServerConnection) int32 {
+func (ego *TcpServer) AddConnectionFailOver(c *TCPServerConnection) int32 {
 	r := NeoTcpServerSubReactor(ego)
 	r.Start()
 	r.AddConnection(c)
@@ -50,7 +50,7 @@ func (ego *TcpServer) AddConnectionFailOver(c *TcpServerConnection) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *TcpServer) AddConnection(c *TcpServerConnection) int32 {
+func (ego *TcpServer) AddConnection(c *TCPServerConnection) int32 {
 	ego._lock.RLock()
 	defer ego._lock.RUnlock()
 	ll := len(ego._subReactors)

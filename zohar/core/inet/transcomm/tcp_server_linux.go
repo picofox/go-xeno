@@ -85,8 +85,8 @@ func (ego *TCPServer) OnIncomingConnection(listener *ListenWrapper, fd int, rAdd
 	return connection, core.MkSuccess(0)
 }
 
-func (ego *TCPServer) NeoTCPServerConnection(fd int, rAddr inet.IPV4EndPoint, lAddr inet.IPV4EndPoint) *TcpServerConnection {
-	connection := TcpServerConnection{
+func (ego *TCPServer) NeoTCPServerConnection(fd int, rAddr inet.IPV4EndPoint, lAddr inet.IPV4EndPoint) *TCPServerConnection {
+	connection := TCPServerConnection{
 		_fd:             fd,
 		_localEndPoint:  lAddr,
 		_remoteEndPoint: rAddr,

@@ -8,7 +8,7 @@ import (
 type MessageBufferServerHandlers struct {
 }
 
-func (ego *MessageBufferServerHandlers) OnReceive(connection *TcpServerConnection, obj any, param1 any) (int32, any, any) {
+func (ego *MessageBufferServerHandlers) OnReceive(connection *TCPServerConnection, obj any, param1 any) (int32, any, any) {
 	paramBA := obj.([]byte)
 	paramCMD := param1.(int16)
 
