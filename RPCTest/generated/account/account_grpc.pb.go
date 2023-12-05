@@ -46,7 +46,7 @@ func (c *accountServiceClient) OnRegister(ctx context.Context, in *AccountRegist
 	return out, nil
 }
 
-// AccountServiceServer is the server API for AccountService service.
+// AccountServiceServer is the transcomm API for AccountService service.
 // All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility
 type AccountServiceServer interface {

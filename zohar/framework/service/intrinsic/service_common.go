@@ -1,130 +1,49 @@
 package intrinsic
 
 import (
-	"xeno/zohar/core"
 	"xeno/zohar/core/datatype"
 )
 
 type ServiceCommon struct {
-	_state uint8
+	_stateCode datatype.StateCode
 }
 
-func (ego *ServiceCommon) BeginInitializing() int32 {
-	if ego._state != datatype.Uninitialized {
-		return core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return core.MkSuccess(0)
+func (ego *ServiceCommon) SetInitializeState() int32 {
+	return ego._stateCode.SetInitializeState()
 }
 
-func (ego *ServiceCommon) EndInitializing() int32 {
-	ego._state = datatype.Initializing
-	return core.MkSuccess(0)
+func (ego *ServiceCommon) SetInitializeStateResult(ok bool) int32 {
+	return ego._stateCode.SetInitializeStateResult(ok)
 }
 
-func (ego *ServiceCommon) BeginInitialized() int32 {
-	if ego._state != datatype.Initializing {
-		return core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return core.MkSuccess(0)
+func (ego *ServiceCommon) SetStartState() int32 {
+	return ego._stateCode.SetStartState()
 }
 
-func (ego *ServiceCommon) EndInitialized() int32 {
-	ego._state = datatype.Initialized
-	return core.MkSuccess(0)
+func (ego *ServiceCommon) SetStartStateResult(ok bool) int32 {
+	return ego._stateCode.SetStartStateResult(ok)
 }
 
-func (ego *ServiceCommon) BeginStarting() int32 {
-	if ego._state != datatype.Initialized {
-		return core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return core.MkSuccess(0)
+func (ego *ServiceCommon) SetSuspendState() int32 {
+	return ego._stateCode.SetSuspendState()
 }
 
-func (ego *ServiceCommon) EndStarting() int32 {
-	ego._state = datatype.Starting
-	return core.MkSuccess(0)
+func (ego *ServiceCommon) SetSuspendStateResult(ok bool) int32 {
+	return ego._stateCode.SetSuspendStateResult(ok)
 }
 
-func (ego *ServiceCommon) BeginStarted() int32 {
-	if ego._state != datatype.Starting {
-		return core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return core.MkSuccess(0)
+func (ego *ServiceCommon) SetStopState() int32 {
+	return ego._stateCode.SetStopState()
 }
 
-func (ego *ServiceCommon) EndStarted() int32 {
-	ego._state = datatype.Started
-	return core.MkSuccess(0)
+func (ego *ServiceCommon) SetStopStateResult(ok bool) int32 {
+	return ego._stateCode.SetStopStateResult(ok)
 }
 
-func (ego *ServiceCommon) BeginSuspending() int32 {
-	if ego._state != datatype.Started {
-		return core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return core.MkSuccess(0)
+func (ego *ServiceCommon) SetFinalizeState() int32 {
+	return ego._stateCode.SetFinalizeState()
 }
 
-func (ego *ServiceCommon) EndSuspending() int32 {
-	ego._state = datatype.Suspending
-	return core.MkSuccess(0)
-}
-
-func (ego *ServiceCommon) BeginSuspended() int32 {
-	if ego._state != datatype.Suspending {
-		return core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return core.MkSuccess(0)
-}
-
-func (ego *ServiceCommon) EndSuspended() int32 {
-	ego._state = datatype.Suspended
-	return core.MkSuccess(0)
-}
-
-func (ego *ServiceCommon) BeginStopping() int32 {
-	if ego._state != datatype.Started && ego._state != datatype.Suspended {
-		return core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return core.MkSuccess(0)
-}
-
-func (ego *ServiceCommon) EndStopping() int32 {
-	ego._state = datatype.Stopping
-	return core.MkSuccess(0)
-}
-
-func (ego *ServiceCommon) BeginStopped() int32 {
-	if ego._state != datatype.Stopping {
-		return core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return core.MkSuccess(0)
-}
-
-func (ego *ServiceCommon) EndStopped() int32 {
-	ego._state = datatype.Stopped
-	return core.MkSuccess(0)
-}
-
-func (ego *ServiceCommon) BeginFinalizing() int32 {
-	if ego._state != datatype.Stopped {
-		return core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return core.MkSuccess(0)
-}
-
-func (ego *ServiceCommon) EndFinalizing() int32 {
-	ego._state = datatype.Finalizing
-	return core.MkSuccess(0)
-}
-
-func (ego *ServiceCommon) BeginUninitialized() int32 {
-	if ego._state != datatype.Finalizing {
-		return core.MkErr(core.EC_INVALID_STATE, 1)
-	}
-	return core.MkSuccess(0)
-}
-
-func (ego *ServiceCommon) EndUninitialized() int32 {
-	ego._state = datatype.Uninitialized
-	return core.MkSuccess(0)
+func (ego *ServiceCommon) SetFinalizeStateResult(ok bool) int32 {
+	return ego._stateCode.SetFinalizeStateResult(ok)
 }

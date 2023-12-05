@@ -17,7 +17,7 @@ const (
 )
 
 var LEVEL_NAMES []string = []string{
-	"[SYS]", "[FATAL]", "[ERROR]", "[WARN]", "[INFO]", "[DEBUG]",
+	"[SYS]", "[FTL]", "[ERR]", "[WRN]", "[INF]", "[DBG]",
 }
 
 func GetLogLevelName(idx int) string {

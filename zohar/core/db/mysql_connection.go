@@ -12,6 +12,7 @@ import (
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/memory"
+	"xeno/zohar/core/strs"
 )
 
 type MysqlConnection struct {
@@ -1015,17 +1016,17 @@ func (ego *MysqlConnection) Connect() int32 {
 		if err == nil {
 			rc := ego.ConnectionTest()
 			if core.Err(rc) {
-				logging.Log(core.LL_INFO, "Connect_%d to orm \t\t\t\t[Failed:(%s)]", ego._index, connStr)
+				logging.LogFixedWidth(core.LL_SYS, 70, false, "", "Connect_%d to db %s", ego._index, strs.PinchString(connStr, "(", "?"))
 			} else {
 				ego._conn.SetMaxOpenConns(1)
 				ego._conn.SetMaxIdleConns(1)
 				ego._conn.SetConnMaxIdleTime(time.Second * time.Duration(ego._cfgPool.KeepAlive))
 
-				logging.Log(core.LL_INFO, "Connect_%d to orm \t\t\t\t[Success:(%s)]", ego._index, connStr)
+				logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Connect_%d to db  %s", ego._index, strs.PinchString(connStr, "(", "?"))
 				return core.MkSuccess(0)
 			}
 		} else {
-			logging.Log(core.LL_INFO, "Connect_%d to orm \t\t\t\t[Failed:(%s) Maybe Syntax?]", ego._index, connStr)
+			logging.LogFixedWidth(core.LL_SYS, 70, false, "Syntax", "Connect_%d to orm %s", ego._index, strs.PinchString(connStr, "(", "?"))
 		}
 
 		time.Sleep(1000 * time.Millisecond)

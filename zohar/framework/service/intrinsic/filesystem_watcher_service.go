@@ -44,11 +44,11 @@ func (ego *FileSystemWatcherService) RemoveWatch(dir string) {
 }
 
 func (ego *FileSystemWatcherService) Initialize() int32 {
-	rc := ego.BeginInitializing()
+	rc := ego.SetInitializeState()
 	if core.Err(rc) {
 		return rc
 	}
-	ego.EndInitializing()
+
 	for _, d := range ego._config.Dirs {
 		if filepath.IsAbs(d) {
 			ego._fsw.AddWatch(d)
@@ -59,53 +59,50 @@ func (ego *FileSystemWatcherService) Initialize() int32 {
 
 	}
 
-	ego.BeginInitialized()
-	ego.EndInitialized()
+	ego.SetInitializeStateResult(true)
 	return core.MkSuccess(0)
 }
 
 func (ego *FileSystemWatcherService) Finalize() int32 {
-	rc := ego.BeginFinalizing()
+	rc := ego.SetFinalizeState()
 	if core.Err(rc) {
 		return rc
 	}
-	ego.EndFinalizing()
+
 	for _, d := range ego._config.Dirs {
 		ego._fsw.RemoveWatch(d)
 	}
-	ego.BeginUninitialized()
-	ego.EndUninitialized()
+
+	ego.SetFinalizeStateResult(true)
 	return core.MkSuccess(0)
 }
 
 func (ego *FileSystemWatcherService) Start() int32 {
-	rc := ego.BeginStarting()
+	rc := ego.SetStartState()
 	if core.Err(rc) {
 		return rc
 	}
-	ego.EndStarting()
+
 	ego._fsw.Start()
-	ego.BeginStarted()
-	ego.EndStarted()
+
+	ego.SetStartStateResult(true)
 	return core.MkSuccess(0)
 }
 
 func (ego *FileSystemWatcherService) Stop() int32 {
-	rc := ego.BeginStopping()
+	rc := ego.SetStopState()
 	if core.Err(rc) {
 		return rc
 	}
-	ego.EndStopping()
 	ego._fsw.Stop()
-	ego.BeginStopped()
-	ego.EndStopped()
+	ego.SetStopStateResult(true)
 	return core.MkSuccess(0)
 }
 
 func NeoFileSystemWatcherService(sm *ServiceManager, cfg *intrinsic.FileSystemWatcherServiceConfig) *FileSystemWatcherService {
 	s := FileSystemWatcherService{
 		ServiceCommon: ServiceCommon{
-			_state: datatype.Uninitialized,
+			_stateCode: datatype.StateCode(0),
 		},
 		_fsw:            fs.NeoFileSystemWatcher(),
 		_serviceManager: sm,

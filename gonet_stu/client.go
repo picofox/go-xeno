@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"time"
 	"xeno/zohar/core/inet"
-	"xeno/zohar/core/inet/client"
+	"xeno/zohar/core/inet/transcomm"
 )
 
 func main() {
 	ep := inet.NeoIPV4EndPointByEPStr(inet.EP_PROTO_TCP, 0, 0, "www.sina.com.cn:8080")
 	fmt.Println(ep.String())
 
-	c := client.NeoTcpClientConnection("192.168.0.20:9998")
+	c := transcomm.NeoTcpClientConnection("192.168.0.20:9998")
 	if c == nil {
 		fmt.Println("connect Failed")
 	}
