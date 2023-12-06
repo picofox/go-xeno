@@ -56,8 +56,13 @@ func (ego *TCPServerConnection) OnIncomingData() {
 			return //TODO close connection
 		}
 		baPtr := ego._recvBuffer.InternalData()
+		var nDone int64
+		if ego._recvBuffer.WritePos() >= ego._recvBuffer.ReadPos() {
+			nDone, rc = inet.SysRead(ego._fd, (*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.Capacity()])
+		} else {
+			nDone, rc = inet.SysRead(ego._fd, (*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.ReadPos()])
+		}
 
-		nDone, rc := inet.SysRead(ego._fd, (*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.Capacity()])
 		if nDone < 0 {
 			if core.Err(rc) {
 				ego._server.Log(core.LL_SYS, "Connection <%s> SysRead Failed: %d", ego.String(), rc)
