@@ -81,7 +81,6 @@ func (ego *TCPServer) OnIncomingConnection(listener *ListenWrapper, fd int, rAdd
 	}
 	ego.Log(core.LL_INFO, "Incoming Connection [%d] @ <%s -> %s> Added", connection._fd, connection._remoteEndPoint.EndPointString(), connection._localEndPoint.EndPointString())
 	ego._connectionMap.Store(connection._fd, connection)
-	ego._poller.OnIncomingConnection(connection)
 	return connection, core.MkSuccess(0)
 }
 
