@@ -625,11 +625,17 @@ func (ego *LinearBufferAdapter) WriteString(str string) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBufferAdapter) BytesRef() ([]byte, []byte) {
+func (ego *LinearBufferAdapter) BytesRef(length int64) ([]byte, []byte) {
 	if ego._length < 1 {
 		return nil, nil
 	}
-	return ego._data[ego._beginPos : ego._beginPos+ego._length], nil
+	if length < 0 {
+		length = ego._length
+	} else if length > ego._length {
+		panic("buffer out of scope")
+	}
+
+	return ego._data[ego._beginPos : ego._beginPos+length], nil
 }
 
 func (ego *LinearBufferAdapter) SliceOf(length int64) []byte {
@@ -654,3 +660,5 @@ func NeoLinearBufferAdapter(data []byte, beginPos int64, length int64, capa int6
 	}
 	return bf
 }
+
+var _ IByteBuffer = &LinearBufferAdapter{}

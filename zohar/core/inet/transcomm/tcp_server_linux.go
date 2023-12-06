@@ -90,7 +90,7 @@ func (ego *TCPServer) NeoTCPServerConnection(fd int, rAddr inet.IPV4EndPoint, lA
 		_fd:             fd,
 		_localEndPoint:  lAddr,
 		_remoteEndPoint: rAddr,
-		_recvBuffer:     memory.NeoLinearBuffer(1024),
+		_recvBuffer:     memory.NeoRingBuffer(1024),
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_server:         ego,
 		_pipeline:       make([]IServerHandler, 0),

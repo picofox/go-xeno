@@ -53,5 +53,5 @@ type IByteBuffer interface {
 	PeekString() (string, int32, int64, int64)
 	ReadString() (string, int32)
 	WriteString(string) int32
-	BytesRef() ([]byte, []byte)
+	BytesRef(int64) ([]byte, []byte)
 }

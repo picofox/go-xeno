@@ -698,16 +698,24 @@ func (ego *LinearBuffer) WriteString(str string) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinearBuffer) BytesRef() ([]byte, []byte) {
+func (ego *LinearBuffer) BytesRef(length int64) ([]byte, []byte) {
 	if ego._length < 1 {
 		return nil, nil
 	}
-	return ego._data[ego._beginPos : ego._beginPos+ego._length], nil
+	if length < 0 {
+		length = ego._length
+	} else if length > ego._length {
+		panic("buffer out of scope")
+	}
+
+	return ego._data[ego._beginPos : ego._beginPos+length], nil
 }
 
 func (ego *LinearBuffer) InternalData() *[]byte {
 	return &ego._data
 }
+
+var _ IByteBuffer = &LinearBuffer{}
 
 func NeoLinearBuffer(capacity int64) *LinearBuffer {
 	bf := &LinearBuffer{

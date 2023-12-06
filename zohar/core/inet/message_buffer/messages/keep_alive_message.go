@@ -16,11 +16,18 @@ func (ego *KeepAliveMessage) Serialize(data []byte, offset int64) int32 {
 	return core.MkSuccess(0)
 }
 
-func KeepAliveMessageDeserialize(data []byte, offset int64) message_buffer.INetMessage {
-	lb := memory.NeoLinearBufferAdapter(data, offset, int64(len(data))-offset, int64(cap(data))-offset)
-	ts, _ := lb.ReadInt64()
-	m := KeepAliveMessage{
-		_timeStamp: ts,
+func (ego *KeepAliveMessage) Deserialize(buffer memory.IByteBuffer) int32 {
+	ts, _ := buffer.ReadInt64()
+	ego._timeStamp = ts
+
+	return core.MkSuccess(0)
+}
+
+func KeepAliveMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetMessage {
+	m := KeepAliveMessage{}
+	rc := m.Deserialize(buffer)
+	if core.Err(rc) {
+		return nil
 	}
 	return &m
 }

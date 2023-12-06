@@ -13,6 +13,26 @@ type RingBuffer struct {
 	_b8Cache  []byte
 }
 
+func (ego *RingBuffer) Compact() int64 {
+	if ego.WritePos() == ego.ReadPos() {
+		if ego.WritePos() != 0 {
+			ego.Clear()
+		}
+	} else if ego.WritePos() > ego.ReadPos() {
+		if ego._length > 0 {
+			copy(ego._data[0:], ego._data[ego._beginPos:ego._beginPos+ego._length])
+		}
+	} else if ego.WritePos() < ego.ReadPos() {
+		if ego._length > 0 {
+			var firstPartLen int64 = ego._capacity - ego._beginPos
+			copy(ego._data[0:], ego._data[ego._beginPos:ego._capacity])
+			copy(ego._data[firstPartLen:], ego._data[0:ego.WritePos()])
+		}
+	}
+
+	return ego.WriteAvailable()
+}
+
 func (ego *RingBuffer) ExpandTo(neoCapacity int64) int64 {
 	if ego._capacity >= neoCapacity {
 		return 0
@@ -154,20 +174,55 @@ func (ego *RingBuffer) loadFromCache(wp int64, dtSize int64) {
 	ego._length += dtSize
 }
 
-func (ego *RingBuffer) InternalData() []byte {
-	return ego._data
+func (ego *RingBuffer) InternalData() *[]byte {
+	return &ego._data
+}
+
+func (ego *RingBuffer) ReaderSeek(whence int, offset int64) bool {
+	if offset == 0 {
+		return true
+	}
+	if whence == BUFFER_SEEK_CUR {
+		if offset > 0 {
+			if offset > ego._length {
+				return false
+			}
+
+			if ego._beginPos+offset < ego._capacity {
+				ego._beginPos += offset
+				ego._length -= offset
+			} else {
+				var idx int64 = ego._beginPos + offset - ego._capacity
+				ego._beginPos = idx
+				ego._length -= offset
+			}
+		} else {
+			return false
+		}
+	} else if whence == BUFFER_SEEK_SET {
+		delta := offset - ego._beginPos
+		return ego.ReaderSeek(BUFFER_SEEK_CUR, delta)
+
+	}
+	return true
 }
 
 func (ego *RingBuffer) Capacity() int64 {
 	return ego._capacity
 }
-func (ego *RingBuffer) BytesRef() ([]byte, []byte) {
-	if ego._beginPos+ego._length > ego._capacity {
+func (ego *RingBuffer) BytesRef(length int64) ([]byte, []byte) {
+	if length < 0 {
+		length = ego._length
+	} else if length > ego._length {
+		panic("out of buffer scope!!")
+	}
+
+	if ego._beginPos+length > ego._capacity {
 		firstPartLen := ego._capacity - ego._beginPos
-		remainLen := ego._length - firstPartLen
+		remainLen := length - firstPartLen
 		return ego._data[ego._beginPos : ego._beginPos+firstPartLen], ego._data[0:remainLen]
 	} else {
-		return ego._data[ego._beginPos:ego._length], nil
+		return ego._data[ego._beginPos:length], nil
 	}
 }
 
@@ -185,11 +240,16 @@ func (ego *RingBuffer) Clear() {
 }
 
 func (ego *RingBuffer) WritePos() int64 {
+
 	wp := ego._beginPos + ego._length
 	if wp >= ego._capacity {
 		wp -= ego._capacity
 	}
 	return wp
+}
+
+func (ego *RingBuffer) ReadPos() int64 {
+	return ego._beginPos
 }
 
 func (ego *RingBuffer) PeekRawBytes(ba []byte, baOff int64, peekLength int64, isStrict bool) (int64, int64, int64) {
@@ -929,6 +989,8 @@ func (ego *RingBuffer) WriteString(str string) int32 {
 	}
 	return core.MkSuccess(0)
 }
+
+var _ IByteBuffer = &RingBuffer{}
 
 func NeoRingBuffer(capacity int64) *RingBuffer {
 	bf := &RingBuffer{

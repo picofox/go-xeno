@@ -3,20 +3,21 @@ package messages
 import (
 	"sync"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/memory"
 )
 
-type MessageDeserializationHandler func([]byte, int64) message_buffer.INetMessage
+type MessageDeserializationHandler func(buffer memory.IByteBuffer) message_buffer.INetMessage
 
 type MessageDeserializationMapper struct {
 	_mapper [32768]MessageDeserializationHandler
 }
 
-func (ego *MessageDeserializationMapper) Deserialize(cmd int16, ba []byte, offset int64) message_buffer.INetMessage {
+func (ego *MessageDeserializationMapper) Deserialize(cmd int16, buffer memory.IByteBuffer) message_buffer.INetMessage {
 	if cmd < 0 {
 		return nil
 	}
 	if ego._mapper[cmd] != nil {
-		return ego._mapper[cmd](ba, offset)
+		return ego._mapper[cmd](buffer)
 	}
 	return nil
 }
