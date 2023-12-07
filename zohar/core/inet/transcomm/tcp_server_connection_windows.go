@@ -29,8 +29,7 @@ func (ego *TCPServerConnection) OnWritable() int32 {
 }
 
 func (ego *TCPServerConnection) Type() int8 {
-	//TODO implement me
-	panic("implement me")
+	return CONNTYPE_TCP_SERVER
 }
 
 func (ego *TCPServerConnection) RemoteEndPoint() *inet.IPV4EndPoint {
