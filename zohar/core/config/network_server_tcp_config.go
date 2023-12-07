@@ -5,10 +5,10 @@ import (
 )
 
 type NetworkServerTCPConfig struct {
-	ListenerEndPoints          []string                        `json:"ListenerEndPoints"`
-	PublicConnectingEndPoints  []string                        `json:"PublicConnectingEndPoints"`
-	PrivateConnectingEndPoints []string                        `json:"PrivateConnectingEndPoints"`
-	Handlers                   []NetworkServerTCPHandlerConfig `json:"Handlers"`
+	ListenerEndPoints          []string                  `json:"ListenerEndPoints"`
+	PublicConnectingEndPoints  []string                  `json:"PublicConnectingEndPoints"`
+	PrivateConnectingEndPoints []string                  `json:"PrivateConnectingEndPoints"`
+	Handlers                   []NetworkTCPHandlerConfig `json:"Handlers"`
 }
 
 func (ego *NetworkServerTCPConfig) String() string {

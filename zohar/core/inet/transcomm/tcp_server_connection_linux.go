@@ -9,6 +9,7 @@ import (
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
+	"xeno/zohar/core/xplatform"
 )
 
 type TCPServerConnection struct {
@@ -22,8 +23,24 @@ type TCPServerConnection struct {
 	_server         *TCPServer
 }
 
-func (ego *TCPServerConnection) FileDescriptor() int {
-	return ego._fd
+func (ego *TCPServerConnection) Identifier() int64 {
+	return ego.RemoteEndPoint().Identifier()
+}
+
+func (ego *TCPServerConnection) FileDescriptor() xplatform.FileDescriptor {
+	return xplatform.FileDescriptor(ego._fd)
+}
+
+func (ego *TCPServerConnection) PreStop() {
+
+}
+
+func (ego *TCPServerConnection) RemoteEndPoint() *inet.IPV4EndPoint {
+	return &ego._remoteEndPoint
+}
+
+func (ego *TCPServerConnection) LocalEndPoint() *inet.IPV4EndPoint {
+	return &ego._localEndPoint
 }
 
 func (ego *TCPServerConnection) checkRecvBufferCapacity() int32 {
@@ -48,12 +65,12 @@ func (ego *TCPServerConnection) String() string {
 	return fmt.Sprintf("%s->%s[%d]", ego._remoteEndPoint.EndPointString(), ego._localEndPoint.EndPointString(), ego.FileDescriptor())
 }
 
-func (ego *TCPServerConnection) OnIncomingData() {
+func (ego *TCPServerConnection) OnIncomingData() int32 {
 	for {
 		rc := ego.checkRecvBufferCapacity()
 		if core.IsErrType(rc, core.EC_REACH_LIMIT) {
 			ego._server.Log(core.LL_ERR, "[SNH] Buffer reach max")
-			return //TODO close connection
+			return core.MkErr(core.EC_REACH_LIMIT, 1) //TODO close connection
 		}
 		baPtr := ego._recvBuffer.InternalData()
 		var nDone int64
@@ -67,10 +84,10 @@ func (ego *TCPServerConnection) OnIncomingData() {
 			if core.Err(rc) {
 				ego._server.Log(core.LL_SYS, "Connection <%s> SysRead Failed: %d", ego.String(), rc)
 			}
-			return
+			return core.MkErr(core.EC_TCO_RECV_ERROR, 1)
 		} else if nDone == 0 {
 			//handle close
-			return
+			return core.MkErr(core.EC_EOF, 1)
 		} else {
 			var bufParam any = ego._recvBuffer
 			var p2 any = nil
@@ -78,7 +95,7 @@ func (ego *TCPServerConnection) OnIncomingData() {
 			for _, handler := range ego._pipeline {
 				rc, bufParam, l, p2 = handler.OnReceive(ego, bufParam, l, p2)
 				if core.Err(rc) {
-					return
+					return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
 				}
 			}
 		}
@@ -188,3 +205,5 @@ func NeoTcpServerConnection(tcpServer *TCPServer, fd int, rAddr syscall.Sockaddr
 	}
 	return &tsc
 }
+
+var _ IConnection = &TCPServerConnection{}
