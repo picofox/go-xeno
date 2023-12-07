@@ -6,7 +6,6 @@ import (
 	"reflect"
 	"time"
 	"xeno/zohar/core"
-	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
@@ -113,19 +112,19 @@ func (ego *TCPServerConnection) Identifier() int64 {
 	return ego._remoteEndPoint.Identifier()
 }
 
-func NeoTCPServerConnection(conn *net.TCPConn, config *config.NetworkServerTCPConfig) *TCPServerConnection {
+func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServerConnection {
 	c := TCPServerConnection{
 		_conn:           conn,
 		_localEndPoint:  inet.NeoIPV4EndPointByAddr(conn.LocalAddr()),
 		_remoteEndPoint: inet.NeoIPV4EndPointByAddr(conn.RemoteAddr()),
 		_recvBuffer:     memory.NeoRingBuffer(1024),
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
-		_server:         nil,
+		_server:         listener.Server(),
 		_pipeline:       make([]IServerHandler, 0),
 	}
 
 	var output []reflect.Value = make([]reflect.Value, 0, 1)
-	for _, elem := range config.Handlers {
+	for _, elem := range listener.Server()._config.Handlers {
 		rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+elem.Name)
 		if core.Err(rc) {
 			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
