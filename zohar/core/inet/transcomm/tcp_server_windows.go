@@ -65,8 +65,8 @@ func (ego *TCPServer) Log(lv int, fmt string, arg ...any) {
 }
 
 func (ego *TCPServer) OnIncomingConnection(connection IConnection) (IConnection, int32) {
-	ego.Log(core.LL_INFO, "Incoming Connection [%d] @ <%s -> %s> Added", connection.FileDescriptor(), connection.RemoteEndPoint().EndPointString(), connection.LocalEndPoint().EndPointString())
-	ego._connectionMap.Store(connection.FileDescriptor(), connection)
+	ego.Log(core.LL_INFO, "Incoming Connection [%d] @ <%s -> %s> Added", connection.Identifier(), connection.RemoteEndPoint().EndPointString(), connection.LocalEndPoint().EndPointString())
+	ego._connectionMap.Store(connection.Identifier(), connection)
 	return connection, core.MkSuccess(0)
 }
 

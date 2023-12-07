@@ -28,7 +28,7 @@ func (ego *SubReactor) loop() int32 {
 }
 
 func (ego *SubReactor) OnStart() {
-	ego._poller.Log(core.LL_SYS, "Sub Reactor <%s> Starting", ego._connection.String())
+	ego._poller.Log(core.LL_SYS, "Sub Reactor Starting")
 	ego._poller._waitGroup.Add(1)
 	go ego.loop()
 }

@@ -7,7 +7,6 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/memory"
-	"xeno/zohar/core/xplatform"
 )
 
 type TCPServerConnection struct {
@@ -31,10 +30,6 @@ func (ego *TCPServerConnection) Type() int8 {
 
 func (ego *TCPServerConnection) Identifier() int64 {
 	return ego.RemoteEndPoint().Identifier()
-}
-
-func (ego *TCPServerConnection) FileDescriptor() xplatform.FileDescriptor {
-	return xplatform.FileDescriptor(ego._fd)
 }
 
 func (ego *TCPServerConnection) PreStop() {

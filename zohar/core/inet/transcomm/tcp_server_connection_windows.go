@@ -9,7 +9,6 @@ import (
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
-	"xeno/zohar/core/xplatform"
 )
 
 type TCPServerConnection struct {
@@ -37,10 +36,6 @@ func (ego *TCPServerConnection) RemoteEndPoint() *inet.IPV4EndPoint {
 
 func (ego *TCPServerConnection) LocalEndPoint() *inet.IPV4EndPoint {
 	return &ego._localEndPoint
-}
-
-func (ego *TCPServerConnection) FileDescriptor() xplatform.FileDescriptor {
-	return xplatform.FileDescriptor(ego._fd)
 }
 
 func (ego *TCPServerConnection) Shutdown() {
@@ -132,13 +127,6 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 		h := output[0].Interface().(IServerHandler)
 		c._pipeline = append(c._pipeline, h)
 	}
-
-	file, err := c._conn.File()
-	if err != nil {
-		c._server.Log(core.LL_ERR, "Get File From connection <%s> Failed.", c._conn.RemoteAddr().String())
-		return nil
-	}
-	c._fd = file.Fd()
 
 	return &c
 }

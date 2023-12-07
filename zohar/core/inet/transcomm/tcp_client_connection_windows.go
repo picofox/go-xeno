@@ -6,12 +6,10 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/memory"
-	"xeno/zohar/core/xplatform"
 )
 
 type TCPClientConnection struct {
 	_index          int
-	_fd             xplatform.FileDescriptor
 	_conn           *net.TCPConn
 	_localEndPoint  inet.IPV4EndPoint
 	_remoteEndPoint inet.IPV4EndPoint
@@ -26,13 +24,6 @@ func (ego *TCPClientConnection) OnWritable() int32 {
 	ego._isConnected = true
 	laddr := ego._conn.LocalAddr()
 	ego._localEndPoint = inet.NeoIPV4EndPointByAddr(laddr)
-
-	f, err := ego._conn.File()
-	if err != nil {
-		return core.MkErr(core.EC_GET_LOW_FD_ERROR, 1)
-	}
-	ego._fd = xplatform.FileDescriptor(f.Fd())
-
 	return core.MkSuccess(0)
 }
 
@@ -58,10 +49,6 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 
 func (ego *TCPClientConnection) Identifier() int64 {
 	return ego._remoteEndPoint.Identifier()
-}
-
-func (ego *TCPClientConnection) FileDescriptor() xplatform.FileDescriptor {
-	return ego._fd
 }
 
 func (ego *TCPClientConnection) String() string {

@@ -6,7 +6,6 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/memory"
-	"xeno/zohar/core/xplatform"
 )
 
 type TCPClientConnection struct {
@@ -53,10 +52,6 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 
 func (ego *TCPClientConnection) Identifier() int64 {
 	return ego._remoteEndPoint.Identifier()
-}
-
-func (ego *TCPClientConnection) FileDescriptor() xplatform.FileDescriptor {
-	return xplatform.FileDescriptor(ego._fd)
 }
 
 func (ego *TCPClientConnection) String() string {
