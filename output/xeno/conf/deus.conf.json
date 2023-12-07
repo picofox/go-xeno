@@ -38,11 +38,11 @@
 					"Count" : 10,
 					"Handlers" : [
 							{
-								"Name" : "O1L15COT15DecodeServerHandler",
+								"Name" : "O1L15COT15DecodeClientHandler",
 								"Param" : {}
 							},
 							{
-								"Name" : "MessageBufferServerHandlers",
+								"Name" : "MessageBufferClientHandlers",
 								"Param" : {}	
 							}
 						] 

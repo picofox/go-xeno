@@ -15,7 +15,7 @@ type TCPClientConnection struct {
 	_remoteEndPoint inet.IPV4EndPoint
 	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
-	_pipeline       []IServerHandler
+	_pipeline       []IClientHandler
 	_client         *TCPClient
 	_isConnected    bool
 }
@@ -75,7 +75,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_remoteEndPoint: rAddr,
 		_recvBuffer:     memory.NeoRingBuffer(1024),
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
-		_pipeline:       make([]IServerHandler, 0),
+		_pipeline:       make([]IClientHandler, 0),
 		_client:         client,
 		_isConnected:    false,
 	}
