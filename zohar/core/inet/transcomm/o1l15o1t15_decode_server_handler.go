@@ -5,8 +5,6 @@ import (
 	"xeno/zohar/core/memory"
 )
 
-const O1L15O1T15_HEADER_SIZE = 4
-
 type O1L15COT15DecodeServerHandler struct {
 	_largeMessageBuffer *memory.LinearBuffer
 	_memoryLow          bool

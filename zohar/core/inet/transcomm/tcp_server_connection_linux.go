@@ -63,7 +63,7 @@ func (ego *TCPServerConnection) checkRecvBufferCapacity() int32 {
 }
 
 func (ego *TCPServerConnection) String() string {
-	return fmt.Sprintf("%s->%s[%d]", ego._remoteEndPoint.EndPointString(), ego._localEndPoint.EndPointString(), ego.FileDescriptor())
+	return fmt.Sprintf("%s->%s[%d]", ego._remoteEndPoint.EndPointString(), ego._localEndPoint.EndPointString(), ego.Identifier())
 }
 
 func (ego *TCPServerConnection) OnIncomingData() int32 {

@@ -119,5 +119,13 @@ func (ego *SubReactor) AddConnection(conn IConnection) {
 		Connection: conn,
 	}
 	BindSubReactorEventData(unsafe.Pointer(&ev.Data), info)
-	inet.EpollCtl(ego._epollDescriptor, syscall.EPOLL_CTL_ADD, int(conn.FileDescriptor()), &ev)
+	fd := -1
+	if conn.Type() == CONNTYPE_TCP_SERVER {
+		fd = conn.(*TCPServerConnection)._fd
+	} else if conn.Type() == CONNTYPE_TCP_CLIENT {
+		fd = conn.(*TCPClientConnection)._fd
+	} else {
+		return
+	}
+	inet.EpollCtl(ego._epollDescriptor, syscall.EPOLL_CTL_ADD, fd, &ev)
 }
