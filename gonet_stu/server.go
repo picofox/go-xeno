@@ -1,37 +1,50 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"github.com/cloudwego/netpoll"
-	"runtime"
+	"net"
 	"time"
 )
 
-func OnReq(ctx context.Context, connection netpoll.Connection) error {
-	return nil
-}
+func accr(lis net.Listener) {
+	for {
+		fmt.Println("等待客户端来连接...")
+		conn, err := lis.Accept()
+		//错误处理和输出当前连接客户端信息
+		if err != nil {
+			fmt.Println("Accept() err=", err)
+		} else {
+			fmt.Printf("Accept() suc con: %s -> %s\n", conn.RemoteAddr().String(), conn.LocalAddr().String())
+		}
 
-func OnPrepare(connection netpoll.Connection) context.Context {
-	return context.Background()
+	}
+
 }
 
 func main() {
-	fmt.Println(runtime.GOMAXPROCS(0))
-	listener, err := netpoll.CreateListener("tcp", "0.0.0.0:9999")
+	fmt.Printf("服务器开始监听...")
+	//监听一个端口
+	listen, err := net.Listen("tcp", ":9998")
 	if err != nil {
-		panic("create netpoll listener failed")
-	}
-
-	if listener == nil {
+		fmt.Println("listen err=", err)
 		return
 	}
-
-	el, _ := netpoll.NewEventLoop(OnReq, netpoll.WithOnPrepare(OnPrepare), netpoll.WithReadTimeout(time.Second))
-	if el == nil {
-		fmt.Print("fail")
+	//延迟关闭连接
+	defer listen.Close()
+	listen2, err := net.Listen("tcp", ":9999")
+	if err != nil {
+		fmt.Println("listen err=", err)
+		return
 	}
+	//延迟关闭连接
+	defer listen2.Close()
 
-	el.Serve(listener)
+	go accr(listen2)
+	go accr(listen)
+
+	//循环等待客户端来连接
+	for {
+		time.Sleep(10 * time.Second)
+	}
 
 }

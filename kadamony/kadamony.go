@@ -60,6 +60,7 @@ type Product struct {
 }
 
 func main() {
+	logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Kadamony Application Initializing ...")
 	framework.Initialize()
 	intrinsic.GetServiceManager().RegisterFileSystemWatcherHandler(0, OnFileSystemChanged)
 

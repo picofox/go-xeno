@@ -2,71 +2,97 @@ package transcomm
 
 import (
 	"fmt"
-	"io"
 	"net"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
+	"xeno/zohar/core/memory"
+	"xeno/zohar/core/xplatform"
 )
 
-type TcpClientConnection struct {
-	_conn          net.Conn
-	_remoteAddress inet.IPV4EndPoint
-	_localAddress  inet.IPV4EndPoint
+type TCPClientConnection struct {
+	_index          int
+	_fd             xplatform.FileDescriptor
+	_conn           *net.TCPConn
+	_localEndPoint  inet.IPV4EndPoint
+	_remoteEndPoint inet.IPV4EndPoint
+	_recvBuffer     *memory.RingBuffer
+	_sendBuffer     *memory.LinearBuffer
+	_pipeline       []IServerHandler
+	_client         *TCPClient
+	_isConnected    bool
 }
 
-func (ego *TcpClientConnection) Connect() int32 {
-	var err error
-	if ego._localAddress.Valid() {
-		ego._conn, err = net.DialTCP("tcp", ego._localAddress.ToTCPAddr(), ego._remoteAddress.ToTCPAddr())
-		if err != nil {
-			return core.MkErr(core.EC_TCP_CONNECT_ERROR, 1)
-		}
-	} else {
-		ego._conn, err = net.DialTCP("tcp", nil, ego._remoteAddress.ToTCPAddr())
-		if err != nil {
-			return core.MkErr(core.EC_TCP_CONNECT_ERROR, 1)
-		}
-		ego._localAddress = inet.NeoIPV4EndPointByAddr(ego._conn.LocalAddr())
-		fmt.Printf("local addr is %v\n", ego._localAddress.String())
+func (ego *TCPClientConnection) OnWritable() int32 {
+	ego._isConnected = true
+	laddr := ego._conn.LocalAddr()
+	ego._localEndPoint = inet.NeoIPV4EndPointByAddr(laddr)
+
+	f, err := ego._conn.File()
+	if err != nil {
+		return core.MkErr(core.EC_GET_LOW_FD_ERROR, 1)
 	}
+	ego._fd = xplatform.FileDescriptor(f.Fd())
+
 	return core.MkSuccess(0)
 }
 
-func (ego *TcpClientConnection) SendImmediately(ba []byte, offset int, length int) (int, int32) {
-	n, err := ego._conn.Write(ba[offset:length])
+func (ego *TCPClientConnection) Type() int8 {
+	return CONNTYPE_TCP_CLIENT
+}
+
+func (ego *TCPClientConnection) Connect() int32 {
+	var err error
+	ego._conn, err = net.DialTCP(ego._remoteEndPoint.ProtoName(), nil, ego._remoteEndPoint.ToTCPAddr())
 	if err != nil {
-		return n, core.MkErr(core.EC_FILE_WRITE_FAILED, 1)
-	}
-	return n, core.MkSuccess(0)
-}
-
-func (ego *TcpClientConnection) Recv(ba []byte, offset int, length int) (int, int32) {
-	n, err := ego._conn.Read(ba[offset:length])
-	if err != nil {
-		if err == io.EOF {
-			return n, core.MkErr(core.EC_EOF, 0)
-		}
-		return n, core.MkErr(core.EC_FILE_READ_FAILED, 1)
-	}
-	return n, core.MkSuccess(0)
-}
-
-func (ego *TcpClientConnection) Close() {
-	ego._conn.Close()
-	ego._conn = nil
-}
-
-func NeoTcpClientConnection(epStrRemote string, epStrLocal ...string) *TcpClientConnection {
-	var addrLocal inet.IPV4EndPoint
-	if len(epStrLocal) > 0 {
-		addrLocal = inet.NeoIPV4EndPointByEPStr(inet.EP_PROTO_TCP, 0, 0, epStrRemote)
-	} else {
-		addrLocal.SetInvalid()
+		return core.MkErr(core.EC_TCP_CONNECT_ERROR, 1)
 	}
 
-	c := TcpClientConnection{
-		_conn:          nil,
-		_remoteAddress: inet.NeoIPV4EndPointByEPStr(inet.EP_PROTO_TCP, 0, 0, epStrRemote),
+	ego.OnWritable()
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPClientConnection) OnIncomingData() int32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPClientConnection) Identifier() int64 {
+	return ego._remoteEndPoint.Identifier()
+}
+
+func (ego *TCPClientConnection) FileDescriptor() xplatform.FileDescriptor {
+	return ego._fd
+}
+
+func (ego *TCPClientConnection) String() string {
+	return fmt.Sprintf("<%s> -> <%s>", ego._localEndPoint.EndPointString(), ego._remoteEndPoint.EndPointString())
+}
+
+func (ego *TCPClientConnection) PreStop() {
+
+}
+
+func (ego *TCPClientConnection) RemoteEndPoint() *inet.IPV4EndPoint {
+	return &ego._remoteEndPoint
+}
+
+func (ego *TCPClientConnection) LocalEndPoint() *inet.IPV4EndPoint {
+	return &ego._localEndPoint
+}
+
+func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoint) *TCPClientConnection {
+	c := TCPClientConnection{
+		_index:          index,
+		_conn:           nil,
+		_localEndPoint:  inet.NeoIPV4EndPointByIdentifier(-1),
+		_remoteEndPoint: rAddr,
+		_recvBuffer:     memory.NeoRingBuffer(1024),
+		_sendBuffer:     memory.NeoLinearBuffer(1024),
+		_pipeline:       make([]IServerHandler, 0),
+		_client:         client,
+		_isConnected:    false,
 	}
 	return &c
 }
+
+var _ IConnection = &TCPClientConnection{}

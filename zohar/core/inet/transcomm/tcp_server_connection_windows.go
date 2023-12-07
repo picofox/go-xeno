@@ -24,6 +24,15 @@ type TCPServerConnection struct {
 	_fd             uintptr
 }
 
+func (ego *TCPServerConnection) OnWritable() int32 {
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPServerConnection) Type() int8 {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (ego *TCPServerConnection) RemoteEndPoint() *inet.IPV4EndPoint {
 	return &ego._remoteEndPoint
 }
