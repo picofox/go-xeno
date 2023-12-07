@@ -32,19 +32,21 @@
 	},
 	"Network" : {
 		"Client" : {
-			"Default" : {
-				"ServerEndPoints" : ["0.0.0.0:9998", "0.0.0.0:9999"],
-				"Count" : 10,
-				"Handlers" : [
-						{
-							"Name" : "O1L15COT15DecodeServerHandler",
-							"Param" : {}
-						},
-						{
-							"Name" : "MessageBufferServerHandlers",
-							"Param" : {}	
-						}
-					] 
+			"TCP" : {
+				"Default" : {
+					"ServerEndPoints" : ["192.168.0.100:9998", "192.168.0.100:9999"],
+					"Count" : 10,
+					"Handlers" : [
+							{
+								"Name" : "O1L15COT15DecodeServerHandler",
+								"Param" : {}
+							},
+							{
+								"Name" : "MessageBufferServerHandlers",
+								"Param" : {}	
+							}
+						] 
+				}
 			}
 		},
 		"Server" : {
