@@ -1,23 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"net"
 	"time"
-	"xeno/zohar/core/inet"
-	"xeno/zohar/core/inet/transcomm"
 )
 
 func main() {
-	ep := inet.NeoIPV4EndPointByEPStr(inet.EP_PROTO_TCP, 0, 0, "www.sina.com.cn:8080")
-	fmt.Println(ep.String())
 
-	c := transcomm.NeoTcpClientConnection("192.168.0.20:9998")
-	if c == nil {
-		fmt.Println("connect Failed")
+	sa := "192.168.0.100:9999"
+	tcpAddr, err := net.ResolveTCPAddr("tcp", sa)
+	if err != nil {
+		return
 	}
 
-	c.Connect()
-
+	_, err = net.DialTCP("tcp", nil, tcpAddr)
+	if err != nil {
+		return
+	}
 	time.Sleep(100 * time.Second)
 
 }

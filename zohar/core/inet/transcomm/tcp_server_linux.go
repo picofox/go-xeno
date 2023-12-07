@@ -68,7 +68,15 @@ func (ego *TCPServer) Log(lv int, fmt string, arg ...any) {
 	}
 }
 
-func (ego *TCPServer) OnIncomingConnection(listener *ListenWrapper, fd int, rAddr inet.IPV4EndPoint, lAddr inet.IPV4EndPoint) (IConnection, int32) {
+func (ego *TCPServer) LogFixedWidth(lv int, leftLen int, ok bool, failStr string, format string, arg ...any) {
+	if ego._logger != nil {
+		ego._logger.LogFixedWidth(lv, leftLen, ok, failStr, format, arg...)
+	}
+}
+
+func (ego *TCPServer) OnIncomingConnection(listener *ListenWrapper, fd int, rAddr inet.IPV4EndPoint) (IConnection, int32) {
+	lsa, _ := syscall.Getsockname(fd)
+	lAddr := inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, lsa)
 	connection := ego.NeoTCPServerConnection(fd, rAddr, lAddr)
 	var output = make([]reflect.Value, 0, 1)
 	for _, elem := range ego._config.Handlers {
@@ -95,12 +103,6 @@ func (ego *TCPServer) NeoTCPServerConnection(fd int, rAddr inet.IPV4EndPoint, lA
 		_pipeline:       make([]IServerHandler, 0),
 	}
 	return &connection
-}
-
-func (ego *TCPServer) LogFixedWidth(lv int, leftLen int, ok bool, failStr string, format string, arg ...any) {
-	if ego._logger != nil {
-		ego._logger.LogFixedWidth(lv, leftLen, ok, failStr, format, arg...)
-	}
 }
 
 func (ego *TCPServer) Start() int32 {

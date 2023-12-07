@@ -1,10 +1,45 @@
 package inet
 
 import (
+	"os"
 	"syscall"
 	"unsafe"
 	"xeno/zohar/core"
+	"xeno/zohar/core/datatype"
 )
+
+func SetDefaultSockopts(s, family, sotype int, ipv6only bool) int32 {
+	if family == syscall.AF_INET6 && sotype != syscall.SOCK_RAW {
+		// Allow both IP versions even if the OS default
+		// is otherwise. Note that some operating systems
+		// never admit this option.
+		syscall.SetsockoptInt(s, syscall.IPPROTO_IPV6, syscall.IPV6_V6ONLY, datatype.BoolToInt(ipv6only))
+	}
+
+	// Allow broadcast.
+	if os.NewSyscallError("setsockopt", syscall.SetsockoptInt(s, syscall.SOL_SOCKET, syscall.SO_BROADCAST, 1)) != nil {
+		return core.MkErr(core.EC_SET_NONBLOCK_ERROR, 1)
+	}
+	return core.MkSuccess(0)
+}
+
+func SysSocket(family, sotype, proto int) (int, int32) {
+	// See ../syscall/exec_unix.go for description of ForkLock.
+	syscall.ForkLock.RLock()
+	s, err := syscall.Socket(family, sotype, proto)
+	if err == nil {
+		syscall.CloseOnExec(s)
+	}
+	syscall.ForkLock.RUnlock()
+	if err != nil {
+		return -1, core.MkErr(core.EC_CREATE_SOCKET_ERROR, 0)
+	}
+	if err = syscall.SetNonblock(s, true); err != nil {
+		syscall.Close(s)
+		return -1, core.MkErr(core.EC_SET_NONBLOCK_ERROR, 0)
+	}
+	return s, core.MkSuccess(0)
+}
 
 func SysRead(fd int, ba []byte) (int64, int32) {
 	n, err := syscall.Read(fd, ba)
@@ -69,4 +104,19 @@ WAIT:
 		}
 	}
 	return n, rc
+}
+
+func Socket(family, sotype, proto int) (int, int32) {
+	fd, rc := SysSocket(family, sotype, proto)
+	if core.Err(rc) {
+		return -1, rc
+	}
+
+	rc = SetDefaultSockopts(fd, family, sotype, false)
+	if core.Err(rc) {
+		syscall.Close(fd)
+		return -1, rc
+	}
+
+	return fd, core.MkSuccess(0)
 }

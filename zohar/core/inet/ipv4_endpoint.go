@@ -105,6 +105,20 @@ func (ego *IPV4EndPoint) SetIPV4Str(ips string) bool {
 	return true
 }
 
+func (ego *IPV4EndPoint) ToSockAddr() syscall.Sockaddr {
+	if ego.Proto() != EP_PROTO_TCP {
+		return nil
+	}
+
+	sa := syscall.SockaddrInet4{
+		Port: int(ego.Port()),
+	}
+	ba := sa.Addr[0:4]
+	memory.UInt32IntoBytesBE(ego.IPV4(), &ba, 0)
+
+	return &sa
+}
+
 func (ego *IPV4EndPoint) ToTCPAddr() *net.TCPAddr {
 	if ego.Proto() != EP_PROTO_TCP {
 		return nil

@@ -2,13 +2,11 @@ package transcomm
 
 import (
 	"fmt"
-	"reflect"
 	"sync"
 	"syscall"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/memory"
-	"xeno/zohar/core/mp"
 	"xeno/zohar/core/xplatform"
 )
 
@@ -21,6 +19,14 @@ type TCPServerConnection struct {
 	_pipeline       []IServerHandler
 	_lock           sync.Mutex
 	_server         *TCPServer
+}
+
+func (ego *TCPServerConnection) OnWritable() int32 {
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPServerConnection) Type() int8 {
+	return CONNTYPE_TCP_SERVER
 }
 
 func (ego *TCPServerConnection) Identifier() int64 {
@@ -182,28 +188,28 @@ func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int
 	}
 }
 
-func NeoTcpServerConnection(tcpServer *TCPServer, fd int, rAddr syscall.Sockaddr, lAddr inet.IPV4EndPoint) *TCPServerConnection {
-	ra := inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, rAddr)
-	tsc := TCPServerConnection{
-		_fd:             fd,
-		_localEndPoint:  lAddr,
-		_remoteEndPoint: ra,
-		_recvBuffer:     memory.NeoRingBuffer(1024),
-		_sendBuffer:     memory.NeoLinearBuffer(1024),
-		_server:         tcpServer,
-		_pipeline:       make([]IServerHandler, 0),
-	}
-
-	var output []reflect.Value = make([]reflect.Value, 0, 1)
-	for _, elem := range tcpServer._config.Handlers {
-		rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+elem.Name)
-		if core.Err(rc) {
-			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
-		}
-		h := output[0].Interface().(IServerHandler)
-		tsc._pipeline = append(tsc._pipeline, h)
-	}
-	return &tsc
-}
+//func NeoTcpServerConnection(tcpServer *TCPServer, fd int, rAddr syscall.Sockaddr, lAddr inet.IPV4EndPoint) *TCPServerConnection {
+//	ra := inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, rAddr)
+//	tsc := TCPServerConnection{
+//		_fd:             fd,
+//		_localEndPoint:  lAddr,
+//		_remoteEndPoint: ra,
+//		_recvBuffer:     memory.NeoRingBuffer(1024),
+//		_sendBuffer:     memory.NeoLinearBuffer(1024),
+//		_server:         tcpServer,
+//		_pipeline:       make([]IServerHandler, 0),
+//	}
+//
+//	var output []reflect.Value = make([]reflect.Value, 0, 1)
+//	for _, elem := range tcpServer._config.Handlers {
+//		rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+elem.Name)
+//		if core.Err(rc) {
+//			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
+//		}
+//		h := output[0].Interface().(IServerHandler)
+//		tsc._pipeline = append(tsc._pipeline, h)
+//	}
+//	return &tsc
+//}
 
 var _ IConnection = &TCPServerConnection{}

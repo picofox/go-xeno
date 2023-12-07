@@ -80,6 +80,9 @@ func main() {
 	//	panic("error")
 	//}
 	//orm.AutoMigrate(&Product{})
+	cli := transcomm.NeoTCPClient("Default", transcomm.GetDefaultPoller(), config.GetKadamonyConfig().Network.Client.GetTCP("Default"), logging.GetLoggerManager().GetDefaultLogger())
+	rc = cli.Initialize()
+	rc = cli.Start()
 
 	svr := transcomm.NeoTcpServer("Default", config.GetKadamonyConfig().Network.Server.GetTCP("Defaut"), logging.GetLoggerManager().GetDefaultLogger())
 	if svr == nil {

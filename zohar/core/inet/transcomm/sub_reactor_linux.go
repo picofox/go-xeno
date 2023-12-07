@@ -39,6 +39,11 @@ func (ego *SubReactor) onPullIn(evt *inet.EPollEvent) {
 	p.Connection.OnIncomingData()
 
 }
+
+func (ego *SubReactor) onPullOut(evt *inet.EPollEvent) {
+	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
+	p.Connection.OnWritable()
+}
 func (ego *SubReactor) onPullHup(evt *inet.EPollEvent) {
 	ego._poller.Log(core.LL_INFO, "Sub PullHup:")
 }
@@ -50,6 +55,8 @@ func (ego *SubReactor) onPullErr(evt *inet.EPollEvent) {
 func (ego *SubReactor) HandlerEvent(evt *inet.EPollEvent) {
 	if (evt.Events & syscall.EPOLLIN) != 0 {
 		ego.onPullIn(evt)
+	} else if (evt.Events & syscall.EPOLLOUT) != 0 {
+		ego.onPullOut(evt)
 	} else if (evt.Events & syscall.EPOLLRDHUP) != 0 {
 		ego.onPullHup(evt)
 	} else if (evt.Events & syscall.EPOLLERR) != 0 {
@@ -107,7 +114,7 @@ func (ego *SubReactor) Loop() int32 {
 
 func (ego *SubReactor) AddConnection(conn IConnection) {
 	ev := inet.EPollEvent{}
-	ev.Events = syscall.EPOLLIN | syscall.EPOLLRDHUP | syscall.EPOLLERR | inet.EPOLLET
+	ev.Events = syscall.EPOLLIN | syscall.EPOLLRDHUP | syscall.EPOLLERR | syscall.EPOLLOUT | inet.EPOLLET
 	info := &EPoolEventDataSubReactor{
 		Connection: conn,
 	}

@@ -64,7 +64,8 @@ func (ego *MainReactor) onPullIn(evt *inet.EPollEvent) {
 	raddr := inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, sa)
 	svr := p.Listener.Server()
 	var connection IConnection
-	connection, rc = svr.OnIncomingConnection(p.Listener, fd, raddr, p.Listener.BindAddr())
+
+	connection, rc = svr.OnIncomingConnection(p.Listener, fd, raddr)
 	et, _ := core.ExErr(rc)
 	if et != core.EC_OK {
 		if et == core.EC_NOOP {
