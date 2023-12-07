@@ -195,7 +195,7 @@ func NeoPoller() *Poller {
 		_logger:      logging.GetLoggerManager().GetDefaultLogger(),
 		_mainReactor: nil,
 		_subReactors: make([]*SubReactor, 0),
-		_config:      nil,
+		_config:      &intrinsic.GetIntrinsicConfig().Poller,
 		_stateCode:   datatype.StateCode(0),
 	}
 	p._subReactorIndex.Store(0)

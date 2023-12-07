@@ -112,5 +112,5 @@ func (ego *SubReactor) AddConnection(conn IConnection) {
 		Connection: conn,
 	}
 	BindSubReactorEventData(unsafe.Pointer(&ev.Data), info)
-	inet.EpollCtl(ego._epollDescriptor, syscall.EPOLL_CTL_ADD, conn.FileDescriptor(), &ev)
+	inet.EpollCtl(ego._epollDescriptor, syscall.EPOLL_CTL_ADD, int(conn.FileDescriptor()), &ev)
 }
