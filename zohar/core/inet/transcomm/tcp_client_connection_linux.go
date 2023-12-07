@@ -47,8 +47,8 @@ func (ego *TCPClientConnection) Connect() (rc int32) {
 }
 
 func (ego *TCPClientConnection) OnIncomingData() int32 {
-	//TODO implement me
-	panic("implement me")
+	ego._client.Log(core.LL_DEBUG, "OnIncomingData")
+	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) Identifier() int64 {
