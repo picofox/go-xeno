@@ -20,7 +20,7 @@ func (ego *MainReactor) loop() {
 		if conn == nil {
 			time.Sleep(1 * time.Second)
 		} else {
-			c := NeoTCPServerConnection(conn, ego._listener._server._config)
+			c := NeoTCPServerConnection(conn, ego._listener)
 			ego._poller.OnIncomingConnection(c)
 			ego._listener._server.OnIncomingConnection(c)
 		}
