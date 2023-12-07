@@ -34,7 +34,6 @@ func main() {
 
 	rc = svr.Initialize()
 	rc = svr.Start()
-	fmt.Println(rc)
 
 	cfg := &config.GetKadamonyConfig().DB
 	db.GetPoolManager().Initialize(cfg)
