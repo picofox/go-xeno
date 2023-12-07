@@ -69,31 +69,9 @@ func main() {
 		logging.LogFixedWidth(core.LL_SYS, 70, false, errString, "Kadamony Application Initializing ...")
 	}
 
-	//transcomm.GetDefaultTcpServerManager().Initialize(&config.GetKadamonyConfig().Network.Server)
-	//transcomm.GetDefaultTcpServerManager().Start()
-
-	//logging.Log(core.LL_SYS, "start")
-	//var iface logger.Interface = logger_adapter.NeoGORMLoggerAdapter(logging.GetLoggerManager().GetDefaultLogger())
-	//orm, err := gorm.Open(mysql.Open(config.GetKadamonyConfig().DB.Pools["DBP0"].DSN.String()), &gorm.Config{
-	//	Logger: iface,
-	//})
-	//if err != nil {
-	//	panic("error")
-	//}
-	//orm.AutoMigrate(&Product{})
 	cli := transcomm.NeoTCPClient("Default", transcomm.GetDefaultPoller(), config.GetKadamonyConfig().Network.Client.GetTCP("Default"), logging.GetLoggerManager().GetDefaultLogger())
 	rc = cli.Initialize()
 	rc = cli.Start()
-
-	svr := transcomm.NeoTcpServer("Default", config.GetKadamonyConfig().Network.Server.GetTCP("Defaut"), logging.GetLoggerManager().GetDefaultLogger())
-	if svr == nil {
-		fmt.Printf("Failed")
-	}
-	transcomm.GetDefaultPoller().RegisterTCPServer(svr)
-
-	rc = svr.Initialize()
-	rc = svr.Start()
-	fmt.Println(rc)
 
 	cfg := &config.GetKadamonyConfig().DB
 	db.GetPoolManager().Initialize(cfg)

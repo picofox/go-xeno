@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"xeno/kadamony/config"
+	"xeno/deus/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
 	"xeno/zohar/core/inet/transcomm"
@@ -21,7 +21,7 @@ func main() {
 	framework.Initialize()
 	intrinsic.GetServiceManager().RegisterFileSystemWatcherHandler(0, OnFileSystemChanged)
 
-	rc, errString := config.LoadKadamonyConfig()
+	rc, errString := config.LoadDeusConfig()
 	if core.Err(rc) {
 		logging.LogFixedWidth(core.LL_SYS, 70, false, errString, "Deus Application Initializing ...")
 	}
