@@ -37,6 +37,7 @@ type IntrinsicConfig struct {
 	CmdTargetSpec    string                  `json:"CmdTargetSpec"`
 	Logging          map[string]LoggerConfig `json:"Logging"`
 	GoExecutorPool   GoExecutorPoolConfig    `json:"GoExecutorPool"`
+	Poller           PollerConfig            `json:"Poller"`
 	IntrinsicService IntrinsicServiceConfig  `json:"IntrinsicService"`
 }
 
@@ -151,6 +152,7 @@ func (ego *IntrinsicConfig) String() string {
 		ss.WriteString(v.String())
 	}
 	ss.WriteString(ego.GoExecutorPool.String())
+	ss.WriteString(ego.Poller.String())
 	ss.WriteString(ego.IntrinsicService.String())
 
 	ss.WriteString("------------------------------- IntrinsicConfig -------------------------------\n")

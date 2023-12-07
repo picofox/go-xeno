@@ -1,18 +1,14 @@
 package transcomm
 
 import (
-	"fmt"
 	"net"
-	"reflect"
 	"sync"
-	"syscall"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/nic"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/memory"
-	"xeno/zohar/core/mp"
 )
 
 type TCPServer struct {
@@ -68,34 +64,10 @@ func (ego *TCPServer) Log(lv int, fmt string, arg ...any) {
 	}
 }
 
-func (ego *TCPServer) OnIncomingConnection(listener *ListenWrapper, fd int, rAddr inet.IPV4EndPoint, lAddr inet.IPV4EndPoint) (IConnection, int32) {
-	connection := ego.NeoTCPServerConnection(fd, rAddr, lAddr)
-	var output = make([]reflect.Value, 0, 1)
-	for _, elem := range ego._config.Handlers {
-		rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+elem.Name)
-		if core.Err(rc) {
-			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
-		}
-		h := output[0].Interface().(IServerHandler)
-		connection._pipeline = append(connection._pipeline, h)
-	}
-	ego.Log(core.LL_INFO, "Incoming Connection [%d] @ <%s -> %s> Added", connection._fd, connection._remoteEndPoint.EndPointString(), connection._localEndPoint.EndPointString())
-	ego._connectionMap.Store(connection._fd, connection)
-	ego._poller.OnIncomingConnection(connection)
+func (ego *TCPServer) OnIncomingConnection(connection IConnection) (IConnection, int32) {
+	ego.Log(core.LL_INFO, "Incoming Connection [%d] @ <%s -> %s> Added", connection.FileDescriptor(), connection.RemoteEndPoint().EndPointString(), connection.LocalEndPoint().EndPointString())
+	ego._connectionMap.Store(connection.FileDescriptor(), connection)
 	return connection, core.MkSuccess(0)
-}
-
-func (ego *TCPServer) NeoTCPServerConnection(fd int, rAddr inet.IPV4EndPoint, lAddr inet.IPV4EndPoint) *TCPServerConnection {
-	connection := TCPServerConnection{
-		_fd:             fd,
-		_localEndPoint:  lAddr,
-		_remoteEndPoint: rAddr,
-		_recvBuffer:     memory.NeoLinearBuffer(1024),
-		_sendBuffer:     memory.NeoLinearBuffer(1024),
-		_server:         ego,
-		_pipeline:       make([]IServerHandler, 0),
-	}
-	return &connection
 }
 
 func (ego *TCPServer) LogFixedWidth(lv int, leftLen int, ok bool, failStr string, format string, arg ...any) {
@@ -114,22 +86,7 @@ func (ego *TCPServer) Start() int32 {
 			rc = core.MkErr(core.EC_LISTEN_ERROR, 1)
 			return false
 		}
-		file, err := l.(*net.TCPListener).File()
-		if err != nil {
-			ego.Log(core.LL_ERR, "File From Listener %v Failed %s", l.Addr(), err.Error())
-			rc = core.MkErr(core.EC_GET_LOW_FD_ERROR, 1)
-			return false
-		}
-		fd := int(file.Fd())
-		err = syscall.SetNonblock(fd, true)
-		if err != nil {
-			ego.Log(core.LL_ERR, "Set File Descriptor %d NB mode Failed %s", fd, err.Error())
-			rc = core.MkErr(core.EC_SET_NONBLOCK_ERROR, 1)
-			return false
-		}
 		lis._listen = l
-		lis._file = file
-		lis._fd = fd
 		return true
 	})
 

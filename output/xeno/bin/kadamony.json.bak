@@ -18,7 +18,7 @@
 			"Depth": 2,
 			"DefaultLevel": 5,
 			"FileNamePattern": "kadamony-%YYYY%MM%DD",
-			"LinePattern": ["date", "time", "nano", "ts", "lv", "pid", "goid", "spos"]
+			"LinePattern": ["date", "time", "milli", "ts", "lv", "pid", "goid", "spos"]
 		}
 	},
 	"GoExecutorPool": {
@@ -30,6 +30,9 @@
 		"HighWaterMark": 512,
 		"LowWaterMark": 0,
 		"CheckInterval": 2500
+	},
+	"Pooler": {
+		"SubReactorCount" : -1
 	},
 	"IntrinsicService": {
 		"Cron": {
@@ -48,8 +51,7 @@
 					"Dirs" : ["conf", "bin"]
 				}
 			}
-		}	
-		
+		}		
 	}
 }
 

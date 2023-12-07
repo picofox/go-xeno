@@ -31,6 +31,9 @@
 		"LowWaterMark": 0,
 		"CheckInterval": 2500
 	},
+	"Poller": {
+		"SubReactorCount" : -1
+	},
 	"IntrinsicService": {
 		"Cron": {
 			"Params": {
@@ -48,8 +51,7 @@
 					"Dirs" : ["conf", "bin"]
 				}
 			}
-		}	
-		
+		}		
 	}
 }
 

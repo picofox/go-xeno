@@ -2,20 +2,15 @@ package transcomm
 
 import (
 	"net"
-	"os"
+	"time"
+	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
 )
 
 type ListenWrapper struct {
 	_listen      net.Listener
 	_bindAddress inet.IPV4EndPoint
-	_fd          int
-	_file        *os.File
 	_server      *TCPServer
-}
-
-func (ego *ListenWrapper) FileDescriptor() int {
-	return ego._fd
 }
 
 func (ego *ListenWrapper) Server() *TCPServer {
@@ -26,25 +21,27 @@ func (ego *ListenWrapper) BindAddr() inet.IPV4EndPoint {
 	return ego._bindAddress
 }
 
-func NeoListenWrapper(server *TCPServer, ep inet.IPV4EndPoint) *ListenWrapper {
-	//l, err := net.Listen(ep.ProtoName(), ep.EndPointString())
-	//file, err := l.(*net.TCPListener).File()
-	//if err != nil {
-	//	server.Log(core.LL_ERR, "File From Listen Failed: %s", err.Error())
-	//	return nil
-	//}
-	//
-	//fd := int(file.Fd())
-	//err = syscall.SetNonblock(fd, true)
-	//if err != nil {
-	//	server.Log(core.LL_ERR, "SetNonblock of fd %d Failed: %s", fd, err.Error())
-	//	return nil
-	//}
+func (ego *ListenWrapper) Accept() *net.TCPConn {
+	conn, err := ego._listen.Accept()
+	if err != nil {
+		ego._server.Log(core.LL_ERR, "Listener <%s> Accept Failed: (%s)", ego._bindAddress.EndPointString(), err.Error())
+		return nil
+	}
 
+	return conn.(*net.TCPConn)
+}
+
+func (ego *ListenWrapper) PreStrop() {
+	if l, ok := ego._listen.(*net.TCPListener); ok {
+		// l _is_ a *net.TCPListener inside this block
+		l.SetDeadline(time.Now())
+	}
+}
+
+func NeoListenWrapper(server *TCPServer, ep inet.IPV4EndPoint) *ListenWrapper {
 	w := ListenWrapper{
-		_listen:      nil,
-		_fd:          -1,
-		_file:        nil,
+		_listen: nil,
+
 		_bindAddress: ep,
 		_server:      server,
 	}

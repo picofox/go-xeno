@@ -1,114 +1,116 @@
 package transcomm
 
 import (
-	"errors"
 	"fmt"
-	"io"
 	"net"
-	"os"
 	"reflect"
+	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
-	"xeno/zohar/core/logging"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
+	"xeno/zohar/core/xplatform"
 )
 
 type TCPServerConnection struct {
-	_conn           net.Conn
+	_conn           *net.TCPConn
 	_localEndPoint  inet.IPV4EndPoint
-	_remoteEndpoint inet.IPV4EndPoint
-	_recvBuffer     *memory.LinearBuffer
+	_remoteEndPoint inet.IPV4EndPoint
+	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
 	_pipeline       []IServerHandler
 	_server         *TCPServer
+	_fd             uintptr
+}
+
+func (ego *TCPServerConnection) RemoteEndPoint() *inet.IPV4EndPoint {
+	return &ego._remoteEndPoint
+}
+
+func (ego *TCPServerConnection) LocalEndPoint() *inet.IPV4EndPoint {
+	return &ego._localEndPoint
+}
+
+func (ego *TCPServerConnection) FileDescriptor() xplatform.FileDescriptor {
+	return xplatform.FileDescriptor(ego._fd)
 }
 
 func (ego *TCPServerConnection) Shutdown() {
 	ego._conn.Close()
 }
 func (ego *TCPServerConnection) checkRecvBufferCapacity() int32 {
-	if ego._recvBuffer.WriteAvailable() < O1L15O1T15_HEADER_SIZE {
-		wa := ego._recvBuffer.Compact()
-		if wa >= O1L15O1T15_HEADER_SIZE {
-			return core.MkSuccess(0)
+	if ego._recvBuffer.WriteAvailable() > 0 {
+		return core.MkSuccess(0)
+	}
+
+	if ego._recvBuffer.Capacity() < MAX_BUFFER_MAX_CAPACITY {
+		neoSz := ego._recvBuffer.Capacity() * 2
+		if neoSz > MAX_BUFFER_MAX_CAPACITY {
+			neoSz = MAX_BUFFER_MAX_CAPACITY
 		}
-		if ego._recvBuffer.Capacity() < MAX_BUFFER_MAX_CAPACITY {
-			if ego._recvBuffer.ResizeTo(ego._recvBuffer.Capacity()*2) > 0 {
-				return core.MkSuccess(0)
-			}
-			return core.MkErr(core.EC_RESPACE_FAILED, 1)
-		} else {
-			return core.MkErr(core.EC_REACH_LIMIT, 1)
+		if ego._recvBuffer.ResizeTo(neoSz) > 0 {
+			return core.MkSuccess(0)
 		}
 	}
 
-	return core.MkSuccess(0)
+	return core.MkErr(core.EC_REACH_LIMIT, 1)
 }
-func (ego *TCPServerConnection) ioRoutine() {
+
+func (ego *TCPServerConnection) PreStop() {
+	ego._conn.SetReadDeadline(time.Now())
+}
+
+func (ego *TCPServerConnection) OnIncomingData() int32 {
 	rc := ego.checkRecvBufferCapacity()
 	if core.IsErrType(rc, core.EC_REACH_LIMIT) {
 		ego._server.Log(core.LL_ERR, "[SNH] Buffer reach max")
-		return //TODO close connection
+		return rc //TODO close connection
 	}
-	nDone, err := ego._conn.Read((*ego._recvBuffer.InternalData())[ego._recvBuffer.WritePos():])
+	baPtr := ego._recvBuffer.InternalData()
+	var nDone int = 0
+	var err error
+	if ego._recvBuffer.WritePos() >= ego._recvBuffer.ReadPos() {
+		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.Capacity()])
+	} else {
+		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.ReadPos()])
+	}
+
 	if nDone < 0 {
-		if err == nil {
-			//TODO close remove this one
-		} else {
-			//TODO close remove this one
+		if err != nil {
+			ego._server.Log(core.LL_SYS, "Connection <%s> SysRead Failed: %s", ego.String(), err.Error())
 		}
-		ego._conn.Close()
-		return
+		return core.MkErr(core.EC_EOF, 0)
 	} else if nDone == 0 {
-		ego._conn.Close()
-		return
-	}
-	var bufParam any = ego._recvBuffer
-	var p2 any = nil
-	for _, handler := range ego._pipeline {
-		rc, bufParam, p2 = handler.OnReceive(ego, bufParam, p2)
-		if core.Err(rc) {
-			return
+		return core.MkErr(core.EC_EOF, 0)
+	} else {
+		var bufParam any = ego._recvBuffer
+		var p2 any = nil
+		var l int64 = 0
+		for _, handler := range ego._pipeline {
+			rc, bufParam, l, p2 = handler.OnReceive(ego, bufParam, l, p2)
+			if core.Err(rc) {
+				return rc
+			}
 		}
 	}
-	ego._server.OnIncomingMessage(ego, bufParam, p2)
-}
-
-func (ego *TCPServerConnection) TryRead() int {
-	n, err := ego._conn.Read(ego._buffer[ego._length:])
-
-	if err != nil {
-		if err == io.EOF {
-			logging.Log(core.LL_ERR, "Read Conn <%s> Closed", ego.String())
-			return -1
-		} else if errors.Is(err, os.ErrDeadlineExceeded) {
-			return 0
-		} else {
-			logging.Log(core.LL_ERR, "Read Conn <%s> Error: %s", ego.String(), err.Error())
-			return -2
-		}
-	}
-	ego._length = ego._length + int64(n)
-
-	return n
+	return core.MkSuccess(0)
 }
 
 func (ego *TCPServerConnection) String() string {
-	return fmt.Sprintf("<%s> -> <%s>", ego._remoteEndpoint.EndPointString(), ego._localEndPoint.EndPointString())
+	return fmt.Sprintf("<%s> -> <%s>", ego._remoteEndPoint.EndPointString(), ego._localEndPoint.EndPointString())
 }
 
 func (ego *TCPServerConnection) Identifier() int64 {
-	return ego._remoteEndpoint.Identifier()
+	return ego._remoteEndPoint.Identifier()
 }
 
-func NeoTCPServerConnection(conn net.Conn, config *config.NetworkServerTCPConfig) *TCPServerConnection {
+func NeoTCPServerConnection(conn *net.TCPConn, config *config.NetworkServerTCPConfig) *TCPServerConnection {
 	c := TCPServerConnection{
 		_conn:           conn,
 		_localEndPoint:  inet.NeoIPV4EndPointByAddr(conn.LocalAddr()),
-		_remoteEndpoint: inet.NeoIPV4EndPointByAddr(conn.RemoteAddr()),
-		_recvBuffer:     memory.NeoLinearBuffer(1024),
+		_remoteEndPoint: inet.NeoIPV4EndPointByAddr(conn.RemoteAddr()),
+		_recvBuffer:     memory.NeoRingBuffer(1024),
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_server:         nil,
 		_pipeline:       make([]IServerHandler, 0),
@@ -124,5 +126,14 @@ func NeoTCPServerConnection(conn net.Conn, config *config.NetworkServerTCPConfig
 		c._pipeline = append(c._pipeline, h)
 	}
 
+	file, err := c._conn.File()
+	if err != nil {
+		c._server.Log(core.LL_ERR, "Get File From connection <%s> Failed.", c._conn.RemoteAddr().String())
+		return nil
+	}
+	c._fd = file.Fd()
+
 	return &c
 }
+
+var _ IConnection = &TCPServerConnection{}
