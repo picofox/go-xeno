@@ -6,6 +6,7 @@ import (
 	"unsafe"
 	"xeno/zohar/core"
 	"xeno/zohar/core/datatype"
+	"xeno/zohar/core/logging"
 )
 
 func SetDefaultSockopts(s, family, sotype int, ipv6only bool) int32 {
@@ -44,6 +45,7 @@ func SysSocket(family, sotype, proto int) (int, int32) {
 func SysRead(fd int, ba []byte) (int64, int32) {
 	n, err := syscall.Read(fd, ba)
 	if err != nil {
+		logging.GetLoggerManager().GetDefaultLogger().Log(core.LL_SYS, "SysRead: read error %s", err.Error())
 		if err == syscall.EAGAIN || err == syscall.EINTR {
 			return int64(n), core.MkErr(core.EC_TRY_AGAIN, 1)
 		}

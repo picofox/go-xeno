@@ -34,7 +34,6 @@ func (ego *TCPClient) Start() int32 {
 		if core.Err(rc) {
 			return rc
 		}
-		ego._poller.OnIncomingConnection(c)
 	}
 
 	var allReady bool = true

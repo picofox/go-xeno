@@ -46,9 +46,13 @@ func (ego *SubReactor) onPullOut(evt *inet.EPollEvent) {
 }
 func (ego *SubReactor) onPullHup(evt *inet.EPollEvent) {
 	ego._poller.Log(core.LL_INFO, "Sub PullHup:")
+	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
+	p.Connection.OnPeerClosed()
 }
 
 func (ego *SubReactor) onPullErr(evt *inet.EPollEvent) {
+	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
+	p.Connection.OnConnectingFailed()
 	ego._poller.Log(core.LL_ERR, "Sub PullErr:")
 }
 
@@ -109,6 +113,21 @@ func (ego *SubReactor) Loop() int32 {
 		for i := 0; i < nReady; i++ {
 			ego.HandlerEvent(&ego._events[i])
 		}
+	}
+}
+
+func (ego *SubReactor) RemoveConnection(conn IConnection) {
+	fd := -1
+	if conn.Type() == CONNTYPE_TCP_SERVER {
+		fd = conn.(*TCPServerConnection)._fd
+	} else if conn.Type() == CONNTYPE_TCP_CLIENT {
+		fd = conn.(*TCPClientConnection)._fd
+	} else {
+		return
+	}
+	err := inet.EpollCtl(ego._epollDescriptor, syscall.EPOLL_CTL_DEL, fd, nil)
+	if err != nil {
+		ego._poller.Log(core.LL_ERR, "Remove conn %s %d from Poller Failed.", conn.String(), fd)
 	}
 }
 

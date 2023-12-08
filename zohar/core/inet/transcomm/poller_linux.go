@@ -27,7 +27,12 @@ type Poller struct {
 
 func (ego *Poller) OnIncomingConnection(connection IConnection) {
 	idx := ego._subReactorIndex.Add(1) % uint32(len(ego._subReactors))
+	connection.SetReactorIndex(idx)
 	ego._subReactors[idx].AddConnection(connection)
+}
+
+func (ego *Poller) OnConnectionRemove(connection IConnection) {
+	ego._subReactors[connection.ReactorIndex()].RemoveConnection(connection)
 }
 
 func (ego *Poller) RegisterTCPServer(svr *TCPServer) {

@@ -18,6 +18,30 @@ type TCPServerConnection struct {
 	_pipeline       []IServerHandler
 	_lock           sync.Mutex
 	_server         *TCPServer
+	_reactorIndex   uint32
+}
+
+func (ego *TCPServerConnection) ReactorIndex() uint32 {
+	return ego._reactorIndex
+}
+
+func (ego *TCPServerConnection) SetReactorIndex(u uint32) {
+	ego._reactorIndex = u
+}
+
+func (ego *TCPServerConnection) OnDisconnected() int32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPServerConnection) OnConnectingFailed() int32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPServerConnection) OnPeerClosed() int32 {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (ego *TCPServerConnection) OnWritable() int32 {

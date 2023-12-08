@@ -18,10 +18,53 @@ type TCPClientConnection struct {
 	_pipeline       []IClientHandler
 	_client         *TCPClient
 	_isConnected    bool
+	_reactorIndex   uint32
+}
+
+func (ego *TCPClientConnection) ReactorIndex() uint32 {
+	return ego._reactorIndex
+}
+
+func (ego *TCPClientConnection) SetReactorIndex(u uint32) {
+	ego._reactorIndex = u
+}
+
+func (ego *TCPClientConnection) reconnect() int32 {
+	syscall.Close(ego._fd)
+	ego._client.Log(core.LL_SYS, "Reconnect to <%s>", ego._remoteEndPoint.EndPointString())
+	ego._isConnected = false
+	ego._fd = -1
+	ego._recvBuffer.Clear()
+	ego._sendBuffer.Clear()
+	return ego.Connect()
+}
+
+func (ego *TCPClientConnection) OnDisconnected() int32 {
+	ego._client._poller.OnConnectionRemove(ego)
+	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Disconnected.", ego.String())
+	return ego.reconnect()
+}
+
+func (ego *TCPClientConnection) OnConnectingFailed() int32 {
+	ego._client._poller.OnConnectionRemove(ego)
+	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Connect Failed.", ego.String())
+	ego.reconnect()
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPClientConnection) OnPeerClosed() int32 {
+	ego._client._poller.OnConnectionRemove(ego)
+	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Peer Closed.", ego.String())
+	ego.reconnect()
+	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) OnWritable() int32 {
 	ego._isConnected = true
+	lsa, _ := syscall.Getsockname(ego._fd)
+	ego._localEndPoint = inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, lsa)
+	rsa, _ := syscall.Getpeername(ego._fd)
+	ego._remoteEndPoint = inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, rsa)
 	return core.MkSuccess(0)
 }
 
@@ -34,6 +77,17 @@ func (ego *TCPClientConnection) Connect() (rc int32) {
 	if core.Err(rc) {
 		return rc
 	}
+	//var tv syscall.Timeval
+	//tv.Sec = 10
+	//er := syscall.SetsockoptTimeval(ego._fd, syscall.SOL_SOCKET, syscall.SO_RCVTIMEO, &tv)
+	//if er != nil {
+	//	fmt.Println(er.Error())
+	//}
+	//er = syscall.SetsockoptTimeval(ego._fd, syscall.SOL_SOCKET, syscall.SO_SNDTIMEO, &tv)
+	//if er != nil {
+	//	fmt.Println(er.Error())
+	//}
+
 	sa := ego._remoteEndPoint.ToSockAddr()
 	err := syscall.Connect(ego._fd, sa)
 	if err != nil {
@@ -42,6 +96,7 @@ func (ego *TCPClientConnection) Connect() (rc int32) {
 			return core.MkErr(core.EC_TCP_CONNECT_ERROR, 1)
 		}
 	}
+	ego._client._poller.OnIncomingConnection(ego)
 	return core.MkSuccess(0)
 }
 func (ego *TCPClientConnection) checkRecvBufferCapacity() int32 {
@@ -80,9 +135,11 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 			if core.Err(rc) {
 				ego._client.Log(core.LL_SYS, "Connection <%s> SysRead Failed: %d", ego.String(), rc)
 			}
+			ego.OnDisconnected()
 			return core.MkErr(core.EC_TCO_RECV_ERROR, 1)
 		} else if nDone == 0 {
-			//handle close
+			ego._client.Log(core.LL_SYS, "Connection <%s> Closed", ego.String())
+			ego.OnPeerClosed()
 			return core.MkErr(core.EC_EOF, 1)
 		} else {
 			var bufParam any = ego._recvBuffer
