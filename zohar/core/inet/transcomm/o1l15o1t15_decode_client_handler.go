@@ -10,6 +10,10 @@ type O1L15COT15DecodeClientHandler struct {
 	_memoryLow          bool
 }
 
+func (ego *O1L15COT15DecodeClientHandler) Clear() {
+	ego._largeMessageBuffer.Clear()
+}
+
 func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnection, obj any, bufLen int64, param1 any) (int32, any, int64, any) {
 	if connection._recvBuffer.ReadAvailable() < 4 {
 		return core.MkErr(core.EC_TRY_AGAIN, 1), nil, 0, nil
@@ -95,4 +99,4 @@ func (ego *HandlerRegistration) NeoO1L15COT15DecodeClientHandler() *O1L15COT15De
 	return &dec
 }
 
-var _ IServerHandler = &O1L15COT15DecodeServerHandler{}
+var _ IClientHandler = &O1L15COT15DecodeClientHandler{}

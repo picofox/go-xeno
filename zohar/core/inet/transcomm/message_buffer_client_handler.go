@@ -1,13 +1,16 @@
 package transcomm
 
 import (
-	"fmt"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/memory"
 )
 
 type MessageBufferClientHandler struct {
+}
+
+func (ego *MessageBufferClientHandler) Clear() {
+
 }
 
 func (ego *MessageBufferClientHandler) OnReceive(connection *TCPClientConnection, obj any, frameLength int64, param1 any) (int32, any, int64, any) {
@@ -23,9 +26,7 @@ func (ego *MessageBufferClientHandler) OnReceive(connection *TCPClientConnection
 
 	msg := messages.GetDefaultMessageBufferDeserializationMapper().Deserialize(paramCMD, paramBA)
 
-	fmt.Printf("======== %v\n", msg)
-
-	//connection._client.OnIncomingMessage(connection, msg, nil)
+	connection._client.OnIncomingMessage(connection, msg)
 
 	return core.MkSuccess(0), nil, 0, nil
 }
@@ -34,3 +35,5 @@ func (ego *HandlerRegistration) NeoMessageBufferClientHandlers() *MessageBufferC
 	dec := MessageBufferClientHandler{}
 	return &dec
 }
+
+var _ IClientHandler = &MessageBufferClientHandler{}

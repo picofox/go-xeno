@@ -30,6 +30,9 @@ func (ego *TCPClientConnection) SetReactorIndex(u uint32) {
 }
 
 func (ego *TCPClientConnection) reconnect() int32 {
+	for _, handler := range ego._pipeline {
+		handler.Clear()
+	}
 	syscall.Close(ego._fd)
 	ego._client.Log(core.LL_SYS, "Reconnect to <%s>", ego._remoteEndPoint.EndPointString())
 	ego._isConnected = false
@@ -40,6 +43,7 @@ func (ego *TCPClientConnection) reconnect() int32 {
 }
 
 func (ego *TCPClientConnection) OnDisconnected() int32 {
+
 	ego._client._poller.OnConnectionRemove(ego)
 	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Disconnected.", ego.String())
 	return ego.reconnect()
