@@ -54,4 +54,8 @@ type IByteBuffer interface {
 	ReadString() (string, int32)
 	WriteString(string) int32
 	BytesRef(int64) ([]byte, []byte)
+	ReadPos() int64
+	WritePos() int64
+	ReaderSeek(whence int, offset int64) bool
+	WriterSeek(whence int, offset int64) bool
 }

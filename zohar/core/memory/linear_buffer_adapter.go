@@ -12,6 +12,43 @@ type LinearBufferAdapter struct {
 	_data     []byte
 }
 
+func (ego *LinearBufferAdapter) ReaderSeek(whence int, offset int64) bool {
+	if whence == BUFFER_SEEK_CUR {
+		absPosTest := ego._beginPos + offset
+		if absPosTest < 0 || absPosTest >= ego._beginPos+ego._length {
+			return false
+		}
+		ego._beginPos += offset
+		if ego._beginPos >= ego.Capacity() {
+			ego._beginPos = 0
+		}
+		ego._length -= offset
+	} else if whence == BUFFER_SEEK_SET {
+		delta := offset - ego._beginPos
+		return ego.ReaderSeek(BUFFER_SEEK_CUR, delta)
+
+	}
+	return true
+}
+
+func (ego *LinearBufferAdapter) WriterSeek(whence int, offset int64) bool {
+	if whence == BUFFER_SEEK_CUR {
+		absPosTest := ego.WritePos() + offset
+		return ego.WriterSeek(whence, absPosTest)
+	} else if whence == BUFFER_SEEK_SET {
+		if offset < 0 || offset > ego._capacity {
+			return false
+		}
+
+		ego._length = offset - ego._beginPos
+	}
+	return true
+}
+
+func (ego *LinearBufferAdapter) ReadPos() int64 {
+	return ego._beginPos
+}
+
 func (ego *LinearBufferAdapter) compact() {
 	if ego._beginPos > 0 {
 		if ego._length > 0 {
