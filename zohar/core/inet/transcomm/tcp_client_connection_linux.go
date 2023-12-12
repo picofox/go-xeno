@@ -2,12 +2,14 @@ package transcomm
 
 import (
 	"fmt"
+	"reflect"
 	"sync"
 	"syscall"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
+	"xeno/zohar/core/mp"
 )
 
 type TCPClientConnection struct {
@@ -112,10 +114,10 @@ func (ego *TCPClientConnection) checkRecvBufferCapacity() int32 {
 		return core.MkSuccess(0)
 	}
 
-	if ego._recvBuffer.Capacity() < MAX_BUFFER_MAX_CAPACITY {
+	if ego._recvBuffer.Capacity() < message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		neoSz := ego._recvBuffer.Capacity() * 2
-		if neoSz > MAX_BUFFER_MAX_CAPACITY {
-			neoSz = MAX_BUFFER_MAX_CAPACITY
+		if neoSz > message_buffer.MAX_BUFFER_MAX_CAPACITY {
+			neoSz = message_buffer.MAX_BUFFER_MAX_CAPACITY
 		}
 		if ego._recvBuffer.ResizeTo(neoSz) > 0 {
 			return core.MkSuccess(0)
@@ -183,50 +185,19 @@ func (ego *TCPClientConnection) LocalEndPoint() *inet.IPV4EndPoint {
 	return &ego._localEndPoint
 }
 
-func (ego *TCPClientConnection) SendMessage(message message_buffer.INetMessage) int32 {
+func (ego *TCPClientConnection) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
-	tLen := message.Serialize(ego._sendBuffer)
-	if tLen >= MAX_PACKET_BODY_SIZE {
-		ego.flush()
-	}
-	return core.MkSuccess(0)
-}
+	var param any = msg
+	var rc int32 = 0
+	var pLen int64
 
-func (ego *TCPClientConnection) SendMessageImmediately(message message_buffer.INetMessage) int32 {
-	ego._lock.Lock()
-	defer ego._lock.Unlock()
-	ego.flush()
-
-	tLen := message.Serialize(ego._sendBuffer)
-	if tLen <= MAX_PACKET_BODY_SIZE {
-		ego.sendImmediately(*(ego._sendBuffer.InternalData()), ego._sendBuffer.ReadPos(), tLen)
-	} else { //large message
-		rIndex := int64(4)
-		ego._packetHeader.Set(true, false, MAX_PACKET_BODY_SIZE, message.Command())
-		ego._sendBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, 4)
-
-		for {
-			ego.sendImmediately(ego._packetHeader.Data(), 0, 4)
-			ego.sendImmediately(*ego._sendBuffer.InternalData(), ego._sendBuffer.ReadPos(), MAX_PACKET_BODY_SIZE)
-
-			rIndex += MAX_PACKET_BODY_SIZE
-			ego._sendBuffer.ReaderSeek(memory.BUFFER_SEEK_SET, rIndex)
-
-			//next loop use non begin version
-			ego._packetHeader.Set(true, true, MAX_PACKET_BODY_SIZE, message.Command())
-
-			if ego._sendBuffer.ReadAvailable() <= MAX_PACKET_BODY_SIZE {
-				break
-			}
+	for i := len(ego._pipeline) - 1; i >= 0; i-- {
+		rc, param, pLen, bFlush = ego._pipeline[i].OnSend(ego, param, pLen, bFlush)
+		if core.Err(rc) {
+			return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
 		}
-		ego._packetHeader.Set(false, true, MAX_PACKET_BODY_SIZE, message.Command())
-		ego.sendImmediately(ego._packetHeader.Data(), 0, 4)
-		ego.sendImmediately(*ego._sendBuffer.InternalData(), ego._sendBuffer.ReadPos(), ego._sendBuffer.ReadAvailable())
-
 	}
-
-	ego.flush()
 	return core.MkSuccess(0)
 }
 
@@ -254,7 +225,7 @@ func (ego *TCPClientConnection) sendNImmediately(ba []byte, offset int64, length
 }
 
 func (ego *TCPClientConnection) sendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
-	if ego._sendBuffer.WritePos()+length >= MAX_BUFFER_MAX_CAPACITY {
+	if ego._sendBuffer.WritePos()+length >= message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		ego.flush()
 	}
 	nLeft, rc := ego.sendNImmediately(ba, offset, length)
@@ -273,10 +244,10 @@ func (ego *TCPClientConnection) SendImmediately(ba []byte, offset int64, length 
 func (ego *TCPClientConnection) Send(ba []byte, offset int64, length int64) (int64, int32) {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
-	if ego._sendBuffer.WritePos()+length <= MAX_BUFFER_MAX_CAPACITY {
+	if ego._sendBuffer.WritePos()+length <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		ego._sendBuffer.WriteRawBytes(ba, offset, length)
 		return length, core.MkSuccess(0)
-	} else if length <= MAX_BUFFER_MAX_CAPACITY {
+	} else if length <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		nDone, rc := ego.flush()
 		if core.Err(rc) {
 			return nDone, rc
@@ -298,16 +269,13 @@ func (ego *TCPClientConnection) flush() (int64, int32) {
 		return 0, core.MkSuccess(0)
 	}
 	ba, _ := ego._sendBuffer.BytesRef(-1)
-	n, err := syscall.Write(ego._fd, ba)
-	if err != nil {
-		if err == syscall.EAGAIN {
-			if n > 0 {
-				ego._sendBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, int64(n))
-			}
-			return int64(n), core.MkErr(core.EC_TRY_AGAIN, 0)
-		}
+	n, err := inet.SysWriteN(ego._fd, ba)
+	if core.Err(err) {
 		if n > 0 {
 			ego._sendBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, int64(n))
+		}
+		if core.IsErrType(err, core.EC_TRY_AGAIN) {
+			return int64(n), core.MkErr(core.EC_TRY_AGAIN, 0)
 		}
 		return int64(n), core.MkErr(core.EC_TCP_SEND_FAILED, 0)
 	}
@@ -327,6 +295,15 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_client:         client,
 		_isConnected:    false,
 		_packetHeader:   message_buffer.NeoMessageHeader(),
+	}
+	var output = make([]reflect.Value, 0, 1)
+	for _, elem := range c._client._config.Handlers {
+		rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+elem.Name)
+		if core.Err(rc) {
+			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
+		}
+		h := output[0].Interface().(IClientHandler)
+		c._pipeline = append(c._pipeline, h)
 	}
 	return &c
 }

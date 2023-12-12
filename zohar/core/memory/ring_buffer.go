@@ -13,6 +13,10 @@ type RingBuffer struct {
 	_b8Cache  []byte
 }
 
+func (ego *RingBuffer) WriterSeek(whence int, offset int64) bool {
+	return false
+}
+
 func (ego *RingBuffer) Compact() int64 {
 	if ego.WritePos() == ego.ReadPos() {
 		if ego.WritePos() != 0 {

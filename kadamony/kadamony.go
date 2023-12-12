@@ -7,6 +7,7 @@ import (
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
+	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/sched/timer"
@@ -72,6 +73,12 @@ func main() {
 	cli := transcomm.NeoTCPClient("Default", transcomm.GetDefaultPoller(), config.GetKadamonyConfig().Network.Client.GetTCP("Default"), logging.GetLoggerManager().GetDefaultLogger())
 	rc = cli.Initialize()
 	rc = cli.Start()
+
+	kaMsg := messages.NeoKeepAliveMessage()
+	cli.SendMessage(kaMsg, true)
+	//for {
+	//	cli.SendMessage(kaMsg, true)
+	//}
 
 	cfg := &config.GetKadamonyConfig().DB
 	db.GetPoolManager().Initialize(cfg)

@@ -6,6 +6,7 @@ import (
 	"syscall"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
+	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
 )
 
@@ -73,10 +74,10 @@ func (ego *TCPServerConnection) checkRecvBufferCapacity() int32 {
 		return core.MkSuccess(0)
 	}
 
-	if ego._recvBuffer.Capacity() < MAX_BUFFER_MAX_CAPACITY {
+	if ego._recvBuffer.Capacity() < message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		neoSz := ego._recvBuffer.Capacity() * 2
-		if neoSz > MAX_BUFFER_MAX_CAPACITY {
-			neoSz = MAX_BUFFER_MAX_CAPACITY
+		if neoSz > message_buffer.MAX_BUFFER_MAX_CAPACITY {
+			neoSz = message_buffer.MAX_BUFFER_MAX_CAPACITY
 		}
 		if ego._recvBuffer.ResizeTo(neoSz) > 0 {
 			return core.MkSuccess(0)
@@ -175,7 +176,7 @@ func (ego *TCPServerConnection) sendNImmediately(ba []byte, offset int64, length
 }
 
 func (ego *TCPServerConnection) sendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
-	if ego._sendBuffer.WritePos()+length >= MAX_BUFFER_MAX_CAPACITY {
+	if ego._sendBuffer.WritePos()+length >= message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		ego.flush()
 	}
 	nLeft, rc := ego.sendNImmediately(ba, offset, length)
@@ -187,10 +188,10 @@ func (ego *TCPServerConnection) sendImmediately(ba []byte, offset int64, length 
 func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int64, int32) {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
-	if ego._sendBuffer.WritePos()+length <= MAX_BUFFER_MAX_CAPACITY {
+	if ego._sendBuffer.WritePos()+length <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		ego._sendBuffer.WriteRawBytes(ba, offset, length)
 		return length, core.MkSuccess(0)
-	} else if length <= MAX_BUFFER_MAX_CAPACITY {
+	} else if length <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		nDone, rc := ego.flush()
 		if core.Err(rc) {
 			return nDone, rc

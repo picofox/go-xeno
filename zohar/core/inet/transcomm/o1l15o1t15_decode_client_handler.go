@@ -2,12 +2,53 @@ package transcomm
 
 import (
 	"xeno/zohar/core"
+	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
 )
 
 type O1L15COT15DecodeClientHandler struct {
 	_largeMessageBuffer *memory.LinearBuffer
 	_memoryLow          bool
+	_packetHeader       message_buffer.MessageHeader
+}
+
+func (ego *O1L15COT15DecodeClientHandler) OnSend(connection *TCPClientConnection, c any, tLen int64, bFlush bool) (int32, any, int64, bool) {
+	var byteBuf memory.IByteBuffer = connection._sendBuffer
+	var cmd int16 = c.(int16)
+
+	if tLen <= message_buffer.MAX_PACKET_BODY_SIZE {
+		if !bFlush && byteBuf.WriteAvailable() > 0 && byteBuf.Capacity() < message_buffer.MAX_BUFFER_MAX_CAPACITY {
+			return core.MkSuccess(1), cmd, tLen, bFlush
+		}
+		connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), tLen)
+		byteBuf.Clear()
+		return core.MkSuccess(0), cmd, tLen, bFlush
+	} else { //large message
+		connection.flush()
+		rIndex := int64(4)
+		ego._packetHeader.Set(true, false, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
+		byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, 4)
+
+		for {
+			connection.sendImmediately(ego._packetHeader.Data(), 0, 4)
+			connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
+
+			rIndex += message_buffer.MAX_PACKET_BODY_SIZE
+			byteBuf.ReaderSeek(memory.BUFFER_SEEK_SET, rIndex)
+
+			//next loop use non begin version
+			ego._packetHeader.Set(true, true, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
+
+			if byteBuf.ReadAvailable() <= message_buffer.MAX_PACKET_BODY_SIZE {
+				break
+			}
+		}
+		ego._packetHeader.Set(false, true, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
+		connection.sendImmediately(ego._packetHeader.Data(), 0, 4)
+		connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+	}
+
+	return core.MkSuccess(0), cmd, tLen, bFlush
 }
 
 func (ego *O1L15COT15DecodeClientHandler) Clear() {
@@ -88,6 +129,7 @@ func NeoO1L15COT15DecodeClientHandler() *O1L15COT15DecodeClientHandler {
 	dec := O1L15COT15DecodeClientHandler{
 		_largeMessageBuffer: memory.NeoLinearBuffer(0),
 		_memoryLow:          false,
+		_packetHeader:       message_buffer.NeoMessageHeader(),
 	}
 	return &dec
 }
@@ -95,6 +137,7 @@ func (ego *HandlerRegistration) NeoO1L15COT15DecodeClientHandler() *O1L15COT15De
 	dec := O1L15COT15DecodeClientHandler{
 		_largeMessageBuffer: memory.NeoLinearBuffer(0),
 		_memoryLow:          false,
+		_packetHeader:       message_buffer.NeoMessageHeader(),
 	}
 	return &dec
 }

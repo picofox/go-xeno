@@ -12,6 +12,10 @@ type LinearBufferAdapter struct {
 	_data     []byte
 }
 
+func (ego *LinearBufferAdapter) InternalData() *[]byte {
+	return &ego._data
+}
+
 func (ego *LinearBufferAdapter) ReaderSeek(whence int, offset int64) bool {
 	if whence == BUFFER_SEEK_CUR {
 		absPosTest := ego._beginPos + offset

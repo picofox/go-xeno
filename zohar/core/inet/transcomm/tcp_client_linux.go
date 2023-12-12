@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"sync/atomic"
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config"
@@ -15,6 +16,7 @@ type TCPClient struct {
 	_connections []*TCPClientConnection
 	_logger      logging.ILogger
 	_poller      *Poller
+	_index       atomic.Int32
 }
 
 func (ego *TCPClient) Initialize() int32 {
@@ -27,6 +29,13 @@ func (ego *TCPClient) Initialize() int32 {
 	}
 
 	return core.MkSuccess(0)
+}
+
+func (ego *TCPClient) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {
+	idx := ego._index.Add(1)
+	idx = idx % int32(len(ego._connections))
+	return ego._connections[idx].SendMessage(msg, bFlush)
+
 }
 
 func (ego *TCPClient) OnIncomingMessage(conn *TCPClientConnection, message message_buffer.INetMessage) int32 {
@@ -74,10 +83,14 @@ func (ego *TCPClient) LogFixedWidth(lv int, leftLen int, ok bool, failStr string
 }
 
 func NeoTCPClient(name string, poller *Poller, config *config.NetworkClientTCPConfig, logger logging.ILogger) *TCPClient {
-	return &TCPClient{
+	c := &TCPClient{
 		_name:   name,
 		_config: config,
 		_logger: logger,
 		_poller: poller,
 	}
+
+	c._index.Store(0)
+
+	return c
 }

@@ -58,4 +58,5 @@ type IByteBuffer interface {
 	WritePos() int64
 	ReaderSeek(whence int, offset int64) bool
 	WriterSeek(whence int, offset int64) bool
+	InternalData() *[]byte
 }

@@ -54,6 +54,22 @@ func SysRead(fd int, ba []byte) (int64, int32) {
 	return int64(n), core.MkSuccess(0)
 }
 
+func SysWriteN(fd int, p []byte) (int64, int32) {
+	var nDone int64 = 0
+	var nToBeWrite = int64(len(p))
+	for nDone < nToBeWrite {
+		n, err := syscall.Write(fd, p[nDone:])
+		if err != nil {
+			if err == syscall.EAGAIN {
+				return nDone + int64(n), core.MkErr(core.EC_TRY_AGAIN, 1)
+			}
+			return nDone + int64(n), core.MkErr(core.EC_FILE_WRITE_FAILED, 1)
+		}
+		nDone += int64(n)
+	}
+	return nDone, core.MkSuccess(0)
+}
+
 const EPOLLET = -syscall.EPOLLET
 
 type EPollEvent struct {

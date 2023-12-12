@@ -2,8 +2,8 @@ package messages
 
 import (
 	"xeno/zohar/core"
+	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/inet/message_buffer"
-	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/memory"
 )
 
@@ -18,13 +18,13 @@ func (ego *KeepAliveMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	byteBuf.WriteInt64(ego._timeStamp)
 
 	curPos := byteBuf.WritePos()
-	var len64 int64 = curPos - hdrPos - transcomm.O1L15O1T15_HEADER_SIZE
-	if len64 <= transcomm.MAX_PACKET_BODY_SIZE {
+	var len64 int64 = curPos - hdrPos - message_buffer.O1L15O1T15_HEADER_SIZE
+	if len64 <= message_buffer.MAX_PACKET_BODY_SIZE {
 		byteBuf.WriterSeek(memory.BUFFER_SEEK_SET, hdrPos)
 		byteBuf.WriteInt16(int16(len64))
 		byteBuf.WriterSeek(memory.BUFFER_SEEK_SET, curPos)
 	}
-	return len64
+	return len64 + message_buffer.O1L15O1T15_HEADER_SIZE
 }
 
 func (ego *KeepAliveMessage) Deserialize(buffer memory.IByteBuffer) int32 {
@@ -39,6 +39,13 @@ func KeepAliveMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetM
 	rc := m.Deserialize(buffer)
 	if core.Err(rc) {
 		return nil
+	}
+	return &m
+}
+
+func NeoKeepAliveMessage() message_buffer.INetMessage {
+	m := KeepAliveMessage{
+		_timeStamp: chrono.GetRealTimeMilli(),
 	}
 	return &m
 }
