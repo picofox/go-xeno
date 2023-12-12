@@ -15,12 +15,16 @@ type SubReactor struct {
 func (ego *SubReactor) loop() int32 {
 	defer ego._poller._waitGroup.Done()
 	for {
-		ego._poller.Log(core.LL_DEBUG, "Reading socket.... <%s>", ego._connection.String())
 		rc := ego._connection.OnIncomingData()
 		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_EOF) {
-				ego._poller.Log(core.LL_DEBUG, "Connection Closed <%s>: remain %d", ego._connection.String(), ego._poller.SubReactorCount())
-				ego._poller.SubReactorEnded(ego)
+			et, _ := core.ExErr(rc)
+			if et == core.EC_TRY_AGAIN {
+
+			} else if et == core.EC_EOF {
+				ego._connection.OnPeerClosed()
+				runtime.Goexit()
+			} else {
+				ego._connection.OnDisconnected()
 				runtime.Goexit()
 			}
 		}

@@ -20,6 +20,30 @@ type TCPServer struct {
 	_connectionMap sync.Map
 }
 
+func (ego *TCPServer) OnPeerClosed(connection *TCPServerConnection) int32 {
+	ego.Log(core.LL_SYS, "Connection Peer <%s> Closed.", connection.String())
+	ego._connectionMap.Delete(connection.Identifier())
+	ego._poller.SubReactorEnded(connection.Identifier())
+	connection.Close()
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPServer) OnDisconnected(connection *TCPServerConnection) int32 {
+	ego.Log(core.LL_SYS, "Connection Peer <%s> Disconnected.", connection.String())
+	ego._connectionMap.Delete(connection.Identifier())
+	ego._poller.SubReactorEnded(connection.Identifier())
+	connection.Close()
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPServer) OnIOError(connection *TCPServerConnection) int32 {
+	ego.Log(core.LL_SYS, "Connection IO <%s> Error.", connection.String())
+	ego._connectionMap.Delete(connection.Identifier())
+	ego._poller.SubReactorEnded(connection.Identifier())
+	connection.Close()
+	return core.MkSuccess(0)
+}
+
 func (ego *TCPServer) Name() string {
 	return ego._name
 }

@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"fmt"
 	"sync/atomic"
 	"time"
 	"xeno/zohar/core"
@@ -39,7 +40,7 @@ func (ego *TCPClient) SendMessage(msg message_buffer.INetMessage, bFlush bool) i
 }
 
 func (ego *TCPClient) OnIncomingMessage(conn *TCPClientConnection, message message_buffer.INetMessage) int32 {
-
+	fmt.Printf("Got msg [%v] \n", message)
 	return core.MkSuccess(0)
 }
 

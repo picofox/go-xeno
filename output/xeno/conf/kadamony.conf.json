@@ -34,8 +34,8 @@
 		"Client" : {
 			"TCP" : {
 				"Default" : {
-					"ServerEndPoints" : ["192.168.0.100:9998", "192.168.0.100:9999"],
-					"Count" : 10,
+					"ServerEndPoints" : ["192.168.0.100:9999"],
+					"Count" : 1,
 					"Handlers" : [
 							{
 								"Name" : "O1L15COT15DecodeClientHandler",
@@ -61,7 +61,7 @@
 							"Param" : {}
 						},
 						{
-							"Name" : "MessageBufferServerHandlers",
+							"Name" : "MessageBufferServerHandler",
 							"Param" : {}	
 						}
 					] 

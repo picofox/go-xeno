@@ -10,6 +10,10 @@ type O1L15COT15DecodeServerHandler struct {
 	_memoryLow          bool
 }
 
+func (ego *O1L15COT15DecodeServerHandler) Clear() {
+	ego._largeMessageBuffer.Clear()
+}
+
 func (ego *O1L15COT15DecodeServerHandler) OnReceive(connection *TCPServerConnection, obj any, bufLen int64, param1 any) (int32, any, int64, any) {
 	if connection._recvBuffer.ReadAvailable() < 4 {
 		return core.MkErr(core.EC_TRY_AGAIN, 1), nil, 0, nil

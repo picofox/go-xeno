@@ -22,7 +22,7 @@ func (ego *RingBuffer) WriterSeek(whence int, offset int64) bool {
 		if neoOff < 0 || neoOff >= ego._capacity {
 			return false
 		}
-		ego._length += neoOff
+		ego._length = neoOff
 		return true
 	} else if whence == BUFFER_SEEK_SET {
 		if offset < 0 || offset >= ego._capacity {

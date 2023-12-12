@@ -95,8 +95,8 @@ func (ego *Poller) NeoSubReactor(connection IConnection) *SubReactor {
 	return &sr
 }
 
-func (ego *Poller) SubReactorEnded(sr *SubReactor) {
-	ego._subReactors.Delete(sr._connection.Identifier())
+func (ego *Poller) SubReactorEnded(id int64) {
+	ego._subReactors.Delete(id)
 }
 
 func (ego *Poller) neoMainReactor(listener *ListenWrapper) *MainReactor {

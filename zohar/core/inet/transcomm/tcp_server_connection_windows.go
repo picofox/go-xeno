@@ -20,22 +20,28 @@ type TCPServerConnection struct {
 	_sendBuffer     *memory.LinearBuffer
 	_pipeline       []IServerHandler
 	_server         *TCPServer
-	_fd             uintptr
+}
+
+func (ego *TCPServerConnection) Close() int32 {
+	ego._conn.Close()
+	ego._recvBuffer.Clear()
+	ego._sendBuffer.Clear()
+	for i := 0; i < len(ego._pipeline); i++ {
+		ego._pipeline[i].Clear()
+	}
+	return core.MkSuccess(0)
 }
 
 func (ego *TCPServerConnection) OnPeerClosed() int32 {
-	//TODO implement me
-	panic("implement me")
+	return ego._server.OnPeerClosed(ego)
 }
 
 func (ego *TCPServerConnection) OnDisconnected() int32 {
-	//TODO implement me
-	panic("implement me")
+	return ego._server.OnDisconnected(ego)
 }
 
 func (ego *TCPServerConnection) OnConnectingFailed() int32 {
-	//TODO implement me
-	panic("implement me")
+	return ego._server.OnDisconnected(ego)
 }
 
 func (ego *TCPServerConnection) ReactorIndex() uint32 {
@@ -103,37 +109,24 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 	} else {
 		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.ReadPos()])
 	}
-
 	if nDone < 0 {
 		if err != nil {
 			ego._server.Log(core.LL_SYS, "Connection <%s> SysRead Failed: %s", ego.String(), err.Error())
 		}
-		return core.MkErr(core.EC_EOF, 0)
+		return core.MkErr(core.EC_TCO_RECV_ERROR, 0)
 	} else if nDone == 0 {
 		return core.MkErr(core.EC_EOF, 0)
 	} else {
 		ego._recvBuffer.WriterSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
-
 		var bufParam any = ego._recvBuffer
 		var p2 any = nil
 		var l int64 = 0
-		for idx, handler := range ego._pipeline {
-			fmt.Printf("Readerseeek result p=%d len=%d ", ego._recvBuffer.ReadPos(), ego._recvBuffer.ReadAvailable())
+		for _, handler := range ego._pipeline {
 			rc, bufParam, l, p2 = handler.OnReceive(ego, bufParam, l, p2)
-			if idx%2 == 0 && ego._recvBuffer.ReadAvailable() == 0 {
-				fmt.Printf("Readerseeek result p=%d len=%d ", ego._recvBuffer.ReadPos(), ego._recvBuffer.ReadAvailable())
-			}
-
 			if core.Err(rc) {
 				return rc
 			}
 		}
-
-		cn := ego._recvBuffer.ReadPos()
-		if cn%12 != 0 {
-			ego._server.Log(core.LL_ERR, "buffer pos error, reader:%d writer:%d", ego._recvBuffer.ReadPos(), ego._recvBuffer.WritePos())
-		}
-
 	}
 	return core.MkSuccess(0)
 }
