@@ -20,6 +20,31 @@ type TCPClientConnection struct {
 	_isConnected    bool
 }
 
+func (ego *TCPClientConnection) OnPeerClosed() int32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPClientConnection) OnDisconnected() int32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPClientConnection) OnConnectingFailed() int32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPClientConnection) ReactorIndex() uint32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPClientConnection) SetReactorIndex(u uint32) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (ego *TCPClientConnection) OnWritable() int32 {
 	ego._isConnected = true
 	laddr := ego._conn.LocalAddr()
@@ -40,6 +65,18 @@ func (ego *TCPClientConnection) Connect() int32 {
 
 	ego.OnWritable()
 	return core.MkSuccess(0)
+}
+
+func (ego *TCPClientConnection) flush() (int64, int32) {
+	return 0, core.MkSuccess(0)
+}
+
+func (ego *TCPClientConnection) sendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
+	return 0, core.MkSuccess(0)
+}
+
+func (ego *TCPClientConnection) SendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
+	return ego.sendImmediately(ba, offset, length)
 }
 
 func (ego *TCPClientConnection) OnIncomingData() int32 {

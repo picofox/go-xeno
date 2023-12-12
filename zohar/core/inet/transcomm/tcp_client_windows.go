@@ -5,6 +5,7 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
+	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/logging"
 )
 
@@ -14,6 +15,11 @@ type TCPClient struct {
 	_connections []*TCPClientConnection
 	_logger      logging.ILogger
 	_poller      *Poller
+}
+
+func (ego *TCPClient) OnIncomingMessage(conn *TCPClientConnection, message message_buffer.INetMessage) int32 {
+
+	return core.MkSuccess(0)
 }
 
 func (ego *TCPClient) Initialize() int32 {

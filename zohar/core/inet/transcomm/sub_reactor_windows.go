@@ -15,6 +15,7 @@ type SubReactor struct {
 func (ego *SubReactor) loop() int32 {
 	defer ego._poller._waitGroup.Done()
 	for {
+		ego._poller.Log(core.LL_DEBUG, "Reading socket.... <%s>", ego._connection.Identifier())
 		ego._connection.OnIncomingData()
 
 		select {

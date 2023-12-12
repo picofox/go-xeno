@@ -7,6 +7,7 @@ import (
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
+	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
 )
@@ -20,6 +21,31 @@ type TCPServerConnection struct {
 	_pipeline       []IServerHandler
 	_server         *TCPServer
 	_fd             uintptr
+}
+
+func (ego *TCPServerConnection) OnPeerClosed() int32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPServerConnection) OnDisconnected() int32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPServerConnection) OnConnectingFailed() int32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPServerConnection) ReactorIndex() uint32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPServerConnection) SetReactorIndex(u uint32) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (ego *TCPServerConnection) OnWritable() int32 {
@@ -46,10 +72,10 @@ func (ego *TCPServerConnection) checkRecvBufferCapacity() int32 {
 		return core.MkSuccess(0)
 	}
 
-	if ego._recvBuffer.Capacity() < MAX_BUFFER_MAX_CAPACITY {
+	if ego._recvBuffer.Capacity() < message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		neoSz := ego._recvBuffer.Capacity() * 2
-		if neoSz > MAX_BUFFER_MAX_CAPACITY {
-			neoSz = MAX_BUFFER_MAX_CAPACITY
+		if neoSz > message_buffer.MAX_BUFFER_MAX_CAPACITY {
+			neoSz = message_buffer.MAX_BUFFER_MAX_CAPACITY
 		}
 		if ego._recvBuffer.ResizeTo(neoSz) > 0 {
 			return core.MkSuccess(0)
