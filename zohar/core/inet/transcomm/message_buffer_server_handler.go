@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"fmt"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/memory"
@@ -21,8 +22,14 @@ func (ego *MessageBufferServerHandler) OnReceive(connection *TCPServerConnection
 	}
 
 	msg := messages.GetDefaultMessageBufferDeserializationMapper().Deserialize(paramCMD, paramBA)
+	if msg == nil {
+		fmt.Printf("msg is nil, buffer pos %d len %d", paramBA.ReadPos(), paramBA.ReadAvailable())
+	}
 
+	paramBA.ReaderSeek(memory.BUFFER_SEEK_CUR, frameLength)
 	connection._server.OnIncomingMessage(connection, msg, nil)
+
+	fmt.Printf("got msg %v\n", msg)
 
 	return core.MkSuccess(0), nil, 0, nil
 }

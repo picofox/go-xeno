@@ -11,7 +11,7 @@ import (
 type Poller struct {
 	_logger       logging.ILogger
 	_mainReactors []*MainReactor
-	_subReactors  []*SubReactor
+	_subReactors  sync.Map
 	_servers      sync.Map
 	_stateCode    datatype.StateCode
 	_waitGroup    sync.WaitGroup
@@ -20,8 +20,7 @@ type Poller struct {
 func (ego *Poller) OnIncomingConnection(connection IConnection) {
 	sr := ego.NeoSubReactor(connection)
 	sr.OnStart()
-	ego._subReactors = append(ego._subReactors, sr)
-
+	ego._subReactors.Store(connection.Identifier(), sr)
 }
 
 func (ego *Poller) RegisterTCPServer(svr *TCPServer) {
@@ -63,14 +62,26 @@ func (ego *Poller) Wait() int32 {
 	return core.MkSuccess(0)
 }
 
+func (ego *Poller) SubReactorCount() int32 {
+	var cnt int32 = 0
+	ego._subReactors.Range(func(key, value any) bool {
+		cnt++
+		return true
+	})
+	return cnt
+}
+
 func (ego *Poller) Stop() int32 {
 	ego._stateCode.SetStopState()
 	for _, subR := range ego._mainReactors {
 		subR.OnStop()
 	}
-	for _, subR := range ego._subReactors {
-		subR.OnStop()
-	}
+
+	ego._subReactors.Range(func(key, value any) bool {
+		value.(*SubReactor).OnStop()
+		return true
+	})
+
 	ego._stateCode.SetStopStateResult(true)
 	return core.MkSuccess(0)
 }
@@ -82,6 +93,10 @@ func (ego *Poller) NeoSubReactor(connection IConnection) *SubReactor {
 		_commandChannel: make(chan cms.ICMS, 1),
 	}
 	return &sr
+}
+
+func (ego *Poller) SubReactorEnded(sr *SubReactor) {
+	ego._subReactors.Delete(sr._connection.Identifier())
 }
 
 func (ego *Poller) neoMainReactor(listener *ListenWrapper) *MainReactor {
@@ -117,7 +132,6 @@ func NeoPoller() *Poller {
 	p := Poller{
 		_logger:       logging.GetLoggerManager().GetDefaultLogger(),
 		_mainReactors: make([]*MainReactor, 0),
-		_subReactors:  make([]*SubReactor, 0),
 		_stateCode:    datatype.StateCode(0),
 	}
 

@@ -31,6 +31,7 @@ func (ego *O1L15COT15DecodeServerHandler) OnReceive(connection *TCPServerConnect
 	//connection._recvBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, frameLength)
 
 	if !opt1 && !opt2 {
+
 		return core.MkSuccess(0), connection._recvBuffer, frameLength, cmd
 
 	} else if opt1 && !opt2 { //long message start

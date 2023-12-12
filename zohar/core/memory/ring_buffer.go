@@ -14,7 +14,25 @@ type RingBuffer struct {
 }
 
 func (ego *RingBuffer) WriterSeek(whence int, offset int64) bool {
-	return false
+	if whence == BUFFER_SEEK_CUR {
+		if offset == 0 {
+			return true
+		}
+		neoOff := ego._length + offset
+		if neoOff < 0 || neoOff >= ego._capacity {
+			return false
+		}
+		ego._length += neoOff
+		return true
+	} else if whence == BUFFER_SEEK_SET {
+		if offset < 0 || offset >= ego._capacity {
+			return false
+		}
+		ego._length = offset
+		return true
+
+	}
+	return true
 }
 
 func (ego *RingBuffer) Compact() int64 {
@@ -183,10 +201,10 @@ func (ego *RingBuffer) InternalData() *[]byte {
 }
 
 func (ego *RingBuffer) ReaderSeek(whence int, offset int64) bool {
-	if offset == 0 {
-		return true
-	}
 	if whence == BUFFER_SEEK_CUR {
+		if offset == 0 {
+			return true
+		}
 		if offset > 0 {
 			if offset > ego._length {
 				return false

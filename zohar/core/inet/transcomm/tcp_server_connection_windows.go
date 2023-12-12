@@ -112,15 +112,28 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 	} else if nDone == 0 {
 		return core.MkErr(core.EC_EOF, 0)
 	} else {
+		ego._recvBuffer.WriterSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
+
 		var bufParam any = ego._recvBuffer
 		var p2 any = nil
 		var l int64 = 0
-		for _, handler := range ego._pipeline {
+		for idx, handler := range ego._pipeline {
+			fmt.Printf("Readerseeek result p=%d len=%d ", ego._recvBuffer.ReadPos(), ego._recvBuffer.ReadAvailable())
 			rc, bufParam, l, p2 = handler.OnReceive(ego, bufParam, l, p2)
+			if idx%2 == 0 && ego._recvBuffer.ReadAvailable() == 0 {
+				fmt.Printf("Readerseeek result p=%d len=%d ", ego._recvBuffer.ReadPos(), ego._recvBuffer.ReadAvailable())
+			}
+
 			if core.Err(rc) {
 				return rc
 			}
 		}
+
+		cn := ego._recvBuffer.ReadPos()
+		if cn%12 != 0 {
+			ego._server.Log(core.LL_ERR, "buffer pos error, reader:%d writer:%d", ego._recvBuffer.ReadPos(), ego._recvBuffer.WritePos())
+		}
+
 	}
 	return core.MkSuccess(0)
 }
