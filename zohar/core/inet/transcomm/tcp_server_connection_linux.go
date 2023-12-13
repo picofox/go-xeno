@@ -16,11 +16,7 @@ type TCPServerConnection struct {
 	_remoteEndPoint inet.IPV4EndPoint
 	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
-<<<<<<< HEAD
-	_pipeline       []IServerCodecHandler
-=======
-	_codec          IServerHandler
->>>>>>> 7e43a4fc9ab7e9f565922f2bdc9631781a5da39c
+	_codec          IServerCodecHandler
 	_lock           sync.Mutex
 	_server         *TCPServer
 	_reactorIndex   uint32
