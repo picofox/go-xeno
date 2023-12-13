@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"math/bits"
+	"time"
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
@@ -76,9 +77,10 @@ func main() {
 
 	kaMsg := messages.NeoKeepAliveMessage()
 	cli.SendMessage(kaMsg, true)
-	//for {
-	//	cli.SendMessage(kaMsg, true)
-	//}
+	for {
+		cli.SendMessage(kaMsg, true)
+		time.Sleep(100 * time.Millisecond)
+	}
 
 	cfg := &config.GetKadamonyConfig().DB
 	db.GetPoolManager().Initialize(cfg)
