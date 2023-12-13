@@ -1,8 +1,8 @@
 package transcomm
 
-type IClientHandler interface {
+type IClientCodecHandler interface {
 	OnReceive(*TCPClientConnection, any, int64, any) (int32, any, int64, any)
-	//Inbound([]IServerHandler, int, *TCPServerConnection, any, any) int32
+	//Inbound([]IServerCodecHandler, int, *TCPServerConnection, any, any) int32
 
 	OnSend(*TCPClientConnection, any, int64, bool) (int32, any, int64, bool)
 

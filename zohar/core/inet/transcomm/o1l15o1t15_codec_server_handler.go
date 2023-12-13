@@ -7,16 +7,16 @@ import (
 	"xeno/zohar/core/memory"
 )
 
-type O1L15COT15DecodeServerHandler struct {
+type O1L15COT15CodecServerHandler struct {
 	_largeMessageBuffer *memory.LinearBuffer
 	_memoryLow          bool
 }
 
-func (ego *O1L15COT15DecodeServerHandler) Clear() {
-	ego._largeMessageBuffer.Clear()
+func (ego *O1L15COT15CodecServerHandler) Reset() {
+	ego._largeMessageBuffer.Reset()
 }
 
-func (ego *O1L15COT15DecodeServerHandler) OnReceive(connection *TCPServerConnection) (message_buffer.INetMessage, int32) {
+func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnection) (message_buffer.INetMessage, int32) {
 	if connection._recvBuffer.ReadAvailable() < 4 {
 		return nil, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
@@ -93,30 +93,30 @@ func (ego *O1L15COT15DecodeServerHandler) OnReceive(connection *TCPServerConnect
 	return nil, core.MkErr(core.EC_INVALID_STATE, 1)
 }
 
-func (ego *O1L15COT15DecodeServerHandler) CheckLowMemory() {
+func (ego *O1L15COT15CodecServerHandler) CheckLowMemory() {
 	if ego._memoryLow {
 		ego._largeMessageBuffer.Reset()
 		ego._memoryLow = false
 	}
 }
 
-func (ego *O1L15COT15DecodeServerHandler) OnLowMemory() {
+func (ego *O1L15COT15CodecServerHandler) OnLowMemory() {
 	ego._memoryLow = true
 }
 
-func NeoO1L15COT15DecodeServerHandler() *O1L15COT15DecodeServerHandler {
-	dec := O1L15COT15DecodeServerHandler{
+func NeoO1L15COT15DecodeServerHandler() *O1L15COT15CodecServerHandler {
+	dec := O1L15COT15CodecServerHandler{
 		_largeMessageBuffer: memory.NeoLinearBuffer(0),
 		_memoryLow:          false,
 	}
 	return &dec
 }
-func (ego *HandlerRegistration) NeoO1L15COT15DecodeServerHandler() *O1L15COT15DecodeServerHandler {
-	dec := O1L15COT15DecodeServerHandler{
+func (ego *HandlerRegistration) NeoO1L15COT15DecodeServerHandler() *O1L15COT15CodecServerHandler {
+	dec := O1L15COT15CodecServerHandler{
 		_largeMessageBuffer: memory.NeoLinearBuffer(0),
 		_memoryLow:          false,
 	}
 	return &dec
 }
 
-var _ IServerHandler = &O1L15COT15DecodeServerHandler{}
+var _ IServerCodecHandler = &O1L15COT15CodecServerHandler{}

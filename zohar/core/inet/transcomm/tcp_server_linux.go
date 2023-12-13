@@ -84,7 +84,7 @@ func (ego *TCPServer) OnIncomingConnection(listener *ListenWrapper, fd int, rAdd
 		if core.Err(rc) {
 			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
 		}
-		h := output[0].Interface().(IServerHandler)
+		h := output[0].Interface().(IServerCodecHandler)
 		connection._pipeline = append(connection._pipeline, h)
 	}
 	ego.Log(core.LL_INFO, "Incoming Connection [%d] @ <%s -> %s> Added", connection._fd, connection._remoteEndPoint.EndPointString(), connection._localEndPoint.EndPointString())
@@ -100,7 +100,7 @@ func (ego *TCPServer) NeoTCPServerConnection(fd int, rAddr inet.IPV4EndPoint, lA
 		_recvBuffer:     memory.NeoRingBuffer(1024),
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_server:         ego,
-		_pipeline:       make([]IServerHandler, 0),
+		_pipeline:       make([]IServerCodecHandler, 0),
 	}
 	return &connection
 }

@@ -16,7 +16,7 @@ type TCPServerConnection struct {
 	_remoteEndPoint inet.IPV4EndPoint
 	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
-	_pipeline       []IServerHandler
+	_pipeline       []IServerCodecHandler
 	_lock           sync.Mutex
 	_server         *TCPServer
 	_reactorIndex   uint32
@@ -217,7 +217,7 @@ func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int
 //		_recvBuffer:     memory.NeoRingBuffer(1024),
 //		_sendBuffer:     memory.NeoLinearBuffer(1024),
 //		_server:         tcpServer,
-//		_pipeline:       make([]IServerHandler, 0),
+//		_pipeline:       make([]IServerCodecHandler, 0),
 //	}
 //
 //	var output []reflect.Value = make([]reflect.Value, 0, 1)
@@ -226,7 +226,7 @@ func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int
 //		if core.Err(rc) {
 //			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
 //		}
-//		h := output[0].Interface().(IServerHandler)
+//		h := output[0].Interface().(IServerCodecHandler)
 //		tsc._pipeline = append(tsc._pipeline, h)
 //	}
 //	return &tsc

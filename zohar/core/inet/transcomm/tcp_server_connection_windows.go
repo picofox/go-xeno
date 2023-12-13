@@ -18,7 +18,7 @@ type TCPServerConnection struct {
 	_remoteEndPoint inet.IPV4EndPoint
 	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
-	_codec          IServerHandler
+	_codec          IServerCodecHandler
 	_server         *TCPServer
 }
 
@@ -26,7 +26,7 @@ func (ego *TCPServerConnection) Close() int32 {
 	ego._conn.Close()
 	ego._recvBuffer.Clear()
 	ego._sendBuffer.Clear()
-	ego._codec.Clear()
+	ego._codec.Reset()
 	return core.MkSuccess(0)
 }
 
@@ -159,7 +159,7 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 	if core.Err(rc) {
 		panic(fmt.Sprintf("Install Handler Failed %s", listener.Server()._config.Codec))
 	}
-	h := output[0].Interface().(IServerHandler)
+	h := output[0].Interface().(IServerCodecHandler)
 	c._codec = h
 	return &c
 }

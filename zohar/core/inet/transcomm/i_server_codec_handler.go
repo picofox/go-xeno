@@ -2,9 +2,9 @@ package transcomm
 
 import "xeno/zohar/core/inet/message_buffer"
 
-type IServerHandler interface {
+type IServerCodecHandler interface {
 	OnReceive(*TCPServerConnection) (message_buffer.INetMessage, int32)
-	//Inbound([]IServerHandler, int, *TCPServerConnection, any, any) int32
+	//Inbound([]IServerCodecHandler, int, *TCPServerConnection, any, any) int32
 
-	Clear()
+	Reset()
 }

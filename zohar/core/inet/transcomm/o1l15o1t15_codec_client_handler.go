@@ -6,13 +6,13 @@ import (
 	"xeno/zohar/core/memory"
 )
 
-type O1L15COT15DecodeClientHandler struct {
+type O1L15COT15CodecClientHandler struct {
 	_largeMessageBuffer *memory.LinearBuffer
 	_memoryLow          bool
 	_packetHeader       message_buffer.MessageHeader
 }
 
-func (ego *O1L15COT15DecodeClientHandler) OnSend(connection *TCPClientConnection, c any, tLen int64, bFlush bool) (int32, any, int64, bool) {
+func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection, c any, tLen int64, bFlush bool) (int32, any, int64, bool) {
 	var byteBuf memory.IByteBuffer = connection._sendBuffer
 	var cmd int16 = c.(int16)
 
@@ -51,11 +51,11 @@ func (ego *O1L15COT15DecodeClientHandler) OnSend(connection *TCPClientConnection
 	return core.MkSuccess(0), cmd, tLen, bFlush
 }
 
-func (ego *O1L15COT15DecodeClientHandler) Clear() {
+func (ego *O1L15COT15CodecClientHandler) Clear() {
 	ego._largeMessageBuffer.Clear()
 }
 
-func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnection, obj any, bufLen int64, param1 any) (int32, any, int64, any) {
+func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnection, obj any, bufLen int64, param1 any) (int32, any, int64, any) {
 	if connection._recvBuffer.ReadAvailable() < 4 {
 		return core.MkErr(core.EC_TRY_AGAIN, 1), nil, 0, nil
 	}
@@ -114,27 +114,27 @@ func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnect
 	return core.MkErr(core.EC_INVALID_STATE, 1), nil, 0, nil
 }
 
-func (ego *O1L15COT15DecodeClientHandler) CheckLowMemory() {
+func (ego *O1L15COT15CodecClientHandler) CheckLowMemory() {
 	if ego._memoryLow {
 		ego._largeMessageBuffer.Reset()
 		ego._memoryLow = false
 	}
 }
 
-func (ego *O1L15COT15DecodeClientHandler) OnLowMemory() {
+func (ego *O1L15COT15CodecClientHandler) OnLowMemory() {
 	ego._memoryLow = true
 }
 
-func NeoO1L15COT15DecodeClientHandler() *O1L15COT15DecodeClientHandler {
-	dec := O1L15COT15DecodeClientHandler{
+func NeoO1L15COT15DecodeClientHandler() *O1L15COT15CodecClientHandler {
+	dec := O1L15COT15CodecClientHandler{
 		_largeMessageBuffer: memory.NeoLinearBuffer(0),
 		_memoryLow:          false,
 		_packetHeader:       message_buffer.NeoMessageHeader(),
 	}
 	return &dec
 }
-func (ego *HandlerRegistration) NeoO1L15COT15DecodeClientHandler() *O1L15COT15DecodeClientHandler {
-	dec := O1L15COT15DecodeClientHandler{
+func (ego *HandlerRegistration) NeoO1L15COT15DecodeClientHandler() *O1L15COT15CodecClientHandler {
+	dec := O1L15COT15CodecClientHandler{
 		_largeMessageBuffer: memory.NeoLinearBuffer(0),
 		_memoryLow:          false,
 		_packetHeader:       message_buffer.NeoMessageHeader(),
@@ -142,4 +142,4 @@ func (ego *HandlerRegistration) NeoO1L15COT15DecodeClientHandler() *O1L15COT15De
 	return &dec
 }
 
-var _ IClientHandler = &O1L15COT15DecodeClientHandler{}
+var _ IClientCodecHandler = &O1L15COT15CodecClientHandler{}
