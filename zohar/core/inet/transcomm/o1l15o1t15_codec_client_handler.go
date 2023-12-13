@@ -13,18 +13,13 @@ type O1L15COT15CodecClientHandler struct {
 	_packetHeader       message_buffer.MessageHeader
 }
 
-<<<<<<< HEAD:zohar/core/inet/transcomm/o1l15o1t15_codec_client_handler.go
-func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection, c any, tLen int64, bFlush bool) (int32, any, int64, bool) {
-=======
-func (ego *O1L15COT15DecodeClientHandler) OnSend(connection *TCPClientConnection, a any, bFlush bool) int32 {
+func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection, a any, bFlush bool) int32 {
 	var message = a.(message_buffer.INetMessage)
-
 	tLen := message.Serialize(connection._sendBuffer)
 	if tLen < 0 {
 		return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 	}
 
->>>>>>> 7e43a4fc9ab7e9f565922f2bdc9631781a5da39c:zohar/core/inet/transcomm/o1l15o1t15_decode_client_handler.go
 	var byteBuf memory.IByteBuffer = connection._sendBuffer
 	var cmd int16 = message.Command()
 
@@ -32,20 +27,18 @@ func (ego *O1L15COT15DecodeClientHandler) OnSend(connection *TCPClientConnection
 		if !bFlush && byteBuf.WriteAvailable() > tLen {
 			return core.MkSuccess(1)
 		}
-		_, rc := connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), byteBuf.ReadAvailable())
-		if core.Err(rc) {
-			return rc
-		}
+		connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), byteBuf.ReadAvailable())
 		byteBuf.Clear()
 		return core.MkSuccess(0)
+
 	} else { //large message
 		connection.flush()
 		rIndex := int64(4)
 		ego._packetHeader.Set(true, false, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
-		byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, 4)
+		byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, message_buffer.O1L15O1T15_HEADER_SIZE)
 
 		for {
-			connection.sendImmediately(ego._packetHeader.Data(), 0, 4)
+			connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
 			connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
 
 			rIndex += message_buffer.MAX_PACKET_BODY_SIZE
@@ -58,23 +51,18 @@ func (ego *O1L15COT15DecodeClientHandler) OnSend(connection *TCPClientConnection
 				break
 			}
 		}
-		ego._packetHeader.Set(false, true, int16(byteBuf.ReadAvailable()), cmd)
+		ego._packetHeader.Set(false, true, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
 		connection.sendImmediately(ego._packetHeader.Data(), 0, 4)
 		connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), byteBuf.ReadAvailable())
 	}
-
 	return core.MkSuccess(0)
 }
 
-<<<<<<< HEAD:zohar/core/inet/transcomm/o1l15o1t15_codec_client_handler.go
 func (ego *O1L15COT15CodecClientHandler) Clear() {
 	ego._largeMessageBuffer.Clear()
 }
 
-func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnection, obj any, bufLen int64, param1 any) (int32, any, int64, any) {
-=======
-func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnection) (any, int32) {
->>>>>>> 7e43a4fc9ab7e9f565922f2bdc9631781a5da39c:zohar/core/inet/transcomm/o1l15o1t15_decode_client_handler.go
+func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnection) (any, int32) {
 	if connection._recvBuffer.ReadAvailable() < 4 {
 		return nil, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
@@ -106,6 +94,7 @@ func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnect
 			connection._client.Log(core.LL_ERR, "Message (CMD:%d) Length Validation Failed, frame length is %d, but got %d read", cmd, frameLength, endPos-beginPos)
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
+
 		return msg, core.MkSuccess(0)
 
 	} else if opt1 && !opt2 { //long message start
@@ -148,10 +137,6 @@ func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnect
 	}
 
 	return nil, core.MkErr(core.EC_INVALID_STATE, 1)
-}
-
-func (ego *O1L15COT15DecodeClientHandler) Clear() {
-	ego._largeMessageBuffer.Clear()
 }
 
 func (ego *O1L15COT15CodecClientHandler) CheckLowMemory() {

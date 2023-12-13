@@ -2,7 +2,6 @@ package transcomm
 
 import (
 	"xeno/zohar/core"
-	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/memory"
 )
@@ -16,7 +15,7 @@ func (ego *O1L15COT15CodecServerHandler) Reset() {
 	ego._largeMessageBuffer.Reset()
 }
 
-func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnection) (message_buffer.INetMessage, int32) {
+func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnection) (any, int32) {
 	if connection._recvBuffer.ReadAvailable() < 4 {
 		return nil, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}

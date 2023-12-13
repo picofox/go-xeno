@@ -130,7 +130,7 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 			return rc
 		}
 
-		ego._server.OnIncomingMessage(ego, msg, nil)
+		ego._server.OnIncomingMessage(ego, msg.(message_buffer.INetMessage), nil)
 	}
 	return core.MkSuccess(0)
 }
