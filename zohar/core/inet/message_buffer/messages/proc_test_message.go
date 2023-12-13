@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"encoding/json"
 	"strconv"
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
@@ -9,8 +10,16 @@ import (
 )
 
 type ProcTestMessage struct {
-	_timeStamp int64
-	_str0      string
+	_timeStamp int64  `json:"timestamp"`
+	_str0      string `json:"str0"`
+}
+
+func (ego *ProcTestMessage) String() string {
+	data, err := json.Marshal(ego)
+	if err != nil {
+		return "[Marshal_Failed_Msg]"
+	}
+	return string(data)
 }
 
 func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
@@ -40,7 +49,7 @@ func (ego *ProcTestMessage) Deserialize(buffer memory.IByteBuffer) int32 {
 }
 
 func ProcTestMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetMessage {
-	m := KeepAliveMessage{}
+	m := ProcTestMessage{}
 	rc := m.Deserialize(buffer)
 	if core.Err(rc) {
 		return nil
@@ -63,4 +72,4 @@ func (ego *ProcTestMessage) Command() int16 {
 	return PROC_TEST_MESSAGE_ID
 }
 
-//var _ message_buffer.INetMessage = &KeepAliveMessage{}
+var _ message_buffer.INetMessage = &ProcTestMessage{}

@@ -1,11 +1,13 @@
 package transcomm
 
 import (
+	"fmt"
 	"net"
 	"sync"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
+	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/nic"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/memory"
@@ -52,8 +54,8 @@ func (ego *TCPServer) Listeners() *sync.Map {
 	return &ego._listeners
 }
 
-func (ego *TCPServer) OnIncomingMessage(conn IConnection, msg any, param any) {
-
+func (ego *TCPServer) OnIncomingMessage(conn IConnection, msg message_buffer.INetMessage, param any) {
+	fmt.Printf("Got msg [%v] \n", msg.String())
 }
 
 func (ego *TCPServer) Initialize() int32 {

@@ -6,4 +6,5 @@ type INetMessage interface {
 	Serialize(memory.IByteBuffer) int64
 	Deserialize(memory.IByteBuffer) int32
 	Command() int16
+	String() string
 }

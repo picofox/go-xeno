@@ -35,36 +35,17 @@
 			"TCP" : {
 				"Default" : {
 					"ServerEndPoints" : ["192.168.0.100:9998", "192.168.0.100:9999"],
-					"Count" : 10,
-					"Handlers" : [
-							{
-								"Name" : "O1L15COT15DecodeClientHandler",
-								"Param" : {}
-							},
-							{
-								"Name" : "MessageBufferClientHandlers",
-								"Param" : {}	
-							}
-						] 
+					"Count" : 10,"CoderHandler" : "O1L15COT15DecodeClientHandler"
 				}
 			}
 		},
 		"Server" : {
 			"TCP" : {
 				"Defaut"  : {
-					"ListenerEndPoints" : ["0.0.0.0:9998", "0.0.0.0:9999"],
-					"PublicConnectingEndPoints" : ["192.168.0.20:9998", "192.168.0.20:9999"],
-					"PrivateConnectingEndPoints" : ["192.168.0.20:9998", "192.168.0.20:9999"],
-					"Handlers" : [
-						{
-							"Name" : "O1L15COT15DecodeServerHandler",
-							"Param" : {}
-						},
-						{
-							"Name" : "MessageBufferServerHandler",
-							"Param" : {}	
-						}
-					] 
+					"ListenerEndPoints" : ["0.0.0.0:9999"],
+					"PublicConnectingEndPoints" : ["192.168.0.20:9999"],
+					"PrivateConnectingEndPoints" : ["192.168.0.20:9999"],
+					"CoderHandler" : "O1L15COT15DecodeServerHandler"
 				}
 			}
 		}

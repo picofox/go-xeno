@@ -5,10 +5,10 @@ import (
 )
 
 type NetworkServerTCPConfig struct {
-	ListenerEndPoints          []string                  `json:"ListenerEndPoints"`
-	PublicConnectingEndPoints  []string                  `json:"PublicConnectingEndPoints"`
-	PrivateConnectingEndPoints []string                  `json:"PrivateConnectingEndPoints"`
-	Handlers                   []NetworkTCPHandlerConfig `json:"Handlers"`
+	ListenerEndPoints          []string `json:"ListenerEndPoints"`
+	PublicConnectingEndPoints  []string `json:"PublicConnectingEndPoints"`
+	PrivateConnectingEndPoints []string `json:"PrivateConnectingEndPoints"`
+	Codec                      string   `json:"Codec"`
 }
 
 func (ego *NetworkServerTCPConfig) String() string {
@@ -22,10 +22,8 @@ func (ego *NetworkServerTCPConfig) String() string {
 	ss.WriteString("PrivateConnectingEndPoints=")
 	ss.WriteString(strings.Join(ego.PrivateConnectingEndPoints, ","))
 	ss.WriteString("\n")
-	for _, elem := range ego.Handlers {
-		ss.WriteString("Handlers=")
-		ss.WriteString(elem.String())
-		ss.WriteString("\n")
-	}
+	ss.WriteString("Codec=")
+	ss.WriteString(ego.Codec)
+	ss.WriteString("\n")
 	return ss.String()
 }

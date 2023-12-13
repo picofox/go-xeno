@@ -18,7 +18,7 @@ type TCPServerConnection struct {
 	_remoteEndPoint inet.IPV4EndPoint
 	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
-	_pipeline       []IServerHandler
+	_codec          IServerHandler
 	_server         *TCPServer
 }
 
@@ -26,9 +26,7 @@ func (ego *TCPServerConnection) Close() int32 {
 	ego._conn.Close()
 	ego._recvBuffer.Clear()
 	ego._sendBuffer.Clear()
-	for i := 0; i < len(ego._pipeline); i++ {
-		ego._pipeline[i].Clear()
-	}
+	ego._codec.Clear()
 	return core.MkSuccess(0)
 }
 
@@ -104,11 +102,16 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 	baPtr := ego._recvBuffer.InternalData()
 	var nDone int = 0
 	var err error
+
+	if ego._recvBuffer.ReadPos() == 1020 {
+		fmt.Printf("sss")
+	}
 	if ego._recvBuffer.WritePos() >= ego._recvBuffer.ReadPos() {
 		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.Capacity()])
 	} else {
 		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.ReadPos()])
 	}
+
 	if nDone < 0 {
 		if err != nil {
 			ego._server.Log(core.LL_SYS, "Connection <%s> SysRead Failed: %s", ego.String(), err.Error())
@@ -117,16 +120,17 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 	} else if nDone == 0 {
 		return core.MkErr(core.EC_EOF, 0)
 	} else {
-		ego._recvBuffer.WriterSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
-		var bufParam any = ego._recvBuffer
-		var p2 any = nil
-		var l int64 = 0
-		for _, handler := range ego._pipeline {
-			rc, bufParam, l, p2 = handler.OnReceive(ego, bufParam, l, p2)
-			if core.Err(rc) {
-				return rc
-			}
+		src := ego._recvBuffer.WriterSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
+		if !src {
+			return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 		}
+
+		msg, rc := ego._codec.OnReceive(ego)
+		if core.Err(rc) {
+			return rc
+		}
+
+		ego._server.OnIncomingMessage(ego, msg, nil)
 	}
 	return core.MkSuccess(0)
 }
@@ -147,19 +151,16 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 		_recvBuffer:     memory.NeoRingBuffer(1024),
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_server:         listener.Server(),
-		_pipeline:       make([]IServerHandler, 0),
+		_codec:          nil,
 	}
 
 	var output []reflect.Value = make([]reflect.Value, 0, 1)
-	for _, elem := range listener.Server()._config.Handlers {
-		rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+elem.Name)
-		if core.Err(rc) {
-			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
-		}
-		h := output[0].Interface().(IServerHandler)
-		c._pipeline = append(c._pipeline, h)
+	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+listener.Server()._config.Codec)
+	if core.Err(rc) {
+		panic(fmt.Sprintf("Install Handler Failed %s", listener.Server()._config.Codec))
 	}
-
+	h := output[0].Interface().(IServerHandler)
+	c._codec = h
 	return &c
 }
 

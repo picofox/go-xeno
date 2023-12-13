@@ -6,9 +6,9 @@ import (
 )
 
 type NetworkClientTCPConfig struct {
-	ServerEndPoints []string                  `json:"ServerEndPoints"`
-	Count           int32                     `json:"Count"`
-	Handlers        []NetworkTCPHandlerConfig `json:"Handlers"`
+	ServerEndPoints []string `json:"ServerEndPoints"`
+	Count           int32    `json:"Count"`
+	Codec           string   `json:"Codec"`
 }
 
 func (ego *NetworkClientTCPConfig) String() string {
@@ -18,10 +18,9 @@ func (ego *NetworkClientTCPConfig) String() string {
 	ss.WriteString("\n")
 	ss.WriteString(strconv.Itoa(int(ego.Count)))
 	ss.WriteString("\n")
-	for _, elem := range ego.Handlers {
-		ss.WriteString("Handlers=")
-		ss.WriteString(elem.String())
-		ss.WriteString("\n")
-	}
+	ss.WriteString("Codec=")
+	ss.WriteString(ego.Codec)
+	ss.WriteString("\n")
+
 	return ss.String()
 }
