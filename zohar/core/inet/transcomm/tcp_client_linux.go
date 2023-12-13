@@ -8,7 +8,6 @@ import (
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
-	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/logging"
 )
 
@@ -41,7 +40,7 @@ func (ego *TCPClient) SendMessage(msg message_buffer.INetMessage, bFlush bool) i
 }
 
 func (ego *TCPClient) OnIncomingMessage(conn *TCPClientConnection, message message_buffer.INetMessage) int32 {
-	fmt.Printf("Got msg [%v] \n", message.(messages.KeepAliveMessage).Time)
+	fmt.Printf("Got msg [%v] \n", message.String())
 	return core.MkSuccess(0)
 }
 

@@ -19,7 +19,11 @@ type TCPClientConnection struct {
 	_remoteEndPoint inet.IPV4EndPoint
 	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
+<<<<<<< HEAD
 	_pipeline       []IClientCodecHandler
+=======
+	_codec          IClientHandler
+>>>>>>> 7e43a4fc9ab7e9f565922f2bdc9631781a5da39c
 	_client         *TCPClient
 	_isConnected    bool
 	_reactorIndex   uint32
@@ -36,9 +40,11 @@ func (ego *TCPClientConnection) SetReactorIndex(u uint32) {
 }
 
 func (ego *TCPClientConnection) reconnect() int32 {
-	for _, handler := range ego._pipeline {
-		handler.Clear()
+
+	if ego._codec != nil {
+		ego._codec.Clear()
 	}
+
 	syscall.Close(ego._fd)
 	ego._client.Log(core.LL_SYS, "Reconnect to <%s>", ego._remoteEndPoint.EndPointString())
 	ego._isConnected = false
@@ -152,15 +158,11 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 			ego.OnPeerClosed()
 			return core.MkErr(core.EC_EOF, 1)
 		} else {
-			var bufParam any = ego._recvBuffer
-			var p2 any = nil
-			var l int64 = 0
-			for _, handler := range ego._pipeline {
-				rc, bufParam, l, p2 = handler.OnReceive(ego, bufParam, l, p2)
-				if core.Err(rc) {
-					return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
-				}
+			m, rc := ego._codec.OnReceive(ego)
+			if core.Err(rc) {
+				return rc
 			}
+			ego._client.OnIncomingMessage(ego, m.(message_buffer.INetMessage))
 		}
 	}
 }
@@ -188,15 +190,9 @@ func (ego *TCPClientConnection) LocalEndPoint() *inet.IPV4EndPoint {
 func (ego *TCPClientConnection) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
-	var param any = msg
-	var rc int32 = 0
-	var pLen int64
-
-	for i := len(ego._pipeline) - 1; i >= 0; i-- {
-		rc, param, pLen, bFlush = ego._pipeline[i].OnSend(ego, param, pLen, bFlush)
-		if core.Err(rc) {
-			return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
-		}
+	rc := ego._codec.OnSend(ego, msg, bFlush)
+	if core.Err(rc) {
+		return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
 	}
 	return core.MkSuccess(0)
 }
@@ -291,12 +287,17 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_remoteEndPoint: rAddr,
 		_recvBuffer:     memory.NeoRingBuffer(1024),
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
+<<<<<<< HEAD
 		_pipeline:       make([]IClientCodecHandler, 0),
+=======
+		_codec:          nil,
+>>>>>>> 7e43a4fc9ab7e9f565922f2bdc9631781a5da39c
 		_client:         client,
 		_isConnected:    false,
 		_packetHeader:   message_buffer.NeoMessageHeader(),
 	}
 	var output = make([]reflect.Value, 0, 1)
+<<<<<<< HEAD
 	for _, elem := range c._client._config.Handlers {
 		rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+elem.Name)
 		if core.Err(rc) {
@@ -304,7 +305,15 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		}
 		h := output[0].Interface().(IClientCodecHandler)
 		c._pipeline = append(c._pipeline, h)
+=======
+	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+c._client._config.Codec)
+	if core.Err(rc) {
+		panic(fmt.Sprintf("Install Handler Failed %s", c._client._config.Codec))
+>>>>>>> 7e43a4fc9ab7e9f565922f2bdc9631781a5da39c
 	}
+	h := output[0].Interface().(IClientHandler)
+	c._codec = h
+
 	return &c
 }
 

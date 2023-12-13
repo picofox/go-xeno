@@ -16,7 +16,11 @@ type TCPServerConnection struct {
 	_remoteEndPoint inet.IPV4EndPoint
 	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
+<<<<<<< HEAD
 	_pipeline       []IServerCodecHandler
+=======
+	_codec          IServerHandler
+>>>>>>> 7e43a4fc9ab7e9f565922f2bdc9631781a5da39c
 	_lock           sync.Mutex
 	_server         *TCPServer
 	_reactorIndex   uint32
@@ -115,15 +119,12 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 			//handle close
 			return core.MkErr(core.EC_EOF, 1)
 		} else {
-			var bufParam any = ego._recvBuffer
-			var p2 any = nil
-			var l int64 = 0
-			for _, handler := range ego._pipeline {
-				rc, bufParam, l, p2 = handler.OnReceive(ego, bufParam, l, p2)
-				if core.Err(rc) {
-					return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
-				}
+			msg, rc := ego._codec.OnReceive(ego)
+			if core.Err(rc) {
+				return rc
 			}
+
+			ego._server.OnIncomingMessage(ego, msg, nil)
 		}
 	}
 
