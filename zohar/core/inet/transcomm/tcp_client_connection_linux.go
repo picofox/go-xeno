@@ -292,7 +292,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 
 	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+c._client._config.Codec)
 	if core.Err(rc) {
-
+		return nil
 	}
 	h := output[0].Interface().(IClientCodecHandler)
 	c._codec = h
