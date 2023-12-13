@@ -3,6 +3,7 @@ package transcomm
 import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/memory"
 )
 
@@ -12,17 +13,27 @@ type O1L15COT15DecodeClientHandler struct {
 	_packetHeader       message_buffer.MessageHeader
 }
 
-func (ego *O1L15COT15DecodeClientHandler) OnSend(connection *TCPClientConnection, c any, tLen int64, bFlush bool) (int32, any, int64, bool) {
+func (ego *O1L15COT15DecodeClientHandler) OnSend(connection *TCPClientConnection, a any, bFlush bool) int32 {
+	var message = a.(message_buffer.INetMessage)
+
+	tLen := message.Serialize(connection._sendBuffer)
+	if tLen < 0 {
+		return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+	}
+
 	var byteBuf memory.IByteBuffer = connection._sendBuffer
-	var cmd int16 = c.(int16)
+	var cmd int16 = message.Command()
 
 	if tLen <= message_buffer.MAX_PACKET_BODY_SIZE {
-		if !bFlush && byteBuf.WriteAvailable() > 0 && byteBuf.Capacity() < message_buffer.MAX_BUFFER_MAX_CAPACITY {
-			return core.MkSuccess(1), cmd, tLen, bFlush
+		if !bFlush && byteBuf.WriteAvailable() > tLen {
+			return core.MkSuccess(1)
 		}
-		connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), tLen)
+		_, rc := connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+		if core.Err(rc) {
+			return rc
+		}
 		byteBuf.Clear()
-		return core.MkSuccess(0), cmd, tLen, bFlush
+		return core.MkSuccess(0)
 	} else { //large message
 		connection.flush()
 		rIndex := int64(4)
@@ -43,26 +54,22 @@ func (ego *O1L15COT15DecodeClientHandler) OnSend(connection *TCPClientConnection
 				break
 			}
 		}
-		ego._packetHeader.Set(false, true, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
+		ego._packetHeader.Set(false, true, int16(byteBuf.ReadAvailable()), cmd)
 		connection.sendImmediately(ego._packetHeader.Data(), 0, 4)
 		connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), byteBuf.ReadAvailable())
 	}
 
-	return core.MkSuccess(0), cmd, tLen, bFlush
+	return core.MkSuccess(0)
 }
 
-func (ego *O1L15COT15DecodeClientHandler) Clear() {
-	ego._largeMessageBuffer.Clear()
-}
-
-func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnection, obj any, bufLen int64, param1 any) (int32, any, int64, any) {
+func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnection) (any, int32) {
 	if connection._recvBuffer.ReadAvailable() < 4 {
-		return core.MkErr(core.EC_TRY_AGAIN, 1), nil, 0, nil
+		return nil, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
 	o1AndLen, _, _, _ := connection._recvBuffer.PeekUInt16()
 	frameLength := int64(o1AndLen & 0x7FFF)
 	if connection._recvBuffer.ReadAvailable() < int64(frameLength) {
-		return core.MkErr(core.EC_TRY_AGAIN, 2), nil, 0, nil
+		return nil, core.MkErr(core.EC_TRY_AGAIN, 2)
 	}
 
 	connection._recvBuffer.ReadInt16() //skip top half of header
@@ -76,7 +83,18 @@ func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnect
 	//connection._recvBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, frameLength)
 
 	if !opt1 && !opt2 {
-		return core.MkSuccess(0), connection._recvBuffer, frameLength, cmd
+		beginPos := connection._recvBuffer.ReadPos()
+		msg := messages.GetDefaultMessageBufferDeserializationMapper().Deserialize(cmd, connection._recvBuffer)
+		if msg == nil {
+			connection._client.Log(core.LL_ERR, "Deserialize Message (CMD:%d) error.", cmd)
+			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+		}
+		endPos := connection._recvBuffer.ReadPos()
+		if endPos-beginPos != frameLength {
+			connection._client.Log(core.LL_ERR, "Message (CMD:%d) Length Validation Failed, frame length is %d, but got %d read", cmd, frameLength, endPos-beginPos)
+			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
+		}
+		return msg, core.MkSuccess(0)
 
 	} else if opt1 && !opt2 { //long message start
 		ego._largeMessageBuffer.Clear()
@@ -89,7 +107,7 @@ func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnect
 			ego._largeMessageBuffer.WriteRawBytes(bs1, 0, int64(len(bs1)))
 		}
 		connection._recvBuffer.Clear()
-		return core.MkErr(core.EC_TRY_AGAIN, 1), nil, 0, nil
+		return nil, core.MkErr(core.EC_TRY_AGAIN, 2)
 
 	} else if opt1 && opt2 { //long message trunks
 		bs0, bs1 := connection._recvBuffer.BytesRef(frameLength)
@@ -98,7 +116,7 @@ func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnect
 			ego._largeMessageBuffer.WriteRawBytes(bs1, 0, int64(len(bs1)))
 		}
 		connection._recvBuffer.Clear()
-		return core.MkErr(core.EC_TRY_AGAIN, 1), nil, 0, nil
+		return nil, core.MkErr(core.EC_TRY_AGAIN, 2)
 
 	} else if !opt1 && opt2 { //long message finished
 		bs0, bs1 := connection._recvBuffer.BytesRef(frameLength)
@@ -108,10 +126,20 @@ func (ego *O1L15COT15DecodeClientHandler) OnReceive(connection *TCPClientConnect
 		}
 		connection._recvBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, frameLength)
 
-		return core.MkSuccess(0), ego._largeMessageBuffer, ego._largeMessageBuffer.ReadAvailable(), cmd
+		msg := messages.GetDefaultMessageBufferDeserializationMapper().Deserialize(cmd, ego._largeMessageBuffer)
+		if msg == nil {
+			connection._client.Log(core.LL_ERR, "Deserialize Message (CMD:%d) error.", cmd)
+			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
+		}
+
+		return msg, core.MkSuccess(0)
 	}
 
-	return core.MkErr(core.EC_INVALID_STATE, 1), nil, 0, nil
+	return nil, core.MkErr(core.EC_INVALID_STATE, 1)
+}
+
+func (ego *O1L15COT15DecodeClientHandler) Clear() {
+	ego._largeMessageBuffer.Clear()
 }
 
 func (ego *O1L15COT15DecodeClientHandler) CheckLowMemory() {
