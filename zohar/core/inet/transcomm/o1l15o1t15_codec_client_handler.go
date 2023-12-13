@@ -58,8 +58,8 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15COT15CodecClientHandler) Clear() {
-	ego._largeMessageBuffer.Clear()
+func (ego *O1L15COT15CodecClientHandler) Reset() {
+	ego._largeMessageBuffer.Reset()
 }
 
 func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnection) (any, int32) {
