@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net"
 	"reflect"
+	"sync"
+	"syscall"
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
@@ -20,6 +22,89 @@ type TCPServerConnection struct {
 	_sendBuffer     *memory.LinearBuffer
 	_codec          IServerCodecHandler
 	_server         *TCPServer
+	_lock           sync.Mutex
+}
+
+func (ego *TCPServerConnection) flush() (int64, int32) {
+	ba, _ := ego._sendBuffer.BytesRef(-1)
+	if ba == nil {
+		return int64(0), core.MkSuccess(0)
+	}
+	n, err := ego._conn.Write(ba[ego._sendBuffer.ReadPos():ego._sendBuffer.ReadAvailable()])
+	if err != nil {
+		if err == syscall.EAGAIN {
+			if n > 0 {
+				ego._sendBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, int64(n))
+			}
+			return int64(n), core.MkErr(core.EC_TRY_AGAIN, 0)
+		}
+		if n > 0 {
+			ego._sendBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, int64(n))
+		}
+		return int64(n), core.MkErr(core.EC_TCP_SEND_FAILED, 0)
+	}
+	ego._sendBuffer.Clear()
+	return int64(n), core.MkSuccess(0)
+}
+
+func (ego *TCPServerConnection) sendNImmediately(ba []byte, offset int64, length int64) (int64, int32) {
+	var totalRemain int64 = length
+	for totalRemain > 0 {
+		n, err := ego._conn.Write(ba[offset:totalRemain])
+		if err != nil {
+			if err == syscall.EAGAIN {
+				return totalRemain, core.MkErr(core.EC_TRY_AGAIN, 0)
+			}
+			return totalRemain, core.MkErr(core.EC_TCP_SEND_FAILED, 1)
+		}
+		totalRemain -= int64(n)
+		offset += int64(n)
+	}
+	return totalRemain, core.MkSuccess(0)
+}
+
+func (ego *TCPServerConnection) sendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
+	if ego._sendBuffer.WritePos()+length >= message_buffer.MAX_BUFFER_MAX_CAPACITY {
+		ego.flush()
+	}
+	nLeft, rc := ego.sendNImmediately(ba, offset, length)
+	if core.Err(rc) {
+		return length - nLeft, rc
+	}
+	return length - nLeft, core.MkSuccess(0)
+}
+
+func (ego *TCPServerConnection) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+	rc := ego._codec.OnSend(ego, msg, bFlush)
+	if core.Err(rc) {
+		return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int64, int32) {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+	if ego._sendBuffer.WritePos()+length <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
+		ego._sendBuffer.WriteRawBytes(ba, offset, length)
+		return length, core.MkSuccess(0)
+	} else if length <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
+		nDone, rc := ego.flush()
+		if core.Err(rc) {
+			return nDone, rc
+		}
+		ego._sendBuffer.WriteRawBytes(ba, offset, length)
+		return length, core.MkSuccess(0)
+	} else {
+		nDone, rc := ego.flush()
+		if core.Err(rc) {
+			return nDone, rc
+		}
+		nDone, rc = ego.sendImmediately(ba, offset, length)
+		return int64(nDone), rc
+	}
 }
 
 func (ego *TCPServerConnection) Close() int32 {
@@ -103,9 +188,6 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 	var nDone int = 0
 	var err error
 
-	if ego._recvBuffer.ReadPos() == 1020 {
-		fmt.Printf("sss")
-	}
 	if ego._recvBuffer.WritePos() >= ego._recvBuffer.ReadPos() {
 		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.Capacity()])
 	} else {
@@ -125,12 +207,15 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 			return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 		}
 
-		msg, rc := ego._codec.OnReceive(ego)
-		if core.Err(rc) {
-			return rc
+		for {
+			msg, rc := ego._codec.OnReceive(ego)
+			if core.Err(rc) {
+				return rc
+			}
+
+			ego._server.OnIncomingMessage(ego, msg.(message_buffer.INetMessage), nil)
 		}
 
-		ego._server.OnIncomingMessage(ego, msg.(message_buffer.INetMessage), nil)
 	}
 	return core.MkSuccess(0)
 }

@@ -139,7 +139,10 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 
 func (ego *TCPServerConnection) flush() (int64, int32) {
 	ba, _ := ego._sendBuffer.BytesRef(-1)
-	n, err := syscall.Write(ego._fd, ba)
+	if ba == nil {
+		return int64(0), core.MkSuccess(0)
+	}
+	n, err := syscall.Write(ba[ego._sendBuffer.ReadPos():ego._sendBuffer.ReadAvailable()])
 	if err != nil {
 		if err == syscall.EAGAIN {
 			if n > 0 {
@@ -182,6 +185,17 @@ func (ego *TCPServerConnection) sendImmediately(ba []byte, offset int64, length 
 	}
 	return length - nLeft, core.MkSuccess(0)
 }
+
+func (ego *TCPServerConnection) SendMessage(msg message_buffer.INetMessage, BFlush bool) int32 {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+	rc := ego._codec.OnSend(ego, msg, bFlush)
+	if core.Err(rc) {
+		return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
+	}
+	return core.MkSuccess(0)
+}
+
 func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int64, int32) {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()

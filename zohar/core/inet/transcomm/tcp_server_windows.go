@@ -56,6 +56,7 @@ func (ego *TCPServer) Listeners() *sync.Map {
 
 func (ego *TCPServer) OnIncomingMessage(conn IConnection, msg message_buffer.INetMessage, param any) {
 	fmt.Printf("Got msg [%v] \n", msg.String())
+	conn.(*TCPServerConnection).SendMessage(msg, true)
 }
 
 func (ego *TCPServer) Initialize() int32 {
