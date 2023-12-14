@@ -38,7 +38,7 @@
 					"Count" : 10,
 					"Codec" : "O1L15COT15DecodeClientHandler"
 					"AutoReconnect" : true,
-					"NoDelay" : true,
+					"NoDelay" : true
 				}
 			}
 		},

@@ -36,7 +36,7 @@
 				"Default" : {
 					"ServerEndPoints" : ["192.168.0.100:9998", "192.168.0.100:9999"],
 					"Count" : 10,
-					"Codec" : "O1L15COT15DecodeClientHandler"
+					"Codec" : "O1L15COT15DecodeClientHandler",
 					"AutoReconnect" : true,
 					"NoDelay" : true
 				}
