@@ -37,7 +37,7 @@ func (ego *MainReactor) loop() {
 }
 
 func (ego *MainReactor) OnStart() {
-	ego._poller.Log(core.LL_SYS, "Main Reactor <%s> Starting", ego._listener._bindAddress.EndPointString())
+	ego._poller.Log(core.LL_SYS, "Main Reactor <%s> Closing", ego._listener._bindAddress.EndPointString())
 	ego._poller._waitGroup.Add(1)
 	go ego.loop()
 }

@@ -21,7 +21,7 @@ type TCPClientConnection struct {
 	_sendBuffer     *memory.LinearBuffer
 	_codec          IClientCodecHandler
 	_client         *TCPClient
-	_isConnected    bool
+	_stateCode      uint8
 	_reactorIndex   uint32
 	_packetHeader   message_buffer.MessageHeader
 	_lock           sync.Mutex
@@ -35,54 +35,51 @@ func (ego *TCPClientConnection) SetReactorIndex(u uint32) {
 	ego._reactorIndex = u
 }
 
-func (ego *TCPClientConnection) reconnect() int32 {
-
+func (ego *TCPClientConnection) reset() {
+	ego._client._poller.OnConnectionRemove(ego)
 	if ego._codec != nil {
 		ego._codec.Reset()
 	}
-
 	err := syscall.Close(ego._fd)
 	if err != nil {
 		ego._client.Log(core.LL_SYS, "Close Old Connection <%s> Error", ego.String())
 	}
 	ego._client.Log(core.LL_SYS, "Reconnect to <%s>", ego._remoteEndPoint.EndPointString())
-	ego._isConnected = false
+	ego._stateCode = Closed
 	ego._fd = -1
 	ego._recvBuffer.Clear()
 	ego._sendBuffer.Clear()
-	return ego.Connect()
 }
 
 func (ego *TCPClientConnection) OnDisconnected() int32 {
-
-	ego._client._poller.OnConnectionRemove(ego)
+	ego.reset()
 	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Disconnected.", ego.String())
 	if ego._client._config.AutoReconnect {
-		return ego.reconnect()
+		return ego.Connect()
 	}
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) OnConnectingFailed() int32 {
-	ego._client._poller.OnConnectionRemove(ego)
-	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Connect Failed.", ego.String())
+	ego.reset()
+	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Disconnected.", ego.String())
 	if ego._client._config.AutoReconnect {
-		return ego.reconnect()
+		return ego.Connect()
 	}
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) OnPeerClosed() int32 {
-	ego._client._poller.OnConnectionRemove(ego)
-	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Peer Closed.", ego.String())
+	ego.reset()
+	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Disconnected.", ego.String())
 	if ego._client._config.AutoReconnect {
-		return ego.reconnect()
+		return ego.Connect()
 	}
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) OnWritable() int32 {
-	ego._isConnected = true
+	ego._stateCode = Connected
 	lsa, _ := syscall.Getsockname(ego._fd)
 	ego._localEndPoint = inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, lsa)
 	rsa, _ := syscall.Getpeername(ego._fd)
@@ -95,6 +92,7 @@ func (ego *TCPClientConnection) Type() int8 {
 }
 
 func (ego *TCPClientConnection) Connect() (rc int32) {
+	ego._stateCode = Connecting
 	ego._fd, rc = inet.Socket(syscall.AF_INET, syscall.SOCK_STREAM, 0)
 	if core.Err(rc) {
 		return rc
@@ -196,19 +194,23 @@ func (ego *TCPClientConnection) LocalEndPoint() *inet.IPV4EndPoint {
 }
 
 func (ego *TCPClientConnection) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {
+	if ego._stateCode != Connected {
+		return core.MkErr(core.EC_NOOP, 0)
+	}
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
+
 	rc := ego._codec.OnSend(ego, msg, bFlush)
 	if core.Err(rc) {
-		if ego._client._config.AutoReconnect {
-			ego.reconnect()
-		}
 		return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
 	}
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) sendNImmediately(ba []byte, offset int64, length int64) (int64, int32) {
+	if ego._stateCode != Connected {
+		return 0, core.MkErr(core.EC_NOOP, 0)
+	}
 	var totalRemain int64 = offset + length
 	if length < 0 {
 		totalRemain = int64(len(ba))
@@ -220,9 +222,10 @@ func (ego *TCPClientConnection) sendNImmediately(ba []byte, offset int64, length
 
 	n, err := syscall.Write(ego._fd, ba[offset:totalRemain])
 	if err != nil {
-		if err == syscall.EAGAIN {
+		if err == syscall.EAGAIN || err == syscall.EWOULDBLOCK {
 			return totalRemain, core.MkErr(core.EC_TRY_AGAIN, 0)
 		}
+		ego.reset()
 		return totalRemain, core.MkErr(core.EC_TCP_SEND_FAILED, 1)
 	}
 	totalRemain -= int64(n)
@@ -300,7 +303,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_codec:          nil,
 		_client:         client,
-		_isConnected:    false,
+		_stateCode:      Initialized,
 		_packetHeader:   message_buffer.NeoMessageHeader(),
 	}
 	var output = make([]reflect.Value, 0, 1)

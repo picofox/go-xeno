@@ -44,6 +44,13 @@ func (ego *TCPClient) OnIncomingMessage(conn *TCPClientConnection, message messa
 	return core.MkSuccess(0)
 }
 
+func (ego *TCPClient) Stop() int32 {
+	for i := 0; i < len(ego._connections); i++ {
+		ego._connections[i].reset()
+	}
+	return core.MkSuccess(0)
+}
+
 func (ego *TCPClient) Start() int32 {
 	for _, c := range ego._connections {
 		rc := c.Connect()
@@ -56,7 +63,7 @@ func (ego *TCPClient) Start() int32 {
 	for {
 		allReady = true
 		for _, c := range ego._connections {
-			if !c._isConnected {
+			if c._stateCode != Connected {
 				allReady = false
 			}
 		}

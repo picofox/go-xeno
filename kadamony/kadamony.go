@@ -77,10 +77,13 @@ func main() {
 
 	kaMsg := messages.NeoKeepAliveMessage()
 	cli.SendMessage(kaMsg, true)
-	for {
+	for i := 0; i < 1000; i++ {
 		cli.SendMessage(kaMsg, true)
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(2 * time.Millisecond)
 	}
+
+	time.Sleep(1)
+	cli.Stop()
 
 	cfg := &config.GetKadamonyConfig().DB
 	db.GetPoolManager().Initialize(cfg)

@@ -40,7 +40,7 @@ func (ego *SubReactor) loop() int32 {
 }
 
 func (ego *SubReactor) OnStart() {
-	ego._poller.Log(core.LL_SYS, "Sub Reactor Starting")
+	ego._poller.Log(core.LL_SYS, "Sub Reactor Closing")
 	ego._poller._waitGroup.Add(1)
 	go ego.loop()
 }

@@ -141,23 +141,23 @@ func Initialize() {
 			logging.LogRaw(core.LL_SYS, concurrent.GetDefaultGoExecutorPool().String())
 
 			logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Zohar Core Initializing ...")
-			logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Starting Default Log Manager  ...")
+			logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Closing Default Log Manager  ...")
 
 			rc = concurrent.GetDefaultGoExecutorPool().Start()
 			if core.Err(rc) {
-				logging.LogFixedWidth(core.LL_SYS, 70, false, core.ErrStr(rc), "Starting Default Executor Pool ...")
+				logging.LogFixedWidth(core.LL_SYS, 70, false, core.ErrStr(rc), "Closing Default Executor Pool ...")
 				panic("Fatal Can not continue")
 			} else {
-				logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Starting Default Executor Pool ...")
+				logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Closing Default Executor Pool ...")
 
 			}
 
 			rc = timer.GetDefaultTimerManager().Start()
 			if core.Err(rc) {
-				logging.LogFixedWidth(core.LL_SYS, 70, false, core.ErrStr(rc), "Starting Default Timer Manager ...")
+				logging.LogFixedWidth(core.LL_SYS, 70, false, core.ErrStr(rc), "Closing Default Timer Manager ...")
 				panic("Fatal Can not continue")
 			} else {
-				logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Starting Default Timer Manager ...")
+				logging.LogFixedWidth(core.LL_SYS, 70, true, "", "Closing Default Timer Manager ...")
 
 			}
 

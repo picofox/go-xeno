@@ -135,7 +135,7 @@ func (ego *MainReactor) Loop() int32 {
 }
 
 func (ego *MainReactor) OnStart() {
-	ego._poller.Log(core.LL_SYS, "Main Reactor Starting")
+	ego._poller.Log(core.LL_SYS, "Main Reactor Closing")
 	ego._poller._waitGroup.Add(1)
 	go ego.Loop()
 }
