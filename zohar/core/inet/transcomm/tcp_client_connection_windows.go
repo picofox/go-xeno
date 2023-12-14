@@ -63,6 +63,8 @@ func (ego *TCPClientConnection) Connect() int32 {
 		return core.MkErr(core.EC_TCP_CONNECT_ERROR, 1)
 	}
 
+	ego._conn.SetNoDelay(ego._client._config.NoDelay)
+
 	ego.OnWritable()
 	return core.MkSuccess(0)
 }

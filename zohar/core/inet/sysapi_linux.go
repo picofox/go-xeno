@@ -139,3 +139,7 @@ func Socket(family, sotype, proto int) (int, int32) {
 
 	return fd, core.MkSuccess(0)
 }
+
+func SysSetTCPNoDelay(fd int, b bool) (err error) {
+	return syscall.SetsockoptInt(fd, syscall.IPPROTO_TCP, syscall.TCP_NODELAY, boolint(b))
+}

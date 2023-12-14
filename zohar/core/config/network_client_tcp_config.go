@@ -9,6 +9,8 @@ type NetworkClientTCPConfig struct {
 	ServerEndPoints []string `json:"ServerEndPoints"`
 	Count           int32    `json:"Count"`
 	Codec           string   `json:"Codec"`
+	AutoReconnect   bool     `json:"AutoReconnect"`
+	NoDelay         bool     `json:"NoDelay"`
 }
 
 func (ego *NetworkClientTCPConfig) String() string {
@@ -21,6 +23,11 @@ func (ego *NetworkClientTCPConfig) String() string {
 	ss.WriteString("Codec=")
 	ss.WriteString(ego.Codec)
 	ss.WriteString("\n")
-
+	ss.WriteString("AutoReconnect=")
+	ss.WriteString(strconv.FormatBool(ego.AutoReconnect))
+	ss.WriteString("\n")
+	ss.WriteString("NoDelay=")
+	ss.WriteString(strconv.FormatBool(ego.NoDelay))
+	ss.WriteString("\n")
 	return ss.String()
 }
