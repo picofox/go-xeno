@@ -84,7 +84,7 @@ func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnecti
 	}
 	o1AndLen, _, _, _ := connection._recvBuffer.PeekUInt16()
 	frameLength := int64(o1AndLen & 0x7FFF)
-	if connection._recvBuffer.ReadAvailable() < int64(frameLength) {
+	if connection._recvBuffer.ReadAvailable() < int64(frameLength)+message_buffer.O1L15O1T15_HEADER_SIZE {
 		return nil, core.MkErr(core.EC_TRY_AGAIN, 2)
 	}
 
@@ -106,8 +106,12 @@ func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnecti
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 		}
 		endPos := connection._recvBuffer.ReadPos()
+		delta := endPos - beginPos
+		if endPos < beginPos {
+			delta = connection._recvBuffer.Capacity() - beginPos + endPos
+		}
 		if endPos-beginPos != frameLength {
-			connection._client.Log(core.LL_ERR, "Message (CMD:%d) Length Validation Failed, frame length is %d, but got %d read", cmd, frameLength, endPos-beginPos)
+			connection._client.Log(core.LL_ERR, "Message (CMD:%d) Length Validation Failed, frame length is %d, but got %d read", cmd, frameLength, delta)
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
 

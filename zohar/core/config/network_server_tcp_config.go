@@ -1,6 +1,7 @@
 package config
 
 import (
+	"strconv"
 	"strings"
 )
 
@@ -9,6 +10,7 @@ type NetworkServerTCPConfig struct {
 	PublicConnectingEndPoints  []string `json:"PublicConnectingEndPoints"`
 	PrivateConnectingEndPoints []string `json:"PrivateConnectingEndPoints"`
 	Codec                      string   `json:"Codec"`
+	NoDelay                    bool     `json:"NoDelay"`
 }
 
 func (ego *NetworkServerTCPConfig) String() string {
@@ -24,6 +26,9 @@ func (ego *NetworkServerTCPConfig) String() string {
 	ss.WriteString("\n")
 	ss.WriteString("Codec=")
 	ss.WriteString(ego.Codec)
+	ss.WriteString("\n")
+	ss.WriteString("NoDelay=")
+	ss.WriteString(strconv.FormatBool(ego.NoDelay))
 	ss.WriteString("\n")
 	return ss.String()
 }

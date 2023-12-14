@@ -45,8 +45,13 @@ func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnecti
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 		}
 		endPos := connection._recvBuffer.ReadPos()
-		if endPos-beginPos != frameLength {
-			connection._server.Log(core.LL_ERR, "Message (CMD:%d) Length Validation Failed, frame length is %d, but got %d read", cmd, frameLength, endPos-beginPos)
+		delta := endPos - beginPos
+		if endPos < beginPos {
+			delta = connection._recvBuffer.Capacity() - beginPos + endPos
+		}
+
+		if delta != frameLength {
+			connection._server.Log(core.LL_ERR, "Message (CMD:%d) Length Validation Failed, frame length is %d, but got %d read", cmd, frameLength, delta)
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
 
