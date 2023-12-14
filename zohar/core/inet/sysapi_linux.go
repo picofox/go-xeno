@@ -45,10 +45,11 @@ func SysSocket(family, sotype, proto int) (int, int32) {
 func SysRead(fd int, ba []byte) (int64, int32) {
 	n, err := syscall.Read(fd, ba)
 	if err != nil {
-		logging.GetLoggerManager().GetDefaultLogger().Log(core.LL_SYS, "SysRead: read error %s", err.Error())
-		if err == syscall.EAGAIN || err == syscall.EINTR {
+
+		if err == syscall.EAGAIN || err == syscall.EWOULDBLOCK || err == syscall.EINTR {
 			return int64(n), core.MkErr(core.EC_TRY_AGAIN, 1)
 		}
+		logging.GetLoggerManager().GetDefaultLogger().Log(core.LL_SYS, "SysRead: read error %s", err.Error())
 		return int64(n), core.MkErr(core.EC_FILE_READ_FAILED, 1)
 	}
 	return int64(n), core.MkSuccess(0)

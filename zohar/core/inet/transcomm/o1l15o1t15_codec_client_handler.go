@@ -27,7 +27,10 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 		if !bFlush && byteBuf.WriteAvailable() > tLen {
 			return core.MkSuccess(1)
 		}
-		connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+		_, rc := connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+		if core.Err(rc) {
+			return rc
+		}
 		byteBuf.Clear()
 		return core.MkSuccess(0)
 
@@ -35,12 +38,19 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 		connection.flush()
 		rIndex := int64(4)
 		ego._packetHeader.Set(true, false, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
-		byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, message_buffer.O1L15O1T15_HEADER_SIZE)
+		if !byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, message_buffer.O1L15O1T15_HEADER_SIZE) {
+			return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+		}
 
 		for {
-			connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
-			connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
-
+			_, rc := connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
+			if core.Err(rc) {
+				return rc
+			}
+			_, rc = connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
+			if core.Err(rc) {
+				return rc
+			}
 			rIndex += message_buffer.MAX_PACKET_BODY_SIZE
 			byteBuf.ReaderSeek(memory.BUFFER_SEEK_SET, rIndex)
 
@@ -52,8 +62,14 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 			}
 		}
 		ego._packetHeader.Set(false, true, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
-		connection.sendImmediately(ego._packetHeader.Data(), 0, 4)
-		connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+		_, rc := connection.sendImmediately(ego._packetHeader.Data(), 0, 4)
+		if core.Err(rc) {
+			return rc
+		}
+		_, rc = connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+		if core.Err(rc) {
+			return rc
+		}
 	}
 	return core.MkSuccess(0)
 }

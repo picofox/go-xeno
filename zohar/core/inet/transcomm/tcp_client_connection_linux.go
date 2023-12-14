@@ -144,16 +144,16 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 		}
 
 		if nDone < 0 {
-			if core.Err(rc) {
-				ego._client.Log(core.LL_SYS, "Connection <%s> SysRead Failed: %d", ego.String(), rc)
-			}
-			ego.OnDisconnected()
 			return core.MkErr(core.EC_TCO_RECV_ERROR, 1)
 		} else if nDone == 0 {
 			ego._client.Log(core.LL_SYS, "Connection <%s> Closed", ego.String())
 			ego.OnPeerClosed()
 			return core.MkErr(core.EC_EOF, 1)
 		} else {
+			src := ego._recvBuffer.WriterSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
+			if !src {
+				return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+			}
 			m, rc := ego._codec.OnReceive(ego)
 			if core.Err(rc) {
 				return rc
