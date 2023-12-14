@@ -41,7 +41,10 @@ func (ego *TCPClientConnection) reconnect() int32 {
 		ego._codec.Reset()
 	}
 
-	syscall.Close(ego._fd)
+	err := syscall.Close(ego._fd)
+	if err != nil {
+		ego._client.Log(core.LL_SYS, "Close Old Connection <%s> Error", ego.String())
+	}
 	ego._client.Log(core.LL_SYS, "Reconnect to <%s>", ego._remoteEndPoint.EndPointString())
 	ego._isConnected = false
 	ego._fd = -1
@@ -54,20 +57,27 @@ func (ego *TCPClientConnection) OnDisconnected() int32 {
 
 	ego._client._poller.OnConnectionRemove(ego)
 	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Disconnected.", ego.String())
-	return ego.reconnect()
+	if ego._client._config.AutoReconnect {
+		return ego.reconnect()
+	}
+	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) OnConnectingFailed() int32 {
 	ego._client._poller.OnConnectionRemove(ego)
 	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Connect Failed.", ego.String())
-	ego.reconnect()
+	if ego._client._config.AutoReconnect {
+		return ego.reconnect()
+	}
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) OnPeerClosed() int32 {
 	ego._client._poller.OnConnectionRemove(ego)
 	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Peer Closed.", ego.String())
-	ego.reconnect()
+	if ego._client._config.AutoReconnect {
+		return ego.reconnect()
+	}
 	return core.MkSuccess(0)
 }
 
@@ -99,6 +109,8 @@ func (ego *TCPClientConnection) Connect() (rc int32) {
 	//if er != nil {
 	//	fmt.Println(er.Error())
 	//}
+
+	inet.SysSetTCPNoDelay(ego._fd, ego._client._config.NoDelay)
 
 	sa := ego._remoteEndPoint.ToSockAddr()
 	err := syscall.Connect(ego._fd, sa)
@@ -188,6 +200,9 @@ func (ego *TCPClientConnection) SendMessage(msg message_buffer.INetMessage, bFlu
 	defer ego._lock.Unlock()
 	rc := ego._codec.OnSend(ego, msg, bFlush)
 	if core.Err(rc) {
+		if ego._client._config.AutoReconnect {
+			ego.reconnect()
+		}
 		return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
 	}
 	return core.MkSuccess(0)

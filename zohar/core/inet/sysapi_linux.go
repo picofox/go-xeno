@@ -141,5 +141,5 @@ func Socket(family, sotype, proto int) (int, int32) {
 }
 
 func SysSetTCPNoDelay(fd int, b bool) (err error) {
-	return syscall.SetsockoptInt(fd, syscall.IPPROTO_TCP, syscall.TCP_NODELAY, boolint(b))
+	return syscall.SetsockoptInt(fd, syscall.IPPROTO_TCP, syscall.TCP_NODELAY, datatype.BoolToInt(b))
 }
