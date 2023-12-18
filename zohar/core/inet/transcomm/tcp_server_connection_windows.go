@@ -283,7 +283,7 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 	}
 
 	if c._server._config.KeepAlive.Enable {
-		c._keepalive = NeoKeepAlive(&listener.Server()._config.KeepAlive)
+		c._keepalive = NeoKeepAlive(&listener.Server()._config.KeepAlive, true)
 	}
 	c._conn.SetNoDelay(c._server._config.NoDelay)
 

@@ -15,13 +15,13 @@ type KeepAlive struct {
 	_message           *messages.KeepAliveMessage
 }
 
-func NeoKeepAlive(config *intrinsic.KeepAliveConfig) *KeepAlive {
+func NeoKeepAlive(config *intrinsic.KeepAliveConfig, isServer bool) *KeepAlive {
 	ka := KeepAlive{
 		_config:            config,
 		_lastSendTimestamp: 0,
 		_lastRecvTimeStamp: 0,
 		_currentTries:      0,
-		_message:           messages.NeoKeepAliveMessage(),
+		_message:           messages.NeoKeepAliveMessage(isServer),
 	}
 	return &ka
 }
@@ -40,7 +40,7 @@ func (ego *KeepAlive) OnReceive(nowTs int64) {
 func (ego *KeepAlive) Pulse(conn IConnection, nowTs int64) int32 {
 	if ego._lastRecvTimeStamp != 0 {
 		if nowTs-ego._lastRecvTimeStamp > int64(ego._config.IntervalMillis) {
-			ego._message.TimeStamp = nowTs
+			ego._message.SetTimeStamp(nowTs)
 			ego._lastRecvTimeStamp = 0
 			ego._lastSendTimestamp = nowTs
 			ego._currentTries = 0
@@ -61,7 +61,7 @@ func (ego *KeepAlive) Pulse(conn IConnection, nowTs int64) int32 {
 				return core.MkErr(core.EC_TCP_CONNECT_ERROR, 1)
 			}
 			ego._currentTries++
-			ego._message.TimeStamp = nowTs
+			ego._message.SetTimeStamp(nowTs)
 			ego._lastRecvTimeStamp = 0
 			ego._lastSendTimestamp = nowTs
 			fmt.Printf("%d, Send kA %d\n", conn.Identifier(), ego._currentTries)

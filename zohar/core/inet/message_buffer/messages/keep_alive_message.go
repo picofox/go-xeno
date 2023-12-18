@@ -9,7 +9,31 @@ import (
 )
 
 type KeepAliveMessage struct {
-	TimeStamp int64 `json:"timestamp"`
+	TT uint64 `json:"TT"`
+}
+
+func (ego *KeepAliveMessage) SetTimeStamp(ts int64) {
+	ego.TT = ego.TT & (1 << 63)
+	ego.TT = ego.TT | uint64(ts)
+}
+
+func (ego *KeepAliveMessage) TimeStamp() int64 {
+	return int64(ego.TT & 0x7FFFFFFFFFFFFFFF)
+}
+
+func (ego *KeepAliveMessage) SetIsServerToClient(b bool) {
+	if b {
+		ego.TT = ego.TT | (1 << 63)
+	} else {
+		ego.TT = ego.TT & 0x7FFFFFFFFFFFFFFF
+	}
+}
+
+func (ego *KeepAliveMessage) IsServer() bool {
+	if ego.TT&(1<<63) != 0 {
+		return true
+	}
+	return false
 }
 
 func (ego *KeepAliveMessage) String() string {
@@ -24,7 +48,7 @@ func (ego *KeepAliveMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	hdrPos := byteBuf.WritePos()
 	byteBuf.WriteInt16(-1)
 	byteBuf.WriteInt16(ego.Command())
-	byteBuf.WriteInt64(ego.TimeStamp)
+	byteBuf.WriteUInt64(ego.TT)
 
 	curPos := byteBuf.WritePos()
 	var len64 int64 = curPos - hdrPos - message_buffer.O1L15O1T15_HEADER_SIZE
@@ -37,9 +61,8 @@ func (ego *KeepAliveMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 }
 
 func (ego *KeepAliveMessage) Deserialize(buffer memory.IByteBuffer) int32 {
-	ts, _ := buffer.ReadInt64()
-	ego.TimeStamp = ts
-
+	tt, _ := buffer.ReadUInt64()
+	ego.TT = tt
 	return core.MkSuccess(0)
 }
 
@@ -52,10 +75,19 @@ func KeepAliveMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetM
 	return &m
 }
 
-func NeoKeepAliveMessage() *KeepAliveMessage {
-	m := KeepAliveMessage{
-		TimeStamp: chrono.GetRealTimeMilli(),
+func _neoKeepAliveData(isServer bool) uint64 {
+	if isServer {
+		return uint64(chrono.GetRealTimeMilli()) | (1 << 63)
+	} else {
+		return uint64(chrono.GetRealTimeMilli())
 	}
+}
+
+func NeoKeepAliveMessage(isServer bool) *KeepAliveMessage {
+	m := KeepAliveMessage{
+		TT: _neoKeepAliveData(isServer),
+	}
+
 	return &m
 }
 
