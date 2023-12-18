@@ -8,7 +8,6 @@ import (
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
-	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/sched/timer"
@@ -75,14 +74,14 @@ func main() {
 	rc = cli.Initialize()
 	rc = cli.Start()
 
-	kaMsg := messages.NeoKeepAliveMessage()
-	cli.SendMessage(kaMsg, true)
-	for i := 0; i < 1000; i++ {
-		cli.SendMessage(kaMsg, true)
-		time.Sleep(2 * time.Millisecond)
-	}
+	//kaMsg := messages.NeoKeepAliveMessage()
+	//cli.SendMessage(kaMsg, true)
+	//for i := 0; i < 1000; i++ {
+	//	cli.SendMessage(kaMsg, true)
+	//	time.Sleep(2 * time.Millisecond)
+	//}
 
-	time.Sleep(1)
+	time.Sleep(10000 * time.Second)
 	cli.Stop()
 
 	cfg := &config.GetKadamonyConfig().DB
