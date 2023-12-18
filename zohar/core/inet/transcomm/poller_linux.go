@@ -138,6 +138,10 @@ func (ego *Poller) neoMainReactor() *MainReactor {
 	return &mr
 }
 
+func (ego *Poller) SubReactorCount() int32 {
+	return int32(len(ego._subReactors))
+}
+
 func (ego *Poller) Initialize() int32 {
 	ego._stateCode.SetInitializeState()
 	ego._mainReactor = ego.neoMainReactor()
