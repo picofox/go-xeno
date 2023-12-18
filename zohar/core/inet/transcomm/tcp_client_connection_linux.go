@@ -6,6 +6,7 @@ import (
 	"sync"
 	"syscall"
 	"xeno/zohar/core"
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
@@ -25,6 +26,10 @@ type TCPClientConnection struct {
 	_reactorIndex   uint32
 	_packetHeader   message_buffer.MessageHeader
 	_lock           sync.Mutex
+}
+
+func (ego *TCPClientConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
+	return &ego._client._config.KeepAlive
 }
 
 func (ego *TCPClientConnection) ReactorIndex() uint32 {

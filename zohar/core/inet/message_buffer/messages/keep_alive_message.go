@@ -5,6 +5,7 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/memory"
 )
 
@@ -96,3 +97,27 @@ func (ego *KeepAliveMessage) Command() int16 {
 }
 
 //var _ message_buffer.INetMessage = &KeepAliveMessage{}
+
+func KeepAliveMessageHandler(connection transcomm.IConnection, message message_buffer.INetMessage) int32 {
+	var pkam *KeepAliveMessage = message.(*KeepAliveMessage)
+	if pkam == nil {
+		return core.MkErr(core.EC_NULL_VALUE, 1)
+	}
+	if connection.Type() == transcomm.CONNTYPE_TCP_CLIENT {
+		if pkam.IsServer() {
+			connection.SendMessage(message, true)
+		} else {
+
+		}
+
+	} else if connection.Type() == transcomm.CONNTYPE_TCP_SERVER {
+		if pkam.IsServer() {
+
+		} else {
+			connection.SendMessage(message, true)
+		}
+	}
+
+	return core.MkSuccess(0)
+
+}
