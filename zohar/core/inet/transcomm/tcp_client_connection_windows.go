@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"xeno/zohar/core"
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
@@ -19,6 +20,10 @@ type TCPClientConnection struct {
 	_pipeline       []IClientCodecHandler
 	_client         *TCPClient
 	_isConnected    bool
+}
+
+func (ego *TCPClientConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
+	return &ego._client._config.KeepAlive
 }
 
 func (ego *TCPClientConnection) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {

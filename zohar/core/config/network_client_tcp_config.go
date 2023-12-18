@@ -3,14 +3,16 @@ package config
 import (
 	"strconv"
 	"strings"
+	"xeno/zohar/core/config/intrinsic"
 )
 
 type NetworkClientTCPConfig struct {
-	ServerEndPoints []string `json:"ServerEndPoints"`
-	Count           int32    `json:"Count"`
-	Codec           string   `json:"Codec"`
-	AutoReconnect   bool     `json:"AutoReconnect"`
-	NoDelay         bool     `json:"NoDelay"`
+	ServerEndPoints []string                  `json:"ServerEndPoints"`
+	Count           int32                     `json:"Count"`
+	Codec           string                    `json:"Codec"`
+	AutoReconnect   bool                      `json:"AutoReconnect"`
+	NoDelay         bool                      `json:"NoDelay"`
+	KeepAlive       intrinsic.KeepAliveConfig `json:"KeepAlive"`
 }
 
 func (ego *NetworkClientTCPConfig) String() string {

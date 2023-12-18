@@ -11,6 +11,18 @@ type O1L15COT15CodecServerHandler struct {
 	_largeMessageBuffer *memory.LinearBuffer
 	_memoryLow          bool
 	_packetHeader       message_buffer.MessageHeader
+	_keepalive          *KeepAlive
+}
+
+func (ego *O1L15COT15CodecServerHandler) Pulse(conn IConnection, nowTs int64) {
+	if ego._keepalive == nil {
+		if conn.KeepAliveConfig().Enable {
+			ego._keepalive = NeoKeepAlive(conn.KeepAliveConfig(), false)
+		}
+	} else {
+		ego._keepalive.Pulse(conn, nowTs)
+	}
+
 }
 
 func (ego *O1L15COT15CodecServerHandler) Reset() {

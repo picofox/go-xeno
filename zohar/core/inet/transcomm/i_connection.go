@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 )
@@ -20,6 +21,7 @@ type IConnection interface {
 	ReactorIndex() uint32
 	SetReactorIndex(uint32)
 	SendMessage(msg message_buffer.INetMessage, bFlush bool) int32
+	KeepAliveConfig() *intrinsic.KeepAliveConfig
 }
 
 const (

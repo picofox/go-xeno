@@ -11,6 +11,7 @@ import (
 	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
@@ -26,7 +27,10 @@ type TCPServerConnection struct {
 	_codec          IServerCodecHandler
 	_server         *TCPServer
 	_lock           sync.Mutex
-	_keepalive      *KeepAlive
+}
+
+func (ego *TCPServerConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
+	return &ego._server._config.KeepAlive
 }
 
 func (ego *TCPServerConnection) flush() (int64, int32) {
@@ -183,10 +187,7 @@ func (ego *TCPServerConnection) PreStop() {
 }
 
 func (ego *TCPServerConnection) Pulse() int32 {
-	if ego._keepalive != nil {
-		ego._server.Log(core.LL_DEBUG, "pulse .... ka %p", &ego._keepalive)
-		return ego._keepalive.Pulse(ego, chrono.GetRealTimeMilli())
-	}
+	ego._codec.Pulse(ego, chrono.GetRealTimeMilli())
 	return core.MkSuccess(0)
 }
 
@@ -205,7 +206,6 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 		d := time.Duration(readT0 * time.Millisecond) // 30 seconds
 		w := time.Now()                               // from now
 		w = w.Add(d)
-		fmt.Printf("Set deadline %s\n", w.String())
 		ego._conn.SetReadDeadline(w)
 	}
 
@@ -279,12 +279,8 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_server:         listener.Server(),
 		_codec:          nil,
-		_keepalive:      nil,
 	}
 
-	if c._server._config.KeepAlive.Enable {
-		c._keepalive = NeoKeepAlive(&listener.Server()._config.KeepAlive, true)
-	}
 	c._conn.SetNoDelay(c._server._config.NoDelay)
 
 	var output []reflect.Value = make([]reflect.Value, 0, 1)

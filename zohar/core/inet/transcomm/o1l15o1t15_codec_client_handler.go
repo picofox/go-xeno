@@ -2,6 +2,7 @@ package transcomm
 
 import (
 	"xeno/zohar/core"
+	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/memory"
@@ -11,6 +12,16 @@ type O1L15COT15CodecClientHandler struct {
 	_largeMessageBuffer *memory.LinearBuffer
 	_memoryLow          bool
 	_packetHeader       message_buffer.MessageHeader
+	_keepalive          *KeepAlive
+}
+
+func (ego *O1L15COT15CodecClientHandler) Pulse(conn IConnection, nowTs int64) {
+	if ego._keepalive == nil {
+		if conn.KeepAliveConfig().Enable {
+			ego._keepalive = NeoKeepAlive(conn.KeepAliveConfig(), false)
+		}
+		ego._keepalive.Pulse(conn, chrono.GetRealTimeMilli())
+	}
 }
 
 func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection, a any, bFlush bool) int32 {
@@ -178,12 +189,13 @@ func NeoO1L15COT15DecodeClientHandler() *O1L15COT15CodecClientHandler {
 	}
 	return &dec
 }
-func (ego *HandlerRegistration) NeoO1L15COT15DecodeClientHandler() *O1L15COT15CodecClientHandler {
+func (ego *HandlerRegistration) NeoO1L15COT15DecodeClientHandler(bKA bool) *O1L15COT15CodecClientHandler {
 	dec := O1L15COT15CodecClientHandler{
 		_largeMessageBuffer: memory.NeoLinearBuffer(0),
 		_memoryLow:          false,
 		_packetHeader:       message_buffer.NeoMessageHeader(),
 	}
+
 	return &dec
 }
 
