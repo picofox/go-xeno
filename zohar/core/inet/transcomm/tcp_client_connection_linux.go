@@ -165,7 +165,7 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 				return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 			}
 			m, rc := ego._codec.OnReceive(ego)
-			if core.Err(rc) {
+			if core.Err(rc) || m == nil {
 				return rc
 			}
 			ego._client.OnIncomingMessage(ego, m.(message_buffer.INetMessage))
