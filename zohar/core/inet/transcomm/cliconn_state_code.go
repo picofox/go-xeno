@@ -1,27 +1,23 @@
 package transcomm
 
 const (
-	Uninitialized = uint8(0)
-	Initialized   = uint8(1)
-	Connecting    = uint8(2)
-	Connected     = uint8(3)
-	Closed        = uint8(4)
-	Finalizing    = uint8(5)
+	Initialized = uint8(0)
+	Connecting  = uint8(1)
+	Connected   = uint8(2)
+	Closed      = uint8(3)
 )
 
-var sCliConnStateToString []string = []string{
-	"Uninitialized",
+var sConnStateToString []string = []string{
 	"Initialized",
 	"Connecting",
 	"Connected",
 	"Closed",
-	"Finalizing",
 }
 
-func CliConnStateCodeToString(c uint8) string {
-	if c > Finalizing {
+func ConnStateCodeToString(c uint8) string {
+	if c > Closed {
 		return "NAState"
 	}
-	return sCliConnStateToString[c]
+	return sConnStateToString[c]
 
 }
