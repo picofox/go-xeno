@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"fmt"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
@@ -15,6 +16,7 @@ type O1L15COT15CodecServerHandler struct {
 }
 
 func (ego *O1L15COT15CodecServerHandler) Pulse(conn IConnection, nowTs int64) {
+	fmt.Println("Pulse.......")
 	if ego._keepalive == nil {
 		if conn.KeepAliveConfig().Enable {
 			ego._keepalive = NeoKeepAlive(conn.KeepAliveConfig(), true)
