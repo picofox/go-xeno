@@ -1,13 +1,16 @@
 package transcomm
 
 import (
+	"errors"
 	"fmt"
+	"io"
 	"net"
 	"reflect"
 	"sync"
 	"syscall"
 	"time"
 	"xeno/zohar/core"
+	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
@@ -23,6 +26,7 @@ type TCPServerConnection struct {
 	_codec          IServerCodecHandler
 	_server         *TCPServer
 	_lock           sync.Mutex
+	_keepalive      *KeepAlive
 }
 
 func (ego *TCPServerConnection) flush() (int64, int32) {
@@ -178,6 +182,14 @@ func (ego *TCPServerConnection) PreStop() {
 	ego._conn.SetReadDeadline(time.Now())
 }
 
+func (ego *TCPServerConnection) Pulse() int32 {
+	if ego._keepalive != nil {
+		ego._server.Log(core.LL_DEBUG, "pulse .... ka %p", &ego._keepalive)
+		return ego._keepalive.Pulse(ego, chrono.GetRealTimeMilli())
+	}
+	return core.MkSuccess(0)
+}
+
 func (ego *TCPServerConnection) OnIncomingData() int32 {
 	rc := ego.checkRecvBufferCapacity()
 	if core.IsErrType(rc, core.EC_REACH_LIMIT) {
@@ -187,6 +199,15 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 	baPtr := ego._recvBuffer.InternalData()
 	var nDone int = 0
 	var err error
+
+	if ego._server._config.KeepAlive.Enable {
+		readT0 := time.Duration(ego._server._config.KeepAlive.IntervalMillis)
+		d := time.Duration(readT0 * time.Millisecond) // 30 seconds
+		w := time.Now()                               // from now
+		w = w.Add(d)
+		fmt.Printf("Set deadline %s\n", w.String())
+		ego._conn.SetReadDeadline(w)
+	}
 
 	if ego._recvBuffer.WritePos() >= ego._recvBuffer.ReadPos() {
 		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.Capacity()])
@@ -200,7 +221,28 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 		}
 		return core.MkErr(core.EC_TCO_RECV_ERROR, 0)
 	} else if nDone == 0 {
-		return core.MkErr(core.EC_EOF, 0)
+		if err != nil {
+			if err == io.EOF {
+				return core.MkErr(core.EC_EOF, 0)
+			} else {
+				var e *net.OpError
+				ok := errors.As(err, &e)
+				if ok {
+					if e.Timeout() {
+						rc = ego.Pulse()
+						if !core.Err(rc) {
+							return core.MkSuccess(0)
+						} else {
+							if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+								return core.MkSuccess(0)
+							}
+						}
+					}
+				}
+			}
+			return core.MkErr(core.EC_TCO_RECV_ERROR, 1)
+		}
+
 	} else {
 		src := ego._recvBuffer.WriterSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
 		if !src {
@@ -237,7 +279,13 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_server:         listener.Server(),
 		_codec:          nil,
+		_keepalive:      nil,
 	}
+
+	if c._server._config.KeepAlive.Enable {
+		c._keepalive = NeoKeepAlive(&listener.Server()._config.KeepAlive)
+	}
+	c._conn.SetNoDelay(c._server._config.NoDelay)
 
 	var output []reflect.Value = make([]reflect.Value, 0, 1)
 	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+listener.Server()._config.Codec)

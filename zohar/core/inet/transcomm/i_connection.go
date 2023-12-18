@@ -2,6 +2,7 @@ package transcomm
 
 import (
 	"xeno/zohar/core/inet"
+	"xeno/zohar/core/inet/message_buffer"
 )
 
 type IConnection interface {
@@ -18,6 +19,7 @@ type IConnection interface {
 	Type() int8
 	ReactorIndex() uint32
 	SetReactorIndex(uint32)
+	SendMessage(msg message_buffer.INetMessage, bFlush bool) int32
 }
 
 const (

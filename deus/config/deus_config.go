@@ -14,9 +14,13 @@ type DeusConfig struct {
 	Network config.NetworkConfig `json:"Network"`
 }
 
+func (ego *DeusConfig) String() string {
+	return ego.Network.String()
+}
+
 var deusConfigConfigInstance *DeusConfig = nil
 
-func GetKadamonyConfig() *DeusConfig {
+func GetDeusConfig() *DeusConfig {
 	return deusConfigConfigInstance
 }
 

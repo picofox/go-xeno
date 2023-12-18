@@ -48,7 +48,14 @@
 					"ListenerEndPoints" : ["0.0.0.0:9999"],
 					"PublicConnectingEndPoints" : ["192.168.0.20:9999"],
 					"PrivateConnectingEndPoints" : ["192.168.0.20:9999"],
-					"Codec" : "O1L15COT15DecodeServerHandler"
+					"Codec" : "O1L15COT15DecodeServerHandler",
+					"NoDelay" : true,
+					"KeepAlive" : {
+						"Enable": true,
+						"TimeoutMillis": 2000,
+						"MaxTries": 3,
+						"IntervalMillis", 12000
+					}
 				}
 			}
 		}

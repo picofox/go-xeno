@@ -5,6 +5,7 @@ import (
 	"net"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet"
+	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
 )
 
@@ -18,6 +19,10 @@ type TCPClientConnection struct {
 	_pipeline       []IClientCodecHandler
 	_client         *TCPClient
 	_isConnected    bool
+}
+
+func (ego *TCPClientConnection) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {
+	return 0
 }
 
 func (ego *TCPClientConnection) OnPeerClosed() int32 {

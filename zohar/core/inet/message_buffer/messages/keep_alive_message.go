@@ -52,7 +52,7 @@ func KeepAliveMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetM
 	return &m
 }
 
-func NeoKeepAliveMessage() message_buffer.INetMessage {
+func NeoKeepAliveMessage() *KeepAliveMessage {
 	m := KeepAliveMessage{
 		TimeStamp: chrono.GetRealTimeMilli(),
 	}
