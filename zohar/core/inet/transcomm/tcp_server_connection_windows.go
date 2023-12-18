@@ -251,7 +251,7 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 
 		for {
 			msg, rc := ego._codec.OnReceive(ego)
-			if core.Err(rc) {
+			if core.Err(rc) || msg == nil {
 				return rc
 			}
 

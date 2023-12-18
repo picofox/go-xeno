@@ -1,19 +1,18 @@
-package messages
+package transcomm
 
 import (
 	"sync"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet/message_buffer"
-	"xeno/zohar/core/inet/transcomm"
 )
 
-type MessageHandler func(connection transcomm.IConnection, message message_buffer.INetMessage) int32
+type MessageHandler func(connection IConnection, message message_buffer.INetMessage) int32
 
 type MessageHandlerMapper struct {
 	_mapper [32768]MessageHandler
 }
 
-func (ego *MessageHandlerMapper) Handle(connection transcomm.IConnection, message message_buffer.INetMessage) int32 {
+func (ego *MessageHandlerMapper) Handle(connection IConnection, message message_buffer.INetMessage) int32 {
 	if ego._mapper[message.Command()] != nil {
 		return ego._mapper[message.Command()](connection, message)
 	} else {
@@ -40,8 +39,4 @@ func GetDefaultMessageHandlerMapper() *MessageHandlerMapper {
 		sMessageHandlerMapperMapper = NeoMessageHandlerMapper()
 	})
 	return sMessageHandlerMapperMapper
-}
-
-func init() {
-	GetDefaultMessageHandlerMapper().Register(KEEP_ALIVE_MESSAGE_ID, KeepAliveMessageHandler)
 }

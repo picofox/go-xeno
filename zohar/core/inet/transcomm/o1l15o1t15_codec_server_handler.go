@@ -19,6 +19,7 @@ func (ego *O1L15COT15CodecServerHandler) Pulse(conn IConnection, nowTs int64) {
 		if conn.KeepAliveConfig().Enable {
 			ego._keepalive = NeoKeepAlive(conn.KeepAliveConfig(), true)
 		}
+		ego._keepalive.Pulse(conn, nowTs)
 	} else {
 		ego._keepalive.Pulse(conn, nowTs)
 	}
@@ -65,6 +66,11 @@ func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnecti
 		if delta != frameLength {
 			connection._server.Log(core.LL_ERR, "Message (CMD:%d) Length Validation Failed, frame length is %d, but got %d read", cmd, frameLength, delta)
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
+		}
+
+		rc := GetDefaultMessageHandlerMapper().Handle(connection, msg)
+		if core.IsErrType(rc, core.EC_NOOP) {
+			return nil, core.MkSuccess(0)
 		}
 
 		return msg, core.MkSuccess(0)

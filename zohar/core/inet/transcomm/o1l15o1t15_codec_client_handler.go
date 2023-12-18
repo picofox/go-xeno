@@ -21,6 +21,8 @@ func (ego *O1L15COT15CodecClientHandler) Pulse(conn IConnection, nowTs int64) {
 			ego._keepalive = NeoKeepAlive(conn.KeepAliveConfig(), false)
 		}
 		ego._keepalive.Pulse(conn, chrono.GetRealTimeMilli())
+	} else {
+		ego._keepalive.Pulse(conn, chrono.GetRealTimeMilli())
 	}
 }
 
@@ -121,12 +123,12 @@ func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnecti
 		if endPos < beginPos {
 			delta = connection._recvBuffer.Capacity() - beginPos + endPos
 		}
-		if endPos-beginPos != frameLength {
+		if delta != frameLength {
 			connection._client.Log(core.LL_ERR, "Message (CMD:%d) Length Validation Failed, frame length is %d, but got %d read", cmd, frameLength, delta)
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
 
-		rc := messages.GetDefaultMessageHandlerMapper().Handle(connection, msg)
+		rc := GetDefaultMessageHandlerMapper().Handle(connection, msg)
 		if core.IsErrType(rc, core.EC_NOOP) {
 			return nil, core.MkSuccess(0)
 		}
