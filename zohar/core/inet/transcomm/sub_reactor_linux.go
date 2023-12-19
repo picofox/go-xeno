@@ -8,6 +8,7 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/cms"
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 )
 
@@ -117,7 +118,6 @@ func (ego *SubReactor) Loop() int32 {
 		} else if nReady == 0 {
 			ego._connections.Range(
 				func(key, value any) bool {
-					ego._poller.Log(core.LL_DEBUG, "pulse....")
 					value.(IConnection).Pulse(chrono.GetRealTimeMilli())
 					return true
 				})
