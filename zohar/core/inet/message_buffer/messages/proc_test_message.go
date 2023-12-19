@@ -22,6 +22,15 @@ func (ego *ProcTestMessage) String() string {
 	return string(data)
 }
 
+func (ego *ProcTestMessage) Validate() bool {
+	str0 := "_str0" + strconv.FormatInt(ego._timeStamp, 10)
+	if str0 != ego._str0 {
+		panic("_str0 validation failed.")
+		return false
+	}
+	return true
+}
+
 func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	hdrPos := byteBuf.WritePos()
 	byteBuf.WriteInt16(-1)
