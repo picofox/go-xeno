@@ -18,7 +18,6 @@ func (ego *MessageHandlerMapper) Handle(connection IConnection, message message_
 	} else {
 		return core.MkErr(core.EC_NOOP, 1)
 	}
-
 }
 
 func (ego *MessageHandlerMapper) Register(cmd int16, handler MessageHandler) {

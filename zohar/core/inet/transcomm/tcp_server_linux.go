@@ -10,6 +10,7 @@ import (
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/nic"
+	"xeno/zohar/core/inet/transcomm/prof"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
@@ -100,7 +101,9 @@ func (ego *TCPServer) NeoTCPServerConnection(fd int, rAddr inet.IPV4EndPoint, lA
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_server:         ego,
 		_codec:          nil,
+		_profiler:       prof.NeoConnectionProfiler(),
 	}
+
 	return &connection
 }
 

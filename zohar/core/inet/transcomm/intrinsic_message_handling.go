@@ -2,6 +2,7 @@ package transcomm
 
 import (
 	"xeno/zohar/core"
+	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
 )
@@ -19,17 +20,17 @@ func KeepAliveMessageHandler(connection IConnection, message message_buffer.INet
 		if pkam.IsServer() {
 			connection.SendMessage(message, true)
 		} else {
-
+			connection.(*TCPClientConnection)._codec.OnKeepAlive(chrono.GetRealTimeMilli())
 		}
 
 	} else if connection.Type() == CONNTYPE_TCP_SERVER {
 		if pkam.IsServer() {
-
+			connection.(*TCPServerConnection)._codec.OnKeepAlive(chrono.GetRealTimeMilli())
 		} else {
 			connection.SendMessage(message, true)
 		}
 	}
 
-	return core.MkSuccess(0)
+	return core.MkErr(core.EC_ALREADY_DONE, 0)
 
 }

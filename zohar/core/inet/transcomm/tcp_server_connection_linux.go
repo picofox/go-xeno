@@ -8,6 +8,7 @@ import (
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/inet/transcomm/prof"
 	"xeno/zohar/core/memory"
 )
 
@@ -21,6 +22,7 @@ type TCPServerConnection struct {
 	_lock           sync.Mutex
 	_server         *TCPServer
 	_reactorIndex   uint32
+	_profiler       *prof.ConnectionProfiler
 }
 
 func (ego *TCPServerConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
@@ -132,9 +134,9 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 }
 
 //func (ego *TCPServerConnection) handlerExecuteInbound() {
-//	ll := len(ego._pipeline)
+//	ll := len(ego._codec)
 //	if ll > 0 {
-//		rc := ego._pipeline[0].Inbound(ego._pipeline, 0, ego, ego._recvBuffer, nil)
+//		rc := ego._codec[0].Inbound(ego._codec, 0, ego, ego._recvBuffer, nil)
 //		if core.Err(rc) {
 //			et, em := core.ExErr(rc)
 //			ego._server.Log(core.LL_ERR, "connnection_%s : handler pipeline[%d] failed: (%s) ", ego._remoteEndPoint.EndPointString(), em, core.ErrStr(et))
@@ -233,7 +235,7 @@ func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int
 //		_recvBuffer:     memory.NeoRingBuffer(1024),
 //		_sendBuffer:     memory.NeoLinearBuffer(1024),
 //		_server:         tcpServer,
-//		_pipeline:       make([]IServerCodecHandler, 0),
+//		_codec:       make([]IServerCodecHandler, 0),
 //	}
 //
 //	var output []reflect.Value = make([]reflect.Value, 0, 1)
@@ -243,7 +245,7 @@ func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int
 //			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
 //		}
 //		h := output[0].Interface().(IServerCodecHandler)
-//		tsc._pipeline = append(tsc._pipeline, h)
+//		tsc._codec = append(tsc._codec, h)
 //	}
 //	return &tsc
 //}

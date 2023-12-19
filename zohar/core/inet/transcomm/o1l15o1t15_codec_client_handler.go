@@ -16,6 +16,12 @@ type O1L15COT15CodecClientHandler struct {
 	_connection         *TCPClientConnection
 }
 
+func (ego *O1L15COT15CodecClientHandler) OnKeepAlive(nowTs int64) {
+	if ego._keepalive != nil {
+		ego._keepalive.OnRoundTripBack(nowTs)
+	}
+}
+
 func (ego *O1L15COT15CodecClientHandler) Pulse(conn IConnection, nowTs int64) {
 	if ego._keepalive == nil {
 		if conn.KeepAliveConfig().Enable {
@@ -130,7 +136,7 @@ func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnecti
 		}
 
 		rc := GetDefaultMessageHandlerMapper().Handle(connection, msg)
-		if core.IsErrType(rc, core.EC_DIR_ALREADY_DONE) {
+		if core.IsErrType(rc, core.EC_ALREADY_DONE) {
 			return nil, core.MkSuccess(0)
 		}
 
