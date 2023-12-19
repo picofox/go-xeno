@@ -3,11 +3,13 @@ package transcomm
 import (
 	"fmt"
 	"net"
+	"reflect"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
+	"xeno/zohar/core/mp"
 )
 
 type TCPClientConnection struct {
@@ -17,7 +19,7 @@ type TCPClientConnection struct {
 	_remoteEndPoint inet.IPV4EndPoint
 	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
-	_pipeline       []IClientCodecHandler
+	_codec          IClientCodecHandler
 	_client         *TCPClient
 	_isConnected    bool
 }
@@ -124,10 +126,21 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_remoteEndPoint: rAddr,
 		_recvBuffer:     memory.NeoRingBuffer(1024),
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
-		_pipeline:       make([]IClientCodecHandler, 0),
+		_codec:          nil,
 		_client:         client,
 		_isConnected:    false,
 	}
+
+	c._conn.SetNoDelay(c._client._config.NoDelay)
+	var output = make([]reflect.Value, 0, 1)
+	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+c._client._config.Codec)
+	if core.Err(rc) {
+		return nil
+	}
+	h := output[0].Interface().(IClientCodecHandler)
+	c._codec = h
+	return &c
+
 	return &c
 }
 

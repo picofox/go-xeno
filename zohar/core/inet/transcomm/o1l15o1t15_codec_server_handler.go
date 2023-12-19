@@ -15,6 +15,12 @@ type O1L15COT15CodecServerHandler struct {
 	_keepalive          *KeepAlive
 }
 
+func (ego *O1L15COT15CodecServerHandler) OnKeepAlive(nowTs int64) {
+	if ego._keepalive != nil {
+		ego._keepalive.OnReceive(nowTs)
+	}
+}
+
 func (ego *O1L15COT15CodecServerHandler) Pulse(conn IConnection, nowTs int64) {
 	fmt.Println("Pulse.......")
 	if ego._keepalive == nil {
