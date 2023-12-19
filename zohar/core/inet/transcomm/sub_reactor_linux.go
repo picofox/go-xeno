@@ -84,7 +84,8 @@ func (ego *SubReactor) Loop() int32 {
 	defer ego._poller._waitGroup.Done()
 	var nReady int = 0
 	var err error = nil
-	var msec = 1000
+	//var msec = 1000
+
 	for {
 
 		select {
@@ -92,23 +93,25 @@ func (ego *SubReactor) Loop() int32 {
 			if m.Id() == cms.CMSID_FINALIZE {
 				runtime.Goexit()
 			}
-		default:
-		}
 
+		default:
+			ego._poller.Log(core.LL_DEBUG, "default....")
+		}
+		ego._poller.Log(core.LL_DEBUG, "pulse....")
 		if nReady == ego._size && ego._size < 128*1024 {
 			ego.ResetEvent(ego._size << 1)
 		}
 
-		nReady, err = inet.EpollWait(ego._epollDescriptor, ego._events, msec)
+		nReady, err = inet.EpollWait(ego._epollDescriptor, ego._events, 5000)
 		if err != nil && err != syscall.EINTR {
 			return core.MkErr(core.EC_EPOLL_WAIT_ERROR, 1)
 		}
 		if nReady < 0 {
-			msec = 1000
+			//msec = 1000
 			runtime.Gosched()
 			continue
 		}
-		msec = 0
+		//msec = 0
 
 		for i := 0; i < nReady; i++ {
 			ego.HandlerEvent(&ego._events[i])
