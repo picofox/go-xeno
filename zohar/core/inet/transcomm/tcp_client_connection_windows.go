@@ -8,6 +8,7 @@ import (
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/inet/transcomm/prof"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
 )
@@ -21,7 +22,13 @@ type TCPClientConnection struct {
 	_sendBuffer     *memory.LinearBuffer
 	_codec          IClientCodecHandler
 	_client         *TCPClient
+	_profiler       *prof.ConnectionProfiler
 	_isConnected    bool
+}
+
+func (ego *TCPClientConnection) Pulse(ts int64) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (ego *TCPClientConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
@@ -129,6 +136,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_codec:          nil,
 		_client:         client,
 		_isConnected:    false,
+		_profiler:       prof.NeoConnectionProfiler(),
 	}
 
 	c._conn.SetNoDelay(c._client._config.NoDelay)

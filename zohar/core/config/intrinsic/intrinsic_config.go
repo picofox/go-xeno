@@ -217,6 +217,7 @@ func MakeDefaultIntrinsicConfig(file *io.File) int32 {
 	IntrinConfig.GoExecutorPool.CheckInterval = 1000
 
 	IntrinConfig.Poller.SubReactorCount = -1
+	IntrinConfig.Poller.SubReactorPulseInterval = 6000
 
 	cronCfgDfl := CronServiceConfig{
 		Offset: 0,

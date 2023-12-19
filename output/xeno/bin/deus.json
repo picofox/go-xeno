@@ -30,7 +30,8 @@
 		"CheckInterval": 1000
 	},
 	"Poller": {
-		"SubReactorCount": 0
+		"SubReactorCount": 0,
+		"SubReactorPulseInterval" : 2000 
 	},
 	"IntrinsicService": {
 		"Cron": {

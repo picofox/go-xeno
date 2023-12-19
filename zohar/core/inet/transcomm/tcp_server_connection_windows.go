@@ -188,9 +188,8 @@ func (ego *TCPServerConnection) PreStop() {
 	ego._conn.SetReadDeadline(time.Now())
 }
 
-func (ego *TCPServerConnection) Pulse() int32 {
-	ego._codec.Pulse(ego, chrono.GetRealTimeMilli())
-	return core.MkSuccess(0)
+func (ego *TCPServerConnection) Pulse(ts int64) {
+	ego._codec.Pulse(ego, ts)
 }
 
 func (ego *TCPServerConnection) OnIncomingData() int32 {
@@ -204,7 +203,7 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 	var err error
 
 	if ego._server._config.KeepAlive.Enable {
-		readT0 := time.Duration(ego._server._config.KeepAlive.IntervalMillis)
+		readT0 := time.Duration(intrinsic.GetIntrinsicConfig().Poller.SubReactorPulseInterval)
 		d := time.Duration(readT0 * time.Millisecond) // 30 seconds
 		w := time.Now()                               // from now
 		w = w.Add(d)
@@ -231,14 +230,8 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 				ok := errors.As(err, &e)
 				if ok {
 					if e.Timeout() {
-						rc = ego.Pulse()
-						if !core.Err(rc) {
-							return core.MkSuccess(0)
-						} else {
-							if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-								return core.MkSuccess(0)
-							}
-						}
+						ego.Pulse(chrono.GetRealTimeMilli())
+						return core.MkSuccess(0)
 					}
 				}
 			}

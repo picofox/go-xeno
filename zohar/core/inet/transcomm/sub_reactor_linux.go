@@ -105,7 +105,7 @@ func (ego *SubReactor) Loop() int32 {
 			ego.ResetEvent(ego._size << 1)
 		}
 
-		nReady, err = inet.EpollWait(ego._epollDescriptor, ego._events, 1000)
+		nReady, err = inet.EpollWait(ego._epollDescriptor, ego._events, intrinsic.GetIntrinsicConfig().Poller.SubReactorPulseInterval)
 		if err != nil && err != syscall.EINTR {
 			return core.MkErr(core.EC_EPOLL_WAIT_ERROR, 1)
 		}
