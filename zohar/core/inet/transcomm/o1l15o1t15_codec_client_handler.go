@@ -20,7 +20,7 @@ func (ego *O1L15COT15CodecClientHandler) OnKeepAlive(nowTs int64) {
 		rtt := ego._keepalive.OnRoundTripBack(nowTs)
 		if rtt >= 0 {
 			ego._connection._profiler.GetRTTProf().OnUpdate(rtt)
-			ego._connection._client.Log(core.LL_DEBUG, "conn prof: %s", ego._connection._profiler.String())
+			ego._connection._client.Log(core.LL_DEBUG, "conn %s prof: %s", ego._connection.String(), ego._connection._profiler.String())
 		}
 	}
 }
