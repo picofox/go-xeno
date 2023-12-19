@@ -26,7 +26,7 @@ func (ego *O1L15COT15CodecClientHandler) OnKeepAlive(nowTs int64) {
 }
 
 func (ego *O1L15COT15CodecClientHandler) Pulse(conn IConnection, nowTs int64) {
-	if ego._keepalive == nil {
+	if ego._keepalive != nil {
 		ego._keepalive.Pulse(conn, nowTs)
 	}
 }
