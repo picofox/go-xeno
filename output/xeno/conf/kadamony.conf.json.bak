@@ -38,8 +38,13 @@
 					"Count" : 1,
 					"Codec" : "O1L15COT15DecodeClientHandler",
 					"AutoReconnect" : true,
-					"NoDelay" : true
-					
+					"NoDelay" : true,
+					"KeepAlive" : {
+						"Enable": true,
+						"TimeoutMillis": 2000,
+						"MaxTries": 3,
+						"IntervalMillis": 6000
+					}
 				}
 			}
 		},
