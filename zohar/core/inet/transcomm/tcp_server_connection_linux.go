@@ -5,6 +5,7 @@ import (
 	"sync"
 	"syscall"
 	"xeno/zohar/core"
+	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
@@ -20,6 +21,10 @@ type TCPServerConnection struct {
 	_lock           sync.Mutex
 	_server         *TCPServer
 	_reactorIndex   uint32
+}
+
+func (ego *TCPServerConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
+	return &ego._server._config.KeepAlive
 }
 
 func (ego *TCPServerConnection) ReactorIndex() uint32 {

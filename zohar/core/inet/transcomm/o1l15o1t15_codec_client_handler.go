@@ -13,6 +13,7 @@ type O1L15COT15CodecClientHandler struct {
 	_memoryLow          bool
 	_packetHeader       message_buffer.MessageHeader
 	_keepalive          *KeepAlive
+	_connection         *TCPClientConnection
 }
 
 func (ego *O1L15COT15CodecClientHandler) Pulse(conn IConnection, nowTs int64) {
@@ -129,7 +130,7 @@ func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnecti
 		}
 
 		rc := GetDefaultMessageHandlerMapper().Handle(connection, msg)
-		if core.IsErrType(rc, core.EC_NOOP) {
+		if core.IsErrType(rc, core.EC_DIR_ALREADY_DONE) {
 			return nil, core.MkSuccess(0)
 		}
 
@@ -188,19 +189,12 @@ func (ego *O1L15COT15CodecClientHandler) OnLowMemory() {
 	ego._memoryLow = true
 }
 
-func NeoO1L15COT15DecodeClientHandler() *O1L15COT15CodecClientHandler {
+func (ego *HandlerRegistration) NeoO1L15COT15DecodeClientHandler(c *TCPClientConnection) *O1L15COT15CodecClientHandler {
 	dec := O1L15COT15CodecClientHandler{
 		_largeMessageBuffer: memory.NeoLinearBuffer(0),
 		_memoryLow:          false,
 		_packetHeader:       message_buffer.NeoMessageHeader(),
-	}
-	return &dec
-}
-func (ego *HandlerRegistration) NeoO1L15COT15DecodeClientHandler(bKA bool) *O1L15COT15CodecClientHandler {
-	dec := O1L15COT15CodecClientHandler{
-		_largeMessageBuffer: memory.NeoLinearBuffer(0),
-		_memoryLow:          false,
-		_packetHeader:       message_buffer.NeoMessageHeader(),
+		_connection:         c,
 	}
 
 	return &dec
