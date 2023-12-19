@@ -12,6 +12,7 @@ type NetworkClientTCPConfig struct {
 	Codec           string                    `json:"Codec"`
 	AutoReconnect   bool                      `json:"AutoReconnect"`
 	NoDelay         bool                      `json:"NoDelay"`
+	PulseInterval   int64                     `json:"PulseInterval"`
 	KeepAlive       intrinsic.KeepAliveConfig `json:"KeepAlive"`
 }
 
@@ -30,6 +31,12 @@ func (ego *NetworkClientTCPConfig) String() string {
 	ss.WriteString("\n")
 	ss.WriteString("NoDelay=")
 	ss.WriteString(strconv.FormatBool(ego.NoDelay))
+	ss.WriteString("\n")
+	ss.WriteString("PulseInterval=")
+	ss.WriteString(strconv.FormatInt(ego.PulseInterval, 10))
+	ss.WriteString("\n")
+	ss.WriteString("KeepAlive=")
+	ss.WriteString(ego.KeepAlive.String())
 	ss.WriteString("\n")
 	return ss.String()
 }

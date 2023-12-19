@@ -54,7 +54,7 @@
 						"Enable": true,
 						"TimeoutMillis": 2000,
 						"MaxTries": 3,
-						"IntervalMillis", 12000
+						"IntervalMillis": 12000
 					}
 				}
 			}
