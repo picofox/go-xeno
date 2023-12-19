@@ -35,7 +35,7 @@
 			"TCP" : {
 				"Default" : {
 					"ServerEndPoints" : ["192.168.0.100:9999"],
-					"Count" : 1,
+					"Count" : 3,
 					"Codec" : "O1L15COT15DecodeClientHandler",
 					"AutoReconnect" : true,
 					"NoDelay" : true,
