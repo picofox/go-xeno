@@ -25,6 +25,11 @@ type TCPServerConnection struct {
 	_profiler       *prof.ConnectionProfiler
 }
 
+func (ego *TCPServerConnection) Pulse(ts int64) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (ego *TCPServerConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
 	return &ego._server._config.KeepAlive
 }

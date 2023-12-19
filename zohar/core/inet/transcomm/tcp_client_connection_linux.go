@@ -9,6 +9,7 @@ import (
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/inet/transcomm/prof"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
 )
@@ -25,7 +26,12 @@ type TCPClientConnection struct {
 	_stateCode      uint8
 	_reactorIndex   uint32
 	_packetHeader   message_buffer.MessageHeader
+	_profiler       *prof.ConnectionProfiler
 	_lock           sync.Mutex
+}
+
+func (ego *TCPClientConnection) Pulse(ts int64) {
+	ego._codec.Pulse(ego, ts)
 }
 
 func (ego *TCPClientConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
@@ -310,6 +316,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_client:         client,
 		_stateCode:      Initialized,
 		_packetHeader:   message_buffer.NeoMessageHeader(),
+		_profiler:       prof.NeoConnectionProfiler(),
 	}
 	var output = make([]reflect.Value, 0, 1)
 	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+c._client._config.Codec, &c)

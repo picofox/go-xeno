@@ -22,6 +22,7 @@ type IConnection interface {
 	SetReactorIndex(uint32)
 	SendMessage(msg message_buffer.INetMessage, bFlush bool) int32
 	KeepAliveConfig() *intrinsic.KeepAliveConfig
+	Pulse(ts int64)
 }
 
 const (
