@@ -4,7 +4,7 @@ import "fmt"
 
 type PollerConfig struct {
 	SubReactorCount         int32 `json:"SubReactorCount"`
-	SubReactorPulseInterval int64 `json:"SubReactorPulseInterval"`
+	SubReactorPulseInterval int   `json:"SubReactorPulseInterval"`
 }
 
 func (ego *PollerConfig) String() string {
