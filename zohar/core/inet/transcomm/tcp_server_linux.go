@@ -104,6 +104,16 @@ func (ego *TCPServer) NeoTCPServerConnection(fd int, rAddr inet.IPV4EndPoint, lA
 		_profiler:       prof.NeoConnectionProfiler(),
 	}
 
+	inet.SysSetTCPNoDelay(fd, true)
+
+	var output []reflect.Value = make([]reflect.Value, 0, 1)
+	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+ego._config.Codec, &connection)
+	if core.Err(rc) {
+		panic(fmt.Sprintf("Install Handler Failed %s", ego._config.Codec))
+	}
+	h := output[0].Interface().(IServerCodecHandler)
+	connection._codec = h
+
 	return &connection
 }
 
