@@ -140,8 +140,6 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 	h := output[0].Interface().(IClientCodecHandler)
 	c._codec = h
 	return &c
-
-	return &c
 }
 
 var _ IConnection = &TCPClientConnection{}

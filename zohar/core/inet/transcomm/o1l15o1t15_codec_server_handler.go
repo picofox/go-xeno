@@ -1,7 +1,6 @@
 package transcomm
 
 import (
-	"fmt"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
@@ -13,25 +12,23 @@ type O1L15COT15CodecServerHandler struct {
 	_memoryLow          bool
 	_packetHeader       message_buffer.MessageHeader
 	_keepalive          *KeepAlive
+	_connection         *TCPServerConnection
 }
 
 func (ego *O1L15COT15CodecServerHandler) OnKeepAlive(nowTs int64) {
 	if ego._keepalive != nil {
-		ego._keepalive.OnReceive(nowTs)
+		rtt := ego._keepalive.OnRoundTripBack(nowTs)
+		if rtt >= 0 {
+			ego._connection._profiler.GetRTTProf().OnUpdate(rtt)
+			ego._connection._server.Log(core.LL_DEBUG, "conn prof: %s", ego._connection._profiler.String())
+		}
 	}
 }
 
 func (ego *O1L15COT15CodecServerHandler) Pulse(conn IConnection, nowTs int64) {
-	fmt.Println("Pulse.......")
-	if ego._keepalive == nil {
-		if conn.KeepAliveConfig().Enable {
-			ego._keepalive = NeoKeepAlive(conn.KeepAliveConfig(), true)
-		}
-		ego._keepalive.Pulse(conn, nowTs)
-	} else {
+	if ego._keepalive != nil {
 		ego._keepalive.Pulse(conn, nowTs)
 	}
-
 }
 
 func (ego *O1L15COT15CodecServerHandler) Reset() {
@@ -77,7 +74,7 @@ func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnecti
 		}
 
 		rc := GetDefaultMessageHandlerMapper().Handle(connection, msg)
-		if core.IsErrType(rc, core.EC_NOOP) {
+		if core.IsErrType(rc, core.EC_ALREADY_DONE) {
 			return nil, core.MkSuccess(0)
 		}
 
@@ -188,12 +185,18 @@ func NeoO1L15COT15DecodeServerHandler() *O1L15COT15CodecServerHandler {
 	}
 	return &dec
 }
-func (ego *HandlerRegistration) NeoO1L15COT15DecodeServerHandler() *O1L15COT15CodecServerHandler {
+func (ego *HandlerRegistration) NeoO1L15COT15DecodeServerHandler(c *TCPServerConnection) *O1L15COT15CodecServerHandler {
 	dec := O1L15COT15CodecServerHandler{
 		_largeMessageBuffer: memory.NeoLinearBuffer(0),
 		_memoryLow:          false,
 		_packetHeader:       message_buffer.NeoMessageHeader(),
+		_connection:         c,
 	}
+
+	if c.KeepAliveConfig().Enable {
+		dec._keepalive = NeoKeepAlive(c.KeepAliveConfig(), true)
+	}
+
 	return &dec
 }
 

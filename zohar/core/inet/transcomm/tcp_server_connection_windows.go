@@ -14,6 +14,7 @@ import (
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/inet/transcomm/prof"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
 )
@@ -26,6 +27,7 @@ type TCPServerConnection struct {
 	_sendBuffer     *memory.LinearBuffer
 	_codec          IServerCodecHandler
 	_server         *TCPServer
+	_profiler       *prof.ConnectionProfiler
 	_lock           sync.Mutex
 }
 
@@ -279,12 +281,13 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_server:         listener.Server(),
 		_codec:          nil,
+		_profiler:       prof.NeoConnectionProfiler(),
 	}
 
 	c._conn.SetNoDelay(c._server._config.NoDelay)
 
 	var output []reflect.Value = make([]reflect.Value, 0, 1)
-	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+listener.Server()._config.Codec)
+	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+listener.Server()._config.Codec, &c)
 	if core.Err(rc) {
 		panic(fmt.Sprintf("Install Handler Failed %s", listener.Server()._config.Codec))
 	}

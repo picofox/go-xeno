@@ -12,6 +12,7 @@ type KeepAlive struct {
 	_lastSendTimestamp int64
 	_lastRecvTimeStamp int64
 	_currentTries      int32
+	_recentRTT         uint32
 	_message           *messages.KeepAliveMessage
 }
 
@@ -32,9 +33,10 @@ func (ego *KeepAlive) Reset() {
 	ego._currentTries = 0
 }
 
-func (ego *KeepAlive) OnReceive(nowTs int64) {
+func (ego *KeepAlive) OnRoundTripBack(nowTs int64) int32 {
 	ego._lastRecvTimeStamp = nowTs
 	ego._currentTries = 0
+	return int32(nowTs - ego._lastSendTimestamp)
 }
 
 func (ego *KeepAlive) Pulse(conn IConnection, nowTs int64) int32 {

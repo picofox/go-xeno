@@ -31,6 +31,6 @@ func KeepAliveMessageHandler(connection IConnection, message message_buffer.INet
 		}
 	}
 
-	return core.MkSuccess(0)
+	return core.MkErr(core.EC_ALREADY_DONE, 0)
 
 }
