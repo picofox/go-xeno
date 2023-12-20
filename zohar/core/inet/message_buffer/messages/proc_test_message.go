@@ -109,7 +109,7 @@ func (ego *ProcTestMessage) Validate() bool {
 	}
 
 	for i := 0; i < 11; i++ {
-		cstr := fmt.Sprintf("StrArr_%d", ego.TimeStamp)
+		cstr := fmt.Sprintf("StrSlice_%d", ego.TimeStamp)
 		if i == 5 {
 			if ego.StrSlice[i] != "" {
 				panic("StrSlice failed.")
