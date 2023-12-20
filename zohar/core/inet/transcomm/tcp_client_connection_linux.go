@@ -238,6 +238,7 @@ func (ego *TCPClientConnection) sendNImmediately(ba []byte, offset int64, length
 
 	n, err := syscall.Write(ego._fd, ba[offset:totalRemain])
 	if err != nil {
+		ego._client.Log(core.LL_ERR, "Socket Write Error: %s", err.Error())
 		if err == syscall.EAGAIN || err == syscall.EWOULDBLOCK {
 			return totalRemain, core.MkErr(core.EC_TRY_AGAIN, 0)
 		}
