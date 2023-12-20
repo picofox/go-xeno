@@ -1,9 +1,11 @@
 package messages
 
 import (
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/inet/message_buffer"
@@ -32,6 +34,8 @@ type ProcTestMessage struct {
 	StrSlice      []string `json:"StrSlice"`
 	StrSliceNull  []string `json:"StrSliceNull"`
 	StrSliceEmpty []string `json:"StrSliceEmpty"`
+	MD5           []byte   `json:"MD5"`
+	TextLong      string   `json:"TextLong"`
 }
 
 func (ego *ProcTestMessage) String() string {
@@ -135,6 +139,12 @@ func (ego *ProcTestMessage) Validate() bool {
 		return false
 	}
 
+	md5 := md5.Sum([]byte(ego.TextLong))
+	if md5 != ego.MD5 {
+		panic("StrSliceEmpty failed.")
+		return false
+	}
+
 	return true
 }
 
@@ -163,6 +173,8 @@ func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	byteBuf.WriteStrings(ego.StrSlice)
 	byteBuf.WriteStrings(ego.StrSliceNull)
 	byteBuf.WriteStrings(ego.StrSliceEmpty)
+	byteBuf.WriteBytes(ego.MD5)
+	byteBuf.WriteString(ego.TextLong)
 	curPos := byteBuf.WritePos()
 	var len64 int64 = curPos - hdrPos - message_buffer.O1L15O1T15_HEADER_SIZE
 	if len64 <= message_buffer.MAX_PACKET_BODY_SIZE {
@@ -237,6 +249,13 @@ func (ego *ProcTestMessage) Deserialize(buffer memory.IByteBuffer) int32 {
 	if ego.StrSliceEmpty, rc = buffer.ReadStrings(); core.Err(rc) {
 		return rc
 	}
+	if ego.MD5, rc = buffer.ReadBytes(); core.Err(rc) {
+		return rc
+	}
+	if ego.TextLong, rc = buffer.ReadString(); core.Err(rc) {
+		return rc
+	}
+
 	return rc
 }
 
@@ -273,6 +292,13 @@ func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
 		StrSliceEmpty: make([]string, 0),
 		IsServer:      isClient,
 	}
+	var ss strings.Builder
+	for i := 0; i < 1024*16; i++ {
+		ss.WriteString("@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*")
+	}
+	m.TextLong = ss.String()
+	ba := md5.Sum([]byte(m.TextLong))
+	m.MD5 = ba[:]
 
 	for i := 0; i < 11; i++ {
 		m.StrSlice[i] = fmt.Sprintf("StrSlice_%d", v)
