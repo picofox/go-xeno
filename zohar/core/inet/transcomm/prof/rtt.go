@@ -48,6 +48,13 @@ func (ego *RTTProf) Mean() int32 {
 	return ego._mean
 }
 
+func (ego *RTTProf) Reset() {
+	ego._recent = -1
+	ego._highest = -1
+	ego._lowest = -1
+	ego._mean = -1
+}
+
 func NeoRTTProf() *RTTProf {
 	return &RTTProf{
 		_recent:  -1,

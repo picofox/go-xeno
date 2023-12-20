@@ -12,6 +12,7 @@ import (
 	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/logging"
+	"xeno/zohar/core/memory"
 )
 
 type Poller struct {
@@ -49,16 +50,14 @@ func (ego *Poller) OnServerStart(svr *TCPServer) int32 {
 	lisMap.Range(func(k2, lis any) bool {
 		ev := inet.EPollEvent{}
 		ev.Events = syscall.EPOLLIN | syscall.EPOLLRDHUP | syscall.EPOLLERR | inet.EPOLLET
-		info := &EPoolEventDataMainReactor{
-			FD:       lis.(*ListenWrapper).FileDescriptor(),
-			Listener: lis.(*ListenWrapper),
-		}
-		BindMainReactorEventData(unsafe.Pointer(&ev.Data), info)
-		err := inet.EpollCtl(ego._mainReactor._epollDescriptor, syscall.EPOLL_CTL_ADD, info.Listener.FileDescriptor(), &ev)
+		lis.(*ListenWrapper).GetEV().Listener = lis.(*ListenWrapper)
+		lis.(*ListenWrapper).GetEV().FD = lis.(*ListenWrapper).FileDescriptor()
+		BindMainReactorEventData(unsafe.Pointer(&ev.Data), lis.(*ListenWrapper).GetEV())
+		err := inet.EpollCtl(ego._mainReactor._epollDescriptor, syscall.EPOLL_CTL_ADD, lis.(*ListenWrapper).FileDescriptor(), &ev)
 		if err != nil {
-			ego._logger.Log(core.LL_ERR, "Add socket fd %d to Main reactor Failed", info.Listener.FileDescriptor())
+			ego._logger.Log(core.LL_ERR, "Add socket fd %d to Main reactor Failed", lis.(*ListenWrapper).FileDescriptor())
 		}
-		ego._logger.Log(core.LL_SYS, "Add socket fd %d to Main reactor", info.Listener.FileDescriptor())
+		ego._logger.Log(core.LL_SYS, "Add socket fd %d to Main reactor", lis.(*ListenWrapper).FileDescriptor())
 		return true
 	},
 	)
@@ -107,6 +106,7 @@ func (ego *Poller) NeoSubReactor() *SubReactor {
 		_poller:          ego,
 		_epollDescriptor: -1,
 		_commandChannel:  make(chan cms.ICMS, 1),
+		_clientDescPool:  memory.NeoObjectPoolBared[EPoolEventDataSubReactor](1024, nil),
 	}
 	var err error
 	sr._epollDescriptor, err = inet.EpollCreate(0)

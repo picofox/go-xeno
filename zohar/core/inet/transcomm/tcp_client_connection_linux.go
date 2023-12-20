@@ -27,6 +27,7 @@ type TCPClientConnection struct {
 	_reactorIndex   uint32
 	_packetHeader   message_buffer.MessageHeader
 	_profiler       *prof.ConnectionProfiler
+	_ev             EPoolEventDataSubReactor
 	_lock           sync.Mutex
 }
 
@@ -60,6 +61,7 @@ func (ego *TCPClientConnection) reset() {
 	ego._fd = -1
 	ego._recvBuffer.Clear()
 	ego._sendBuffer.Clear()
+	ego._profiler.Reset()
 }
 
 func (ego *TCPClientConnection) OnDisconnected() int32 {
@@ -153,7 +155,6 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 	for {
 		rc := ego.checkRecvBufferCapacity()
 		if core.IsErrType(rc, core.EC_REACH_LIMIT) {
-			ego._client.Log(core.LL_ERR, "[SNH] Buffer reach max")
 			return core.MkErr(core.EC_REACH_LIMIT, 1) //TODO close connection
 		}
 		baPtr := ego._recvBuffer.InternalData()
@@ -184,8 +185,12 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 	}
 }
 
+func (ego *TCPClientConnection) GetEV() *EPoolEventDataSubReactor {
+	return &ego._ev
+}
+
 func (ego *TCPClientConnection) Identifier() int64 {
-	return ego._remoteEndPoint.Identifier()
+	return ego._localEndPoint.Identifier()
 }
 
 func (ego *TCPClientConnection) String() string {

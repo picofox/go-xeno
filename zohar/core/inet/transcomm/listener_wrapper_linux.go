@@ -11,7 +11,12 @@ type ListenWrapper struct {
 	_bindAddress inet.IPV4EndPoint
 	_fd          int
 	_file        *os.File
+	_ev          EPoolEventDataMainReactor
 	_server      *TCPServer
+}
+
+func (ego *ListenWrapper) GetEV() *EPoolEventDataMainReactor {
+	return &ego._ev
 }
 
 func (ego *ListenWrapper) FileDescriptor() int {

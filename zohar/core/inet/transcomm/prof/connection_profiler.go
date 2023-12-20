@@ -15,6 +15,11 @@ func NeoConnectionProfiler() *ConnectionProfiler {
 		_rtt: NeoRTTProf(),
 	}
 }
+
+func (ego *ConnectionProfiler) Reset() {
+	ego._rtt.Reset()
+}
+
 func (ego *ConnectionProfiler) String() string {
 	var ss strings.Builder
 	ss.WriteString(ego._rtt.String())

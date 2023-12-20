@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"fmt"
 	"runtime"
 	"sync"
 	"syscall"
@@ -10,6 +11,7 @@ import (
 	"xeno/zohar/core/cms"
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
+	"xeno/zohar/core/memory"
 )
 
 type EPoolEventDataSubReactor struct {
@@ -17,11 +19,15 @@ type EPoolEventDataSubReactor struct {
 }
 
 func BindSubReactorEventData(ptr unsafe.Pointer, data *EPoolEventDataSubReactor) {
+	fmt.Printf("Binding %p \n", data)
 	*(**EPoolEventDataSubReactor)(ptr) = data
 
 }
 
 func ExtractSubReactorEventData(ptr unsafe.Pointer) *EPoolEventDataSubReactor {
+	if ptr == nil {
+		panic("Binding nil ptr")
+	}
 	return *(**EPoolEventDataSubReactor)(ptr)
 }
 
@@ -31,6 +37,7 @@ type SubReactor struct {
 	_epollDescriptor int
 	_commandChannel  chan cms.ICMS
 	_connections     sync.Map
+	_clientDescPool  *memory.ObjectPoolBared[EPoolEventDataSubReactor]
 }
 
 func (ego *SubReactor) ResetEvent(size int) {
@@ -41,15 +48,17 @@ func (ego *SubReactor) ResetEvent(size int) {
 func (ego *SubReactor) onPullIn(evt *inet.EPollEvent) {
 	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
 	p.Connection.OnIncomingData()
-
 }
 
 func (ego *SubReactor) onPullOut(evt *inet.EPollEvent) {
 	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
+
 	p.Connection.OnWritable()
+	ego._poller.Log(core.LL_DEBUG, "Add conn %s, id %d", p.Connection.String(), p.Connection.Identifier())
+	ego._connections.Store(p.Connection.Identifier(), p.Connection)
+
 }
 func (ego *SubReactor) onPullHup(evt *inet.EPollEvent) {
-	ego._poller.Log(core.LL_INFO, "Sub PullHup:")
 	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
 	p.Connection.OnPeerClosed()
 }
@@ -57,7 +66,6 @@ func (ego *SubReactor) onPullHup(evt *inet.EPollEvent) {
 func (ego *SubReactor) onPullErr(evt *inet.EPollEvent) {
 	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
 	p.Connection.OnConnectingFailed()
-	ego._poller.Log(core.LL_ERR, "Sub PullErr:")
 }
 
 func (ego *SubReactor) HandlerEvent(evt *inet.EPollEvent) {
@@ -113,7 +121,7 @@ func (ego *SubReactor) Loop() int32 {
 		if nReady < 0 {
 			//msec = 1000
 
-			runtime.Gosched()
+			//runtime.Gosched()
 			continue
 		} else if nReady == 0 {
 			ego._connections.Range(
@@ -141,6 +149,7 @@ func (ego *SubReactor) RemoveConnection(conn IConnection) {
 		return
 	}
 	ego._connections.Delete(conn.Identifier())
+
 	err := inet.EpollCtl(ego._epollDescriptor, syscall.EPOLL_CTL_DEL, fd, nil)
 	if err != nil {
 		ego._poller.Log(core.LL_ERR, "Remove conn %s %d from Poller Failed.", conn.String(), fd)
@@ -148,20 +157,20 @@ func (ego *SubReactor) RemoveConnection(conn IConnection) {
 }
 
 func (ego *SubReactor) AddConnection(conn IConnection) {
+
 	ev := inet.EPollEvent{}
 	ev.Events = syscall.EPOLLIN | syscall.EPOLLRDHUP | syscall.EPOLLERR | syscall.EPOLLOUT | inet.EPOLLET
-	info := &EPoolEventDataSubReactor{
-		Connection: conn,
-	}
-	BindSubReactorEventData(unsafe.Pointer(&ev.Data), info)
 	fd := -1
 	if conn.Type() == CONNTYPE_TCP_SERVER {
 		fd = conn.(*TCPServerConnection)._fd
+		conn.(*TCPServerConnection).GetEV().Connection = conn
 	} else if conn.Type() == CONNTYPE_TCP_CLIENT {
+		conn.(*TCPClientConnection).GetEV().Connection = conn
 		fd = conn.(*TCPClientConnection)._fd
+		BindSubReactorEventData(unsafe.Pointer(&ev.Data), conn.(*TCPClientConnection).GetEV())
 	} else {
 		return
 	}
-	ego._connections.Store(conn.Identifier(), conn)
+
 	inet.EpollCtl(ego._epollDescriptor, syscall.EPOLL_CTL_ADD, fd, &ev)
 }

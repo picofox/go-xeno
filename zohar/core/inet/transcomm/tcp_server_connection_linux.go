@@ -23,6 +23,11 @@ type TCPServerConnection struct {
 	_server         *TCPServer
 	_reactorIndex   uint32
 	_profiler       *prof.ConnectionProfiler
+	_ev             EPoolEventDataSubReactor
+}
+
+func (ego *TCPServerConnection) GetEV() *EPoolEventDataSubReactor {
+	return &ego._ev
 }
 
 func (ego *TCPServerConnection) Pulse(ts int64) {

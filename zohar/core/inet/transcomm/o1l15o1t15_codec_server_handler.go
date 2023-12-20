@@ -15,11 +15,11 @@ type O1L15COT15CodecServerHandler struct {
 	_connection         *TCPServerConnection
 }
 
-func (ego *O1L15COT15CodecServerHandler) OnKeepAlive(nowTs int64) {
+func (ego *O1L15COT15CodecServerHandler) OnKeepAlive(ts int64, delta int32) {
 	if ego._keepalive != nil {
-		rtt := ego._keepalive.OnRoundTripBack(nowTs)
-		if rtt >= 0 {
-			ego._connection._profiler.GetRTTProf().OnUpdate(rtt)
+		ego._keepalive.OnRoundTripBack(ts)
+		if delta >= 0 {
+			ego._connection._profiler.GetRTTProf().OnUpdate(delta)
 			ego._connection._server.Log(core.LL_DEBUG, "conn %s prof: %s", ego._connection.String(), ego._connection._profiler.String())
 		}
 	}

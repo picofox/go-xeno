@@ -41,7 +41,7 @@
 					"NoDelay" : true,
 					"KeepAlive" : {
 						"Enable": true,
-						"TimeoutMillis": 2000,
+						"TimeoutMillis": 3000,
 						"MaxTries": 3,
 						"IntervalMillis": 6000
 					}

@@ -20,12 +20,16 @@ func KeepAliveMessageHandler(connection IConnection, message message_buffer.INet
 		if pkam.IsServer() {
 			connection.SendMessage(message, true)
 		} else {
-			connection.(*TCPClientConnection)._codec.OnKeepAlive(chrono.GetRealTimeMilli())
+			ts := chrono.GetRealTimeMilli()
+			delta := ts - pkam.TimeStamp()
+			connection.(*TCPClientConnection)._codec.OnKeepAlive(ts, int32(delta))
 		}
 
 	} else if connection.Type() == CONNTYPE_TCP_SERVER {
 		if pkam.IsServer() {
-			connection.(*TCPServerConnection)._codec.OnKeepAlive(chrono.GetRealTimeMilli())
+			ts := chrono.GetRealTimeMilli()
+			delta := ts - pkam.TimeStamp()
+			connection.(*TCPServerConnection)._codec.OnKeepAlive(ts, int32(delta))
 		} else {
 			connection.SendMessage(message, true)
 		}

@@ -15,11 +15,11 @@ type O1L15COT15CodecClientHandler struct {
 	_connection         *TCPClientConnection
 }
 
-func (ego *O1L15COT15CodecClientHandler) OnKeepAlive(nowTs int64) {
+func (ego *O1L15COT15CodecClientHandler) OnKeepAlive(ts int64, delta int32) {
 	if ego._keepalive != nil {
-		rtt := ego._keepalive.OnRoundTripBack(nowTs)
-		if rtt >= 0 {
-			ego._connection._profiler.GetRTTProf().OnUpdate(rtt)
+		ego._keepalive.OnRoundTripBack(ts)
+		if delta >= 0 {
+			ego._connection._profiler.GetRTTProf().OnUpdate(delta)
 			ego._connection._client.Log(core.LL_DEBUG, "conn %s prof: %s", ego._connection.String(), ego._connection._profiler.String())
 		}
 	}
@@ -27,7 +27,10 @@ func (ego *O1L15COT15CodecClientHandler) OnKeepAlive(nowTs int64) {
 
 func (ego *O1L15COT15CodecClientHandler) Pulse(conn IConnection, nowTs int64) {
 	if ego._keepalive != nil {
-		ego._keepalive.Pulse(conn, nowTs)
+		rc := ego._keepalive.Pulse(conn, nowTs)
+		if core.IsErrType(rc, core.EC_TCP_CONNECT_ERROR) {
+			ego._connection.OnConnectingFailed()
+		}
 	}
 }
 
@@ -94,6 +97,7 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 
 func (ego *O1L15COT15CodecClientHandler) Reset() {
 	ego._largeMessageBuffer.Reset()
+	ego._keepalive.Reset()
 }
 
 func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnection) (any, int32) {

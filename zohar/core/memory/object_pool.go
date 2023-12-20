@@ -1,51 +1,40 @@
 package memory
 
 import (
-	"container/list"
+	"sync"
 )
 
 type ObjectPool[T any] struct {
-	_freeList    *list.List
-	_eleCreation func() *T
-	_totalCount  int
-	_freeCount   int
+	ObjectPoolBared[T]
+	_lock sync.Mutex
+}
+
+func (ego *ObjectPool[T]) String() string {
+	return ego.ObjectPoolBared.String()
 }
 
 func (ego *ObjectPool[T]) Length() int {
-	return ego._freeList.Len()
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+	return ego.ObjectPoolBared.Length()
 }
 
-func (ego *ObjectPool[T]) Get() *T {
-	f := ego._freeList.Front()
-	if f == nil {
-		ele := ego._eleCreation()
-		ego._totalCount++
-		ego._freeCount--
-		return ele
-	}
-	ret := f.Value
-	ego._freeList.Remove(f)
-	ego._freeCount--
-	return ret.(*T)
+func (ego *ObjectPool[T]) Alloc() *T {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+	return ego.ObjectPoolBared.Alloc()
 }
 
-func (ego *ObjectPool[T]) Put(element *T) {
-	ego._freeList.PushBack(element)
-	ego._freeCount++
+func (ego *ObjectPool[T]) Free(element **T) int32 {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+	return ego.ObjectPoolBared.Free(element)
 }
 
-func NeoObjectPool[T any](initialElements int, elementCreation func() *T) *ObjectPool[T] {
-	l := list.New()
+func NeoObjectPool[T any](initialElements int, funInit func(*T)) *ObjectPool[T] {
 	op := &ObjectPool[T]{
-		_freeList:    l,
-		_eleCreation: elementCreation,
-		_totalCount:  0,
+		ObjectPoolBared: *NeoObjectPoolBared(initialElements, funInit),
 	}
-	for i := 0; i < initialElements; i++ {
-		ele := op._eleCreation()
-		op._freeList.PushBack(ele)
-	}
-	op._totalCount = initialElements
-	op._freeCount = initialElements
+
 	return op
 }

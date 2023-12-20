@@ -18,7 +18,7 @@ func Test_RingByteBuffer_Functional_Basic(t *testing.T) {
 	buf = memory.NeoRingBuffer(10)
 	buf.WriteRawBytes(srcBa, 0, 10)
 
-	r0, r1 := buf.BytesRef()
+	r0, r1 := buf.BytesRef(-1)
 	if r1 != nil {
 		t.Errorf("Simple 1st Write 10bs Failed")
 	}
@@ -59,7 +59,7 @@ func Test_RingByteBuffer_Functional_Basic(t *testing.T) {
 	}
 
 	buf.WriteRawBytes(srcBa, 2, 8)
-	r0, r1 = buf.BytesRef()
+	r0, r1 = buf.BytesRef(-1)
 	if r1 == nil {
 		t.Errorf("Simple 2st Write 10bs Failed")
 	}
