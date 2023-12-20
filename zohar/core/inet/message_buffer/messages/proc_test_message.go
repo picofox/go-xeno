@@ -89,11 +89,11 @@ func (ego *ProcTestMessage) Validate() bool {
 		panic("F64 failed.")
 		return false
 	}
-	if ego.U80 != uint8(ego.TimeStamp%255) {
+	if ego.U80 != uint8(ego.TimeStamp%256) {
 		panic("U80 failed.")
 		return false
 	}
-	if ego.U160 != uint16(ego.TimeStamp%65535) {
+	if ego.U160 != uint16(ego.TimeStamp%65536) {
 		panic("U160 failed.")
 		return false
 	}
@@ -222,7 +222,7 @@ func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
 		I641:      (1 << 63) - 1,
 		F32:       2.71828,
 		F64:       3.141592653,
-		U80:       uint8(v % 255),
+		U80:       uint8(v % 256),
 		U160:      uint16(v % 65536),
 		U320:      uint32(v % (0xFFFFFFFF)),
 		U640:      uint64(v),
