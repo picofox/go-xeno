@@ -58,11 +58,11 @@ func (ego *ProcTestMessage) Validate() bool {
 		panic("I161 failed.")
 		return false
 	}
-	if ego.I320 != -(2 ^ 31) {
+	if ego.I320 != -(1 << 31) {
 		panic("I320 failed.")
 		return false
 	}
-	if ego.I321 != (2^31)-1 {
+	if ego.I321 != (1<<31)-1 {
 		panic("I321 failed.")
 		return false
 	}
