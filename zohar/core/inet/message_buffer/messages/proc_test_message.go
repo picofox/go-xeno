@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
@@ -140,7 +141,7 @@ func (ego *ProcTestMessage) Validate() bool {
 	}
 
 	md5 := md5.Sum([]byte(ego.TextLong))
-	if md5 != ego.MD5 {
+	if bytes.Compare(md5[:], ego.MD5) != 0 {
 		panic("StrSliceEmpty failed.")
 		return false
 	}
