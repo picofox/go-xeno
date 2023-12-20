@@ -10,8 +10,8 @@ import (
 )
 
 type ProcTestMessage struct {
-	_timeStamp int64  `json:"timestamp"`
-	_str0      string `json:"str0"`
+	TimeStamp int64  `json:"Timestamp"`
+	Str0      string `json:"Str0"`
 }
 
 func (ego *ProcTestMessage) String() string {
@@ -23,9 +23,9 @@ func (ego *ProcTestMessage) String() string {
 }
 
 func (ego *ProcTestMessage) Validate() bool {
-	str0 := "_str0" + strconv.FormatInt(ego._timeStamp, 10)
-	if str0 != ego._str0 {
-		panic("_str0 validation failed.")
+	str0 := "Str0" + strconv.FormatInt(ego.TimeStamp, 10)
+	if str0 != ego.Str0 {
+		panic("Str0 validation failed.")
 		return false
 	}
 	return true
@@ -35,8 +35,8 @@ func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	hdrPos := byteBuf.WritePos()
 	byteBuf.WriteInt16(-1)
 	byteBuf.WriteInt16(ego.Command())
-	byteBuf.WriteInt64(ego._timeStamp)
-	byteBuf.WriteString(ego._str0)
+	byteBuf.WriteInt64(ego.TimeStamp)
+	byteBuf.WriteString(ego.Str0)
 
 	curPos := byteBuf.WritePos()
 	var len64 int64 = curPos - hdrPos - message_buffer.O1L15O1T15_HEADER_SIZE
@@ -51,8 +51,8 @@ func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 func (ego *ProcTestMessage) Deserialize(buffer memory.IByteBuffer) int32 {
 	var rc = int32(0)
 	ts, _ := buffer.ReadInt64()
-	ego._timeStamp = ts
-	ego._str0, rc = buffer.ReadString()
+	ego.TimeStamp = ts
+	ego.Str0, rc = buffer.ReadString()
 
 	return rc
 }
@@ -68,11 +68,11 @@ func ProcTestMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetMe
 
 func NeoProcTestMessage() message_buffer.INetMessage {
 	m := ProcTestMessage{
-		_timeStamp: chrono.GetRealTimeMilli(),
-		_str0:      "",
+		TimeStamp: chrono.GetRealTimeMilli(),
+		Str0:      "",
 	}
 
-	m._str0 = "_str0" + strconv.FormatInt(m._timeStamp, 10)
+	m.Str0 = "Str0" + strconv.FormatInt(m.TimeStamp, 10)
 
 	return &m
 }

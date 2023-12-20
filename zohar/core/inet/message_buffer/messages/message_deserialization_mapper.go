@@ -44,5 +44,5 @@ func GetDefaultMessageBufferDeserializationMapper() *MessageDeserializationMappe
 
 func init() {
 	GetDefaultMessageBufferDeserializationMapper().Register(KEEP_ALIVE_MESSAGE_ID, KeepAliveMessageDeserialize)
-	GetDefaultMessageBufferDeserializationMapper().Register(KEEP_ALIVE_MESSAGE_ID, ProcTestMessageDeserialize)
+	GetDefaultMessageBufferDeserializationMapper().Register(PROC_TEST_MESSAGE_ID, ProcTestMessageDeserialize)
 }
