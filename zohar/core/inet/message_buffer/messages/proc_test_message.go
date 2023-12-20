@@ -10,18 +10,20 @@ import (
 )
 
 type ProcTestMessage struct {
-	TimeStamp int64  `json:"Timestamp"`
-	Str0      string `json:"Str0"`
-	StrEmpty  string `json:"StrEmpty"`
-	I80       int8   `json:"I80"`
-	I81       int8   `json:"I81"`
-	I160      int16  `json:"I160"`
-	I161      int16  `json:"I161"`
-	I320      int32  `json:"I320"`
-	I321      int32  `json:"I321"`
-	I640      int64  `json:"I640"`
-	I641      int64  `json:"I641"`
-	IsServer  bool   `json:"IsServer"`
+	TimeStamp int64   `json:"Timestamp"`
+	Str0      string  `json:"Str0"`
+	StrEmpty  string  `json:"StrEmpty"`
+	I80       int8    `json:"I80"`
+	I81       int8    `json:"I81"`
+	I160      int16   `json:"I160"`
+	I161      int16   `json:"I161"`
+	I320      int32   `json:"I320"`
+	I321      int32   `json:"I321"`
+	I640      int64   `json:"I640"`
+	I641      int64   `json:"I641"`
+	IsServer  bool    `json:"IsServer"`
+	F32       float32 `json:"F32"`
+	F64       float64 `json:"F64"`
 }
 
 func (ego *ProcTestMessage) String() string {
@@ -75,6 +77,14 @@ func (ego *ProcTestMessage) Validate() bool {
 		panic("I641 failed.")
 		return false
 	}
+	if ego.F32 != 2.71828 {
+		panic("F32 failed.")
+		return false
+	}
+	if ego.F64 != 3.141592653 {
+		panic("F64 failed.")
+		return false
+	}
 	return true
 }
 
@@ -94,6 +104,8 @@ func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	byteBuf.WriteInt64(ego.I640)
 	byteBuf.WriteInt64(ego.I641)
 	byteBuf.WriteBool(ego.IsServer)
+	byteBuf.WriteFloat32(2.71828)
+	byteBuf.WriteFloat64(3.141592653)
 
 	curPos := byteBuf.WritePos()
 	var len64 int64 = curPos - hdrPos - message_buffer.O1L15O1T15_HEADER_SIZE
@@ -142,7 +154,12 @@ func (ego *ProcTestMessage) Deserialize(buffer memory.IByteBuffer) int32 {
 	if ego.IsServer, rc = buffer.ReadBool(); core.Err(rc) {
 		return rc
 	}
-
+	if ego.F32, rc = buffer.ReadFloat32(); core.Err(rc) {
+		return rc
+	}
+	if ego.F64, rc = buffer.ReadFloat64(); core.Err(rc) {
+		return rc
+	}
 	return rc
 }
 
@@ -167,6 +184,8 @@ func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
 		I321:      2147483647,
 		I640:      -(1 << 63),
 		I641:      (1 << 63) - 1,
+		F32:       2.71828,
+		F64:       3.141592653,
 		IsServer:  isClient,
 	}
 
