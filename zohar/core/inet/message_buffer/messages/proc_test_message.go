@@ -11,25 +11,27 @@ import (
 )
 
 type ProcTestMessage struct {
-	TimeStamp int64    `json:"Timestamp"`
-	Str0      string   `json:"Str0"`
-	StrEmpty  string   `json:"StrEmpty"`
-	I80       int8     `json:"I80"`
-	I81       int8     `json:"I81"`
-	I160      int16    `json:"I160"`
-	I161      int16    `json:"I161"`
-	I320      int32    `json:"I320"`
-	I321      int32    `json:"I321"`
-	I640      int64    `json:"I640"`
-	I641      int64    `json:"I641"`
-	IsServer  bool     `json:"IsServer"`
-	F32       float32  `json:"F32"`
-	F64       float64  `json:"F64"`
-	U80       uint8    `json:"U80"`
-	U160      uint16   `json:"U160"`
-	U320      uint32   `json:"U320"`
-	U640      uint64   `json:"U640"`
-	StrSlice  []string `json:"StrSlice"`
+	TimeStamp     int64    `json:"Timestamp"`
+	Str0          string   `json:"Str0"`
+	StrEmpty      string   `json:"StrEmpty"`
+	I80           int8     `json:"I80"`
+	I81           int8     `json:"I81"`
+	I160          int16    `json:"I160"`
+	I161          int16    `json:"I161"`
+	I320          int32    `json:"I320"`
+	I321          int32    `json:"I321"`
+	I640          int64    `json:"I640"`
+	I641          int64    `json:"I641"`
+	IsServer      bool     `json:"IsServer"`
+	F32           float32  `json:"F32"`
+	F64           float64  `json:"F64"`
+	U80           uint8    `json:"U80"`
+	U160          uint16   `json:"U160"`
+	U320          uint32   `json:"U320"`
+	U640          uint64   `json:"U640"`
+	StrSlice      []string `json:"StrSlice"`
+	StrSliceNull  []string `json:"StrSliceNull"`
+	StrSliceEmpty []string `json:"StrSliceEmpty"`
 }
 
 func (ego *ProcTestMessage) String() string {
@@ -123,6 +125,16 @@ func (ego *ProcTestMessage) Validate() bool {
 		}
 	}
 
+	if ego.StrSliceNull != nil {
+		panic("StrSliceNULL failed.")
+		return false
+	}
+
+	if len(ego.StrSliceEmpty) != 0 {
+		panic("StrSliceEmpty failed.")
+		return false
+	}
+
 	return true
 }
 
@@ -149,7 +161,8 @@ func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	byteBuf.WriteUInt32(ego.U320)
 	byteBuf.WriteUInt64(ego.U640)
 	byteBuf.WriteStrings(ego.StrSlice)
-
+	byteBuf.WriteStrings(ego.StrSliceNull)
+	byteBuf.WriteStrings(ego.StrSliceEmpty)
 	curPos := byteBuf.WritePos()
 	var len64 int64 = curPos - hdrPos - message_buffer.O1L15O1T15_HEADER_SIZE
 	if len64 <= message_buffer.MAX_PACKET_BODY_SIZE {
@@ -218,6 +231,12 @@ func (ego *ProcTestMessage) Deserialize(buffer memory.IByteBuffer) int32 {
 	if ego.StrSlice, rc = buffer.ReadStrings(); core.Err(rc) {
 		return rc
 	}
+	if ego.StrSliceNull, rc = buffer.ReadStrings(); core.Err(rc) {
+		return rc
+	}
+	if ego.StrSliceEmpty, rc = buffer.ReadStrings(); core.Err(rc) {
+		return rc
+	}
 	return rc
 }
 
@@ -233,24 +252,26 @@ func ProcTestMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetMe
 func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
 	v := chrono.GetRealTimeMilli()
 	m := ProcTestMessage{
-		TimeStamp: v,
-		Str0:      "",
-		I80:       -128,
-		I81:       127,
-		I160:      -32768,
-		I161:      32767,
-		I320:      -2147483648,
-		I321:      2147483647,
-		I640:      -(1 << 63),
-		I641:      (1 << 63) - 1,
-		F32:       2.71828,
-		F64:       3.141592653,
-		U80:       uint8(v % 256),
-		U160:      uint16(v % 65536),
-		U320:      uint32(v % (0xFFFFFFFF)),
-		U640:      uint64(v),
-		StrSlice:  make([]string, 11),
-		IsServer:  isClient,
+		TimeStamp:     v,
+		Str0:          "",
+		I80:           -128,
+		I81:           127,
+		I160:          -32768,
+		I161:          32767,
+		I320:          -2147483648,
+		I321:          2147483647,
+		I640:          -(1 << 63),
+		I641:          (1 << 63) - 1,
+		F32:           2.71828,
+		F64:           3.141592653,
+		U80:           uint8(v % 256),
+		U160:          uint16(v % 65536),
+		U320:          uint32(v % (0xFFFFFFFF)),
+		U640:          uint64(v),
+		StrSlice:      make([]string, 11),
+		StrSliceNull:  nil,
+		StrSliceEmpty: make([]string, 0),
+		IsServer:      isClient,
 	}
 
 	for i := 0; i < 11; i++ {
