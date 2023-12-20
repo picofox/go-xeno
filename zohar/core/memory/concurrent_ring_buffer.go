@@ -1,10 +1,97 @@
 package memory
 
-import "sync"
+import (
+	"sync"
+	"xeno/zohar/core"
+)
 
 type ConcurrentRingBuffer struct {
 	_ringBuffer *RingBuffer
 	_lock       sync.RWMutex
+}
+
+func (ego *ConcurrentRingBuffer) ReadStrings() ([]string, int32) {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+
+	l, rc := ego._ringBuffer.ReadInt32()
+	if l < 0 {
+		return nil, core.MkSuccess(0)
+	} else if l == 0 {
+		return make([]string, 0), core.MkSuccess(0)
+	}
+	r := make([]string, l)
+	for i := int32(0); i < l; i++ {
+		r[i], rc = ego._ringBuffer.ReadString()
+		if core.Err(rc) {
+			return nil, rc
+		}
+	}
+	return r, core.MkSuccess(0)
+}
+
+func (ego *ConcurrentRingBuffer) ResizeTo(i int64) int64 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *ConcurrentRingBuffer) PeekBytes() ([]byte, int32, int64, int64) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *ConcurrentRingBuffer) PeekString() (string, int32, int64, int64) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *ConcurrentRingBuffer) ReadString() (string, int32) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *ConcurrentRingBuffer) WriteString(s string) int32 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *ConcurrentRingBuffer) BytesRef(i int64) ([]byte, []byte) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *ConcurrentRingBuffer) ReadPos() int64 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *ConcurrentRingBuffer) ReaderSeek(whence int, offset int64) bool {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *ConcurrentRingBuffer) WriterSeek(whence int, offset int64) bool {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *ConcurrentRingBuffer) InternalData() *[]byte {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *ConcurrentRingBuffer) WriteStrings(strs []string) int32 {
+	ego._lock.RLock()
+	defer ego._lock.RUnlock()
+	l := len(strs)
+	ego._ringBuffer.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego._ringBuffer.WriteString(strs[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
 }
 
 func (ego *ConcurrentRingBuffer) Capacity() int64 {
@@ -316,3 +403,5 @@ func NeoConcurrentRingBuffer(capacity int64) *ConcurrentRingBuffer {
 	}
 	return bf
 }
+
+var _ IByteBuffer = &ConcurrentRingBuffer{}

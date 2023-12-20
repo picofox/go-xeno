@@ -12,6 +12,39 @@ type LinearBuffer struct {
 	_data     []byte
 }
 
+func (ego *LinearBuffer) WriteStrings(strs []string) int32 {
+	if strs == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(strs)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteString(strs[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *LinearBuffer) ReadStrings() ([]string, int32) {
+	l, rc := ego.ReadInt32()
+	if l < 0 {
+		return nil, core.MkSuccess(0)
+	} else if l == 0 {
+		return make([]string, 0), core.MkSuccess(0)
+	}
+	r := make([]string, l)
+	for i := int32(0); i < l; i++ {
+		r[i], rc = ego.ReadString()
+		if core.Err(rc) {
+			return nil, rc
+		}
+	}
+	return r, core.MkSuccess(0)
+}
+
 func (ego *LinearBuffer) Compact() int64 {
 	if ego._beginPos > 0 {
 		if ego._length > 0 {
