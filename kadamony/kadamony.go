@@ -75,8 +75,11 @@ func main() {
 	rc = cli.Initialize()
 	rc = cli.Start()
 
-	m := messages.NeoProcTestMessage()
-	cli.SendMessage(m, true)
+	for {
+		m := messages.NeoProcTestMessage(false)
+		cli.SendMessage(m, true)
+		time.Sleep(100 * time.Millisecond)
+	}
 
 	time.Sleep(10000 * time.Second)
 	cli.Stop()
