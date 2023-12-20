@@ -78,7 +78,7 @@ func main() {
 	for {
 		m := messages.NeoProcTestMessage(false)
 		cli.SendMessage(m, true)
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(1000000000000 * time.Millisecond)
 	}
 
 	time.Sleep(10000 * time.Second)
