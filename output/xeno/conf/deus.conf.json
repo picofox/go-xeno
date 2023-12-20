@@ -57,7 +57,7 @@
 					"Codec" : "O1L15COT15DecodeServerHandler",
 					"NoDelay" : true,
 					"KeepAlive" : {
-						"Enable": true,
+						"Enable": false,
 						"TimeoutMillis": 2000,
 						"MaxTries": 3,
 						"IntervalMillis": 12000
