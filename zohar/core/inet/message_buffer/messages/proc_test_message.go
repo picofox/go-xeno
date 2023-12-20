@@ -21,6 +21,7 @@ type ProcTestMessage struct {
 	I321      int32  `json:"I321"`
 	I640      int64  `json:"I640"`
 	I641      int64  `json:"I641"`
+	IsServer  bool   `json:"IsServer"`
 }
 
 func (ego *ProcTestMessage) String() string {
@@ -92,6 +93,7 @@ func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	byteBuf.WriteInt32(ego.I321)
 	byteBuf.WriteInt64(ego.I640)
 	byteBuf.WriteInt64(ego.I641)
+	byteBuf.WriteBool(ego.IsServer)
 
 	curPos := byteBuf.WritePos()
 	var len64 int64 = curPos - hdrPos - message_buffer.O1L15O1T15_HEADER_SIZE
@@ -137,6 +139,9 @@ func (ego *ProcTestMessage) Deserialize(buffer memory.IByteBuffer) int32 {
 	if ego.I641, rc = buffer.ReadInt64(); core.Err(rc) {
 		return rc
 	}
+	if ego.IsServer, rc = buffer.ReadBool(); core.Err(rc) {
+		return rc
+	}
 
 	return rc
 }
@@ -150,7 +155,7 @@ func ProcTestMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetMe
 	return &m
 }
 
-func NeoProcTestMessage() message_buffer.INetMessage {
+func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
 	m := ProcTestMessage{
 		TimeStamp: chrono.GetRealTimeMilli(),
 		Str0:      "",
@@ -162,6 +167,7 @@ func NeoProcTestMessage() message_buffer.INetMessage {
 		I321:      2147483647,
 		I640:      -(1 << 63),
 		I641:      (1 << 63) - 1,
+		IsServer:  isClient,
 	}
 
 	m.Str0 = "Str0" + strconv.FormatInt(m.TimeStamp, 10)

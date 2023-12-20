@@ -16,8 +16,24 @@ func init() {
 func ProcTestMessageHandler(connection IConnection, message message_buffer.INetMessage) int32 {
 	var m *messages.ProcTestMessage = message.(*messages.ProcTestMessage)
 	fmt.Println(m.String())
-	if !m.Validate() {
-		panic("Message Validation Failed")
+
+	if connection.Type() == CONNTYPE_TCP_CLIENT {
+		if m.IsServer {
+			connection.SendMessage(message, true)
+		} else {
+			if !m.Validate() {
+				panic("Message Validation Failed")
+			}
+		}
+
+	} else if connection.Type() == CONNTYPE_TCP_SERVER {
+		if m.IsServer {
+			if !m.Validate() {
+				panic("Message Validation Failed")
+			}
+		} else {
+			connection.SendMessage(message, true)
+		}
 	}
 
 	return core.MkErr(core.EC_ALREADY_DONE, 0)
