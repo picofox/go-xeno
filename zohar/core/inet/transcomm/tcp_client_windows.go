@@ -34,6 +34,13 @@ func (ego *TCPClient) Initialize() int32 {
 	return core.MkSuccess(0)
 }
 
+func (ego *TCPClient) Stop() int32 {
+	for i := 0; i < len(ego._connections); i++ {
+		ego._connections[i].reset()
+	}
+	return core.MkSuccess(0)
+}
+
 func (ego *TCPClient) Start() int32 {
 	for _, c := range ego._connections {
 		for {

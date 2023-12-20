@@ -26,6 +26,10 @@ type TCPClientConnection struct {
 	_isConnected    bool
 }
 
+func (ego *TCPClientConnection) reset() {
+
+}
+
 func (ego *TCPClientConnection) Pulse(ts int64) {
 	//TODO implement me
 	panic("implement me")
