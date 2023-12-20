@@ -160,8 +160,8 @@ func NeoProcTestMessage() message_buffer.INetMessage {
 		I161:      32767,
 		I320:      -2147483648,
 		I321:      2147483647,
-		I640:      -2 ^ 63,
-		I641:      2 ^ 63 - 1,
+		I640:      -(2 ^ 63),
+		I641:      (2 ^ 63) - 1,
 	}
 
 	m.Str0 = "Str0" + strconv.FormatInt(m.TimeStamp, 10)
