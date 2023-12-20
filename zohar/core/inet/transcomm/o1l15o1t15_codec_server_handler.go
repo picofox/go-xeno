@@ -116,6 +116,11 @@ func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnecti
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
 
+		rc := GetDefaultMessageHandlerMapper().Handle(connection, msg)
+		if core.IsErrType(rc, core.EC_ALREADY_DONE) {
+			return nil, core.MkSuccess(0)
+		}
+
 		return msg, core.MkSuccess(0)
 	}
 

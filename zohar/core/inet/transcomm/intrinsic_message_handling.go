@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"fmt"
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/inet/message_buffer"
@@ -9,6 +10,17 @@ import (
 
 func init() {
 	GetDefaultMessageHandlerMapper().Register(messages.KEEP_ALIVE_MESSAGE_ID, KeepAliveMessageHandler)
+	GetDefaultMessageHandlerMapper().Register(messages.PROC_TEST_MESSAGE_ID, ProcTestMessageHandler)
+}
+
+func ProcTestMessageHandler(connection IConnection, message message_buffer.INetMessage) int32 {
+	var m *messages.ProcTestMessage = message.(*messages.ProcTestMessage)
+	fmt.Println(m.String())
+	if !m.Validate() {
+		panic("Message Validation Failed")
+	}
+
+	return core.MkErr(core.EC_ALREADY_DONE, 0)
 }
 
 func KeepAliveMessageHandler(connection IConnection, message message_buffer.INetMessage) int32 {
