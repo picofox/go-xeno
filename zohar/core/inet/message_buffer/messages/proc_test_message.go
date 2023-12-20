@@ -24,6 +24,10 @@ type ProcTestMessage struct {
 	IsServer  bool    `json:"IsServer"`
 	F32       float32 `json:"F32"`
 	F64       float64 `json:"F64"`
+	U80       uint8   `json:"U80"`
+	U160      uint16  `json:"U160"`
+	U320      uint32  `json:"U320"`
+	U640      uint64  `json:"U640"`
 }
 
 func (ego *ProcTestMessage) String() string {
@@ -85,6 +89,22 @@ func (ego *ProcTestMessage) Validate() bool {
 		panic("F64 failed.")
 		return false
 	}
+	if ego.U80 != uint8(ego.TimeStamp%255) {
+		panic("U80 failed.")
+		return false
+	}
+	if ego.U160 != uint16(ego.TimeStamp%65535) {
+		panic("U160 failed.")
+		return false
+	}
+	if ego.U320 != uint32(ego.TimeStamp%0xFFFFFFFF) {
+		panic("U320 failed.")
+		return false
+	}
+	if ego.U640 != uint64(ego.TimeStamp) {
+		panic("U640 failed.")
+		return false
+	}
 	return true
 }
 
@@ -104,9 +124,12 @@ func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	byteBuf.WriteInt64(ego.I640)
 	byteBuf.WriteInt64(ego.I641)
 	byteBuf.WriteBool(ego.IsServer)
-	byteBuf.WriteFloat32(2.71828)
-	byteBuf.WriteFloat64(3.141592653)
-
+	byteBuf.WriteFloat32(ego.F32)
+	byteBuf.WriteFloat64(ego.F64)
+	byteBuf.WriteUInt8(ego.U80)
+	byteBuf.WriteUInt16(ego.U160)
+	byteBuf.WriteUInt32(ego.U320)
+	byteBuf.WriteUInt64(ego.U640)
 	curPos := byteBuf.WritePos()
 	var len64 int64 = curPos - hdrPos - message_buffer.O1L15O1T15_HEADER_SIZE
 	if len64 <= message_buffer.MAX_PACKET_BODY_SIZE {
@@ -160,6 +183,18 @@ func (ego *ProcTestMessage) Deserialize(buffer memory.IByteBuffer) int32 {
 	if ego.F64, rc = buffer.ReadFloat64(); core.Err(rc) {
 		return rc
 	}
+	if ego.U80, rc = buffer.ReadUInt8(); core.Err(rc) {
+		return rc
+	}
+	if ego.U160, rc = buffer.ReadUInt16(); core.Err(rc) {
+		return rc
+	}
+	if ego.U320, rc = buffer.ReadUInt32(); core.Err(rc) {
+		return rc
+	}
+	if ego.U640, rc = buffer.ReadUInt64(); core.Err(rc) {
+		return rc
+	}
 	return rc
 }
 
@@ -173,8 +208,9 @@ func ProcTestMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetMe
 }
 
 func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
+	v := chrono.GetRealTimeMilli()
 	m := ProcTestMessage{
-		TimeStamp: chrono.GetRealTimeMilli(),
+		TimeStamp: v,
 		Str0:      "",
 		I80:       -128,
 		I81:       127,
@@ -186,7 +222,12 @@ func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
 		I641:      (1 << 63) - 1,
 		F32:       2.71828,
 		F64:       3.141592653,
-		IsServer:  isClient,
+		U80:       uint8(v % 255),
+		U160:      uint16(v % 65536),
+		U320:      uint32(v % (0xFFFFFFFF)),
+		U640:      uint64(v),
+
+		IsServer: isClient,
 	}
 
 	m.Str0 = "Str0" + strconv.FormatInt(m.TimeStamp, 10)
