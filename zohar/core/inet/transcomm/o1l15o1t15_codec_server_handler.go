@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"fmt"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
@@ -37,12 +38,14 @@ func (ego *O1L15COT15CodecServerHandler) Reset() {
 
 func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnection) (any, int32) {
 	if connection._recvBuffer.ReadAvailable() <= message_buffer.O1L15O1T15_HEADER_SIZE {
+		fmt.Printf("%d <4  (%d)return EA\n", connection._recvBuffer.ReadAvailable(), connection._recvBuffer.Capacity())
 		return nil, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
 	o1AndLen, _, _, _ := connection._recvBuffer.PeekUInt16()
 	frameLength := int64(o1AndLen & 0x7FFF)
 	if connection._recvBuffer.ReadAvailable() < int64(frameLength)+message_buffer.O1L15O1T15_HEADER_SIZE {
 		connection._recvBuffer.ResizeTo(message_buffer.MAX_BUFFER_MAX_CAPACITY)
+		fmt.Printf("%d<%d (%d) return EA\n", connection._recvBuffer.ReadAvailable(), frameLength, connection._recvBuffer.Capacity())
 		return nil, core.MkErr(core.EC_TRY_AGAIN, 2)
 	}
 
@@ -55,6 +58,8 @@ func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnecti
 	cmd := int16(o2AndType & 0x7FFF)
 
 	//connection._recvBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, frameLength)
+
+	fmt.Printf("recv: %d:%d:%t:%t\n", frameLength, cmd, opt1, opt2)
 
 	if !opt1 && !opt2 {
 		beginPos := connection._recvBuffer.ReadPos()
