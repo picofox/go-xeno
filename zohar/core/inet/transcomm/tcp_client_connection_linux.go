@@ -252,9 +252,9 @@ func (ego *TCPClientConnection) sendNImmediately(ba []byte, offset int64, length
 }
 
 func (ego *TCPClientConnection) sendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
-	if ego._sendBuffer.WritePos()+length >= message_buffer.MAX_BUFFER_MAX_CAPACITY {
-		ego.flush()
-	}
+	//if ego._sendBuffer.WritePos()+length >= message_buffer.MAX_BUFFER_MAX_CAPACITY {
+	//	ego.flush()
+	//}
 	nLeft, rc := ego.sendNImmediately(ba, offset, length)
 	if core.Err(rc) {
 		return length - nLeft, rc
@@ -269,29 +269,10 @@ func (ego *TCPClientConnection) SendImmediately(ba []byte, offset int64, length 
 }
 
 func (ego *TCPClientConnection) Send(ba []byte, offset int64, length int64) (int64, int32) {
-	ego._lock.Lock()
-	defer ego._lock.Unlock()
-	if ego._sendBuffer.WritePos()+length <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
-		ego._sendBuffer.WriteRawBytes(ba, offset, length)
-		return length, core.MkSuccess(0)
-	} else if length <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
-		nDone, rc := ego.flush()
-		if core.Err(rc) {
-			return nDone, rc
-		}
-		ego._sendBuffer.WriteRawBytes(ba, offset, length)
-		return length, core.MkSuccess(0)
-	} else {
-		nDone, rc := ego.flush()
-		if core.Err(rc) {
-			return nDone, rc
-		}
-		nDone, rc = ego.sendImmediately(ba, offset, length)
-		return int64(nDone), rc
-	}
+	return ego.sendImmediately(ba, offset, length)
 }
 
-func (ego *TCPClientConnection) flush() (int64, int32) {
+func (ego *TCPClientConnection) flushN() (int64, int32) {
 	if ego._sendBuffer.ReadAvailable() <= 0 {
 		return 0, core.MkSuccess(0)
 	}

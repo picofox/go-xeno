@@ -36,7 +36,7 @@ func (ego *O1L15COT15CodecServerHandler) Reset() {
 }
 
 func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnection) (any, int32) {
-	if connection._recvBuffer.ReadAvailable() < 4 {
+	if connection._recvBuffer.ReadAvailable() <= message_buffer.O1L15O1T15_HEADER_SIZE {
 		return nil, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
 	o1AndLen, _, _, _ := connection._recvBuffer.PeekUInt16()
@@ -67,7 +67,6 @@ func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnecti
 		if endPos < beginPos {
 			delta = connection._recvBuffer.Capacity() - beginPos + endPos
 		}
-
 		if delta != frameLength {
 			connection._server.Log(core.LL_ERR, "Message (CMD:%d) Length Validation Failed, frame length is %d, but got %d read", cmd, frameLength, delta)
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
@@ -116,11 +115,6 @@ func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnecti
 			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
 
-		rc := GetDefaultMessageHandlerMapper().Handle(connection, msg)
-		if core.IsErrType(rc, core.EC_ALREADY_DONE) {
-			return nil, core.MkSuccess(0)
-		}
-
 		return msg, core.MkSuccess(0)
 	}
 
@@ -137,24 +131,30 @@ func (ego *O1L15COT15CodecServerHandler) OnSend(connection *TCPServerConnection,
 	var byteBuf memory.IByteBuffer = connection._sendBuffer
 	var cmd int16 = message.Command()
 
-	if tLen <= message_buffer.MAX_PACKET_BODY_SIZE {
-		if !bFlush && byteBuf.WriteAvailable() > tLen {
-			return core.MkSuccess(1)
+	if tLen <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
+		_, rc := connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+		if core.Err(rc) {
+			return rc
 		}
-		connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), byteBuf.ReadAvailable())
 		byteBuf.Clear()
 		return core.MkSuccess(0)
 
 	} else { //large message
-		connection.flush()
-		rIndex := int64(4)
+		rIndex := int64(message_buffer.O1L15O1T15_HEADER_SIZE)
 		ego._packetHeader.Set(true, false, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
-		byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, message_buffer.O1L15O1T15_HEADER_SIZE)
+		if !byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, message_buffer.O1L15O1T15_HEADER_SIZE) {
+			return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+		}
 
 		for {
-			connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
-			connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
-
+			_, rc := connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
+			if core.Err(rc) {
+				return rc
+			}
+			_, rc = connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
+			if core.Err(rc) {
+				return rc
+			}
 			rIndex += message_buffer.MAX_PACKET_BODY_SIZE
 			byteBuf.ReaderSeek(memory.BUFFER_SEEK_SET, rIndex)
 
@@ -166,8 +166,14 @@ func (ego *O1L15COT15CodecServerHandler) OnSend(connection *TCPServerConnection,
 			}
 		}
 		ego._packetHeader.Set(false, true, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
-		connection.sendImmediately(ego._packetHeader.Data(), 0, 4)
-		connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+		_, rc := connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
+		if core.Err(rc) {
+			return rc
+		}
+		_, rc = connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+		if core.Err(rc) {
+			return rc
+		}
 	}
 	return core.MkSuccess(0)
 }

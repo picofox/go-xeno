@@ -34,7 +34,7 @@ func (ego *O1L15COT15CodecClientHandler) Pulse(conn IConnection, nowTs int64) {
 	}
 }
 
-func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection, a any, bFlush bool) int32 {
+func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection, a any, bflush bool) int32 {
 	var message = a.(message_buffer.INetMessage)
 	tLen := message.Serialize(connection._sendBuffer)
 	if tLen < 0 {
@@ -44,10 +44,7 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 	var byteBuf memory.IByteBuffer = connection._sendBuffer
 	var cmd int16 = message.Command()
 
-	if tLen <= message_buffer.MAX_PACKET_BODY_SIZE {
-		if !bFlush && byteBuf.WriteAvailable() > tLen {
-			return core.MkSuccess(1)
-		}
+	if tLen <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		_, rc := connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), byteBuf.ReadAvailable())
 		if core.Err(rc) {
 			return rc
@@ -56,8 +53,7 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 		return core.MkSuccess(0)
 
 	} else { //large message
-		connection.flush()
-		rIndex := int64(4)
+		rIndex := int64(message_buffer.O1L15O1T15_HEADER_SIZE)
 		ego._packetHeader.Set(true, false, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
 		if !byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, message_buffer.O1L15O1T15_HEADER_SIZE) {
 			return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
@@ -83,7 +79,7 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 			}
 		}
 		ego._packetHeader.Set(false, true, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
-		_, rc := connection.sendImmediately(ego._packetHeader.Data(), 0, 4)
+		_, rc := connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
 		if core.Err(rc) {
 			return rc
 		}
@@ -97,11 +93,14 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 
 func (ego *O1L15COT15CodecClientHandler) Reset() {
 	ego._largeMessageBuffer.Reset()
-	ego._keepalive.Reset()
+	if ego._keepalive != nil {
+		ego._keepalive.Reset()
+	}
+
 }
 
 func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnection) (any, int32) {
-	if connection._recvBuffer.ReadAvailable() < 4 {
+	if connection._recvBuffer.ReadAvailable() <= message_buffer.O1L15O1T15_HEADER_SIZE {
 		return nil, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
 	o1AndLen, _, _, _ := connection._recvBuffer.PeekUInt16()
