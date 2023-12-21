@@ -106,6 +106,7 @@ func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnecti
 	o1AndLen, _, _, _ := connection._recvBuffer.PeekUInt16()
 	frameLength := int64(o1AndLen & 0x7FFF)
 	if connection._recvBuffer.ReadAvailable() < int64(frameLength)+message_buffer.O1L15O1T15_HEADER_SIZE {
+		connection._recvBuffer.ResizeTo(message_buffer.MAX_BUFFER_MAX_CAPACITY)
 		return nil, core.MkErr(core.EC_TRY_AGAIN, 2)
 	}
 

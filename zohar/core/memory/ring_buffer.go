@@ -273,7 +273,7 @@ func (ego *RingBuffer) BytesRef(length int64) ([]byte, []byte) {
 		remainLen := length - firstPartLen
 		return ego._data[ego._beginPos : ego._beginPos+firstPartLen], ego._data[0:remainLen]
 	} else {
-		return ego._data[ego._beginPos:length], nil
+		return ego._data[ego._beginPos : ego._beginPos+length], nil
 	}
 }
 
