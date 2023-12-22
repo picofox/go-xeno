@@ -56,9 +56,12 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 				return rc
 			}
 			writableBytes := curBB.Buffer().WriteAvailable()
-			ba = curBB.Buffer().InternalData()
+			ba = ego._sendingBuffer.InternalData()
 			if writableBytes >= tLen {
 				rc = curBB.Buffer().WriteRawBytes(*ba, offset, tLen)
+				if bflush {
+					ego._connection.FlushSendingBuffer()
+				}
 				return rc
 			} else {
 				rc = curBB.Buffer().WriteRawBytes(*ba, offset, writableBytes)
@@ -69,6 +72,9 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 			}
 		}
 
+		if bflush {
+			ego._connection.FlushSendingBuffer()
+		}
 		return core.MkSuccess(0)
 	} else { //large message
 		rIndex := int64(message_buffer.O1L15O1T15_HEADER_SIZE)

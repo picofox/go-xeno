@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config/intrinsic"
-	"xeno/zohar/core/container"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/transcomm/prof"
@@ -25,12 +24,12 @@ type TCPServerConnection struct {
 	_reactorIndex   uint32
 	_profiler       *prof.ConnectionProfiler
 	_ev             EPoolEventDataSubReactor
-	_sendBufferList *container.SinglyLinkedListBared
+	_sendBufferList *memory.ByteBufferList
 }
 
 func (ego *TCPServerConnection) FlushSendingBuffer() {
 	for {
-		bb := ego._sendBufferList.PopFront().(*memory.ByteBufferNode)
+		bb := ego._sendBufferList.PopFront()
 		if bb == nil {
 			return
 		}
@@ -53,7 +52,7 @@ func (ego *TCPServerConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
 	return n
 }
 
-func (ego *TCPServerConnection) BufferBlockList() *container.SinglyLinkedListBared {
+func (ego *TCPServerConnection) BufferBlockList() *memory.ByteBufferList {
 	return ego._sendBufferList
 }
 

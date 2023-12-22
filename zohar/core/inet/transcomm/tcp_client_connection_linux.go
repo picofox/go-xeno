@@ -7,7 +7,6 @@ import (
 	"syscall"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config/intrinsic"
-	"xeno/zohar/core/container"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/transcomm/prof"
@@ -29,17 +28,13 @@ type TCPClientConnection struct {
 	_packetHeader   message_buffer.MessageHeader
 	_profiler       *prof.ConnectionProfiler
 	_ev             EPoolEventDataSubReactor
-	_sendBufferList *container.SinglyLinkedListBared
+	_sendBufferList *memory.ByteBufferList
 	_lock           sync.Mutex
 }
 
 func (ego *TCPClientConnection) FlushSendingBuffer() {
 	for {
-		bbb := ego._sendBufferList.PopFront()
-		if bbb == nil {
-			return
-		}
-		bb := bbb.(*memory.ByteBufferNode)
+		bb := ego._sendBufferList.PopFront()
 		if bb == nil {
 			return
 		}
@@ -62,7 +57,7 @@ func (ego *TCPClientConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
 	return n
 }
 
-func (ego *TCPClientConnection) BufferBlockList() *container.SinglyLinkedListBared {
+func (ego *TCPClientConnection) BufferBlockList() *memory.ByteBufferList {
 	return ego._sendBufferList
 }
 
@@ -345,7 +340,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_stateCode:      Initialized,
 		_packetHeader:   message_buffer.NeoMessageHeader(),
 		_profiler:       prof.NeoConnectionProfiler(),
-		_sendBufferList: container.NeoSinglyLinkedList(),
+		_sendBufferList: memory.NeoByteBufferList(),
 	}
 	var output = make([]reflect.Value, 0, 1)
 	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+c._client._config.Codec, &c)

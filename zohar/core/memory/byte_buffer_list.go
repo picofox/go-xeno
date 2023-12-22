@@ -1,29 +1,29 @@
-package container
+package memory
 
 import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/datatype"
 )
 
-type SinglyLinkedListBared[T ISinglyLinkedListNode] struct {
-	_head  *T
-	_tail  *T
+type ByteBufferList struct {
+	_head  *ByteBufferNode
+	_tail  *ByteBufferNode
 	_count int64
 }
 
-func (ego *SinglyLinkedListBared[T]) Count() int64 {
+func (ego *ByteBufferList) Count() int64 {
 	return ego._count
 }
 
-func (ego *SinglyLinkedListBared[T]) Front() *T {
+func (ego *ByteBufferList) Front() *ByteBufferNode {
 	return ego._head
 }
 
-func (ego *SinglyLinkedListBared[T]) Back() *T {
+func (ego *ByteBufferList) Back() *ByteBufferNode {
 	return ego._tail
 }
 
-func (ego *SinglyLinkedListBared[T]) PopFront() *T {
+func (ego *ByteBufferList) PopFront() *ByteBufferNode {
 	if ego._head == nil {
 		return nil
 	}
@@ -38,7 +38,7 @@ func (ego *SinglyLinkedListBared[T]) PopFront() *T {
 	return n
 }
 
-func (ego *SinglyLinkedListBared) PushBack(node ISinglyLinkedListNode) int32 {
+func (ego *ByteBufferList) PushBack(node *ByteBufferNode) int32 {
 	if ego._count < datatype.INT64_MAX {
 		node.SetNext(nil)
 		if ego._head != nil {
@@ -53,7 +53,7 @@ func (ego *SinglyLinkedListBared) PushBack(node ISinglyLinkedListNode) int32 {
 	return core.MkErr(core.EC_REACH_LIMIT, 1)
 }
 
-func (ego *SinglyLinkedListBared) PushFront(node ISinglyLinkedListNode) int32 {
+func (ego *ByteBufferList) PushFront(node *ByteBufferNode) int32 {
 	if ego._count < datatype.INT64_MAX {
 		if ego._head == nil {
 			node.SetNext(nil)
@@ -68,8 +68,8 @@ func (ego *SinglyLinkedListBared) PushFront(node ISinglyLinkedListNode) int32 {
 	return core.MkErr(core.EC_REACH_LIMIT, 1)
 }
 
-func NeoSinglyLinkedList() *SinglyLinkedListBared {
-	return &SinglyLinkedListBared{
+func NeoByteBufferList() *ByteBufferList {
+	return &ByteBufferList{
 		_head:  nil,
 		_tail:  nil,
 		_count: 0,

@@ -2,7 +2,6 @@ package transcomm
 
 import (
 	"xeno/zohar/core/config/intrinsic"
-	"xeno/zohar/core/container"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
@@ -26,7 +25,7 @@ type IConnection interface {
 	KeepAliveConfig() *intrinsic.KeepAliveConfig
 	Pulse(ts int64)
 	AllocByteBufferBlock() *memory.ByteBufferNode
-	BufferBlockList() *container.SinglyLinkedListBared
+	BufferBlockList() *memory.ByteBufferList
 	FlushSendingBuffer()
 }
 
