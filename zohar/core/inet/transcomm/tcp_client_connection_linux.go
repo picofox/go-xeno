@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config/intrinsic"
+	"xeno/zohar/core/container"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/transcomm/prof"
@@ -28,7 +29,17 @@ type TCPClientConnection struct {
 	_packetHeader   message_buffer.MessageHeader
 	_profiler       *prof.ConnectionProfiler
 	_ev             EPoolEventDataSubReactor
+	_sendBufferList *container.SinglyLinkedListBared
 	_lock           sync.Mutex
+}
+
+func (ego *TCPClientConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (ego *TCPClientConnection) BufferBlockList() *container.SinglyLinkedListBared {
+	return ego._sendBufferList
 }
 
 func (ego *TCPClientConnection) Pulse(ts int64) {
