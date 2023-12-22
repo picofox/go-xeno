@@ -53,12 +53,14 @@ func (ego *SubReactor) onPullIn(evt *inet.EPollEvent) {
 func (ego *SubReactor) onPullOut(evt *inet.EPollEvent) {
 	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
 
-	p.Connection.OnWritable()
-	ego._poller.Log(core.LL_DEBUG, "Add conn %s, id %d", p.Connection.String(), p.Connection.Identifier())
-	ego._connections.Store(p.Connection.Identifier(), p.Connection)
+	rc := p.Connection.OnWritable()
+	if rc == 0 {
+		ego._connections.Store(p.Connection.Identifier(), p.Connection)
+	}
 
 }
 func (ego *SubReactor) onPullHup(evt *inet.EPollEvent) {
+
 	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
 	p.Connection.OnPeerClosed()
 }

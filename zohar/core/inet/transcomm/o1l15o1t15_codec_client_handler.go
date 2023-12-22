@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"fmt"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
@@ -61,11 +62,15 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 
 		for {
 			_, rc := connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
+			fmt.Printf("write header %s \n", ego._packetHeader.String())
 			if core.Err(rc) {
+				fmt.Printf("write header %s Failed\n", ego._packetHeader.String())
 				return rc
 			}
 			_, rc = connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
+			fmt.Printf("write body from %d, len %d\n", byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
 			if core.Err(rc) {
+				fmt.Printf("write body from %d, len %d Failed\n", byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
 				return rc
 			}
 			rIndex += message_buffer.MAX_PACKET_BODY_SIZE
@@ -80,11 +85,15 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 		}
 		ego._packetHeader.Set(false, true, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
 		_, rc := connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
+		fmt.Printf("write header %s \n", ego._packetHeader.String())
 		if core.Err(rc) {
+			fmt.Printf("write header %s Failed\n", ego._packetHeader.String())
 			return rc
 		}
 		_, rc = connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+		fmt.Printf("write body from %d, len %d \n", byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
 		if core.Err(rc) {
+			fmt.Printf("write body from %d, len %d Failed\n", byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
 			return rc
 		}
 	}

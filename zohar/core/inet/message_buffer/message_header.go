@@ -1,6 +1,9 @@
 package message_buffer
 
-import "xeno/zohar/core/memory"
+import (
+	"fmt"
+	"xeno/zohar/core/memory"
+)
 
 type MessageHeader struct {
 	_data []byte
@@ -8,6 +11,17 @@ type MessageHeader struct {
 
 func (ego *MessageHeader) Data() []byte {
 	return ego._data
+}
+
+func (ego *MessageHeader) String() string {
+	u0 := memory.BytesToInt16BE(&ego._data, 0)
+	u1 := memory.BytesToInt16BE(&ego._data, 2)
+	o1 := u0>>15&0x1 == 1
+	o2 := u1>>15&0x1 == 1
+	cmd := int16(u1 & 0x7FFF)
+	l := int16(u0 & 0x7FFF)
+
+	return fmt.Sprintf("%d:%d:%t:%t", l, cmd, o1, o2)
 }
 
 func (ego *MessageHeader) Set(o0 bool, o1 bool, length int16, cmd int16) {

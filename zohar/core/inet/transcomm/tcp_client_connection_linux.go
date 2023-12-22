@@ -92,11 +92,17 @@ func (ego *TCPClientConnection) OnPeerClosed() int32 {
 }
 
 func (ego *TCPClientConnection) OnWritable() int32 {
+	if ego._stateCode == Connected {
+		return core.MkErr(core.EC_NOOP, 0)
+	}
 	ego._stateCode = Connected
 	lsa, _ := syscall.Getsockname(ego._fd)
 	ego._localEndPoint = inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, lsa)
 	rsa, _ := syscall.Getpeername(ego._fd)
 	ego._remoteEndPoint = inet.NeoIPV4EndPointBySockAddr(inet.EP_PROTO_TCP, 0, 0, rsa)
+
+	ego._client.Log(core.LL_DEBUG, "Add conn %s, id %d", ego.String(), ego.Identifier())
+
 	return core.MkSuccess(0)
 }
 
