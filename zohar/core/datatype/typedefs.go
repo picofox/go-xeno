@@ -2,6 +2,7 @@ package datatype
 
 const (
 	INT32_MAX = 0x7FFFFFFF
+	INT64_MAX = 1<<63 - 1
 )
 
 const (

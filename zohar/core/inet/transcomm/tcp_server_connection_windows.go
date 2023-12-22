@@ -12,6 +12,7 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/config/intrinsic"
+	"xeno/zohar/core/container"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/transcomm/prof"
@@ -28,7 +29,18 @@ type TCPServerConnection struct {
 	_codec          IServerCodecHandler
 	_server         *TCPServer
 	_profiler       *prof.ConnectionProfiler
+	_sendBufferList *container.SinglyLinkedListBared
 	_lock           sync.Mutex
+}
+
+func (ego *TCPServerConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
+	n := GetByteBufferCache().Get()
+	n.Clear()
+	return n
+}
+
+func (ego *TCPServerConnection) BufferBlockList() *container.SinglyLinkedListBared {
+	return ego._sendBufferList
 }
 
 func (ego *TCPServerConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
@@ -281,6 +293,7 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 		_server:         listener.Server(),
 		_codec:          nil,
 		_profiler:       prof.NeoConnectionProfiler(),
+		_sendBufferList: container.NeoSinglyLinkedList(),
 	}
 
 	c._conn.SetNoDelay(c._server._config.NoDelay)

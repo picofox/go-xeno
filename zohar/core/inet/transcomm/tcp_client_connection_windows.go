@@ -4,14 +4,31 @@ import (
 	"fmt"
 	"net"
 	"reflect"
+	"sync"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config/intrinsic"
+	"xeno/zohar/core/container"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/transcomm/prof"
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
 )
+
+var sByteBufferCahce *memory.ObjectCache[memory.ByteBufferNode]
+var sByteBufferCacheOnce sync.Once
+
+func ByteBufferNodeCreator() any {
+	return memory.NeoByteBufferNode(4096)
+}
+
+func GetByteBufferCache() *memory.ObjectCache[memory.ByteBufferNode] {
+	sByteBufferCacheOnce.Do(
+		func() {
+			sByteBufferCahce = memory.NeoObjectCache[memory.ByteBufferNode](128, ByteBufferNodeCreator)
+		})
+	return sByteBufferCahce
+}
 
 type TCPClientConnection struct {
 	_index          int
@@ -23,7 +40,18 @@ type TCPClientConnection struct {
 	_codec          IClientCodecHandler
 	_client         *TCPClient
 	_profiler       *prof.ConnectionProfiler
+	_sendBufferList *container.SinglyLinkedListBared
 	_isConnected    bool
+}
+
+func (ego *TCPClientConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
+	n := GetByteBufferCache().Get()
+	n.Clear()
+	return n
+}
+
+func (ego *TCPClientConnection) BufferBlockList() *container.SinglyLinkedListBared {
+	return ego._sendBufferList
 }
 
 func (ego *TCPClientConnection) reset() {
@@ -140,6 +168,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_codec:          nil,
 		_client:         client,
 		_isConnected:    false,
+		_sendBufferList: container.NeoSinglyLinkedList(),
 		_profiler:       prof.NeoConnectionProfiler(),
 	}
 
