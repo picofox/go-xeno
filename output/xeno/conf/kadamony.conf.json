@@ -40,10 +40,10 @@
 					"AutoReconnect" : true,
 					"NoDelay" : true,
 					"KeepAlive" : {
-						"Enable": false,
-						"TimeoutMillis": 10000,
+						"Enable": true,
+						"TimeoutMillis": 3000,
 						"MaxTries": 3,
-						"IntervalMillis": 60000
+						"IntervalMillis": 6000
 					}
 				}
 			}

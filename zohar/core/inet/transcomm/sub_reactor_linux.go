@@ -52,11 +52,14 @@ func (ego *SubReactor) onPullIn(evt *inet.EPollEvent) {
 
 func (ego *SubReactor) onPullOut(evt *inet.EPollEvent) {
 	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
-
-	rc := p.Connection.OnWritable()
-	if rc == 0 {
-		ego._connections.Store(p.Connection.Identifier(), p.Connection)
+	if p.Connection.Type() == CONNTYPE_TCP_CLIENT {
+		rc := p.Connection.OnWritable()
+		if rc == 0 {
+			ego._connections.Store(p.Connection.Identifier(), p.Connection)
+		}
 	}
+
+	p.Connection.FlushSendingBuffer()
 
 }
 func (ego *SubReactor) onPullHup(evt *inet.EPollEvent) {
@@ -166,6 +169,7 @@ func (ego *SubReactor) AddConnection(conn IConnection) {
 	if conn.Type() == CONNTYPE_TCP_SERVER {
 		fd = conn.(*TCPServerConnection)._fd
 		conn.(*TCPServerConnection).GetEV().Connection = conn
+		ego._connections.Store(conn.Identifier(), conn)
 	} else if conn.Type() == CONNTYPE_TCP_CLIENT {
 		conn.(*TCPClientConnection).GetEV().Connection = conn
 		fd = conn.(*TCPClientConnection)._fd

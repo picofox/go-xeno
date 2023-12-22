@@ -60,13 +60,16 @@ func SysWriteN(fd int, p []byte) (int64, int32) {
 	var nToBeWrite = int64(len(p))
 	for nDone < nToBeWrite {
 		n, err := syscall.Write(fd, p[nDone:])
-		if err != nil {
-			if err == syscall.EAGAIN {
-				return nDone + int64(n), core.MkErr(core.EC_TRY_AGAIN, 1)
-			}
-			return nDone + int64(n), core.MkErr(core.EC_FILE_WRITE_FAILED, 1)
+		if n > 0 {
+			nDone += int64(n)
 		}
-		nDone += int64(n)
+		if err != nil {
+			if err == syscall.EAGAIN || err == syscall.EWOULDBLOCK {
+				return nDone, core.MkErr(core.EC_TRY_AGAIN, 1)
+			}
+			return nDone, core.MkErr(core.EC_FILE_WRITE_FAILED, 1)
+		}
+
 	}
 	return nDone, core.MkSuccess(0)
 }

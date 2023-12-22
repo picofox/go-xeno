@@ -27,6 +27,7 @@ type IConnection interface {
 	Pulse(ts int64)
 	AllocByteBufferBlock() *memory.ByteBufferNode
 	BufferBlockList() *container.SinglyLinkedListBared
+	FlushSendingBuffer()
 }
 
 const (

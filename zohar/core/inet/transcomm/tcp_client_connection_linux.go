@@ -33,6 +33,25 @@ type TCPClientConnection struct {
 	_lock           sync.Mutex
 }
 
+func (ego *TCPClientConnection) FlushSendingBuffer() {
+	for {
+		bb := ego._sendBufferList.PopFront().(*memory.ByteBufferNode)
+		if bb == nil {
+			return
+		}
+		ba, _ := bb.Buffer().BytesRef(-1)
+		if ba == nil || len(ba) == 0 {
+			return
+		}
+		nSent, rc := inet.SysWriteN(ego._fd, ba)
+		if core.Err(rc) {
+			return
+		} else {
+			bb.Buffer().ReaderSeek(memory.BUFFER_SEEK_CUR, nSent)
+		}
+	}
+}
+
 func (ego *TCPClientConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
 	n := memory.GetByteBuffer4KCache().Get()
 	n.Clear()

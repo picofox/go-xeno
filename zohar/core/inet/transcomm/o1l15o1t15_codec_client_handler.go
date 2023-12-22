@@ -14,6 +14,7 @@ type O1L15COT15CodecClientHandler struct {
 	_packetHeader       message_buffer.MessageHeader
 	_keepalive          *KeepAlive
 	_connection         *TCPClientConnection
+	_sendingBuffer      *memory.LinearBuffer
 }
 
 func (ego *O1L15COT15CodecClientHandler) OnKeepAlive(ts int64, delta int32) {
@@ -36,23 +37,39 @@ func (ego *O1L15COT15CodecClientHandler) Pulse(conn IConnection, nowTs int64) {
 }
 
 func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection, a any, bflush bool) int32 {
+
 	var message = a.(message_buffer.INetMessage)
-	tLen := message.Serialize(connection._sendBuffer)
+	ego._sendingBuffer.Clear()
+	tLen := message.Serialize(ego._sendingBuffer)
 	if tLen < 0 {
 		return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 	}
 
 	var byteBuf memory.IByteBuffer = connection._sendBuffer
 	var cmd int16 = message.Command()
-
+	var offset int64 = 0
+	var ba *[]byte = nil
 	if tLen <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
-		_, rc := connection.sendImmediately(*(byteBuf.InternalData()), byteBuf.ReadPos(), byteBuf.ReadAvailable())
-		if core.Err(rc) {
-			return rc
+		for {
+			curBB, rc := CheckByteBufferListNode(connection)
+			if core.Err(rc) {
+				return rc
+			}
+			writableBytes := curBB.Buffer().WriteAvailable()
+			ba = curBB.Buffer().InternalData()
+			if writableBytes >= tLen {
+				rc = curBB.Buffer().WriteRawBytes(*ba, offset, tLen)
+				return rc
+			} else {
+				rc = curBB.Buffer().WriteRawBytes(*ba, offset, writableBytes)
+				if core.Err(rc) {
+					return rc
+				}
+				offset += writableBytes
+			}
 		}
-		byteBuf.Clear()
-		return core.MkSuccess(0)
 
+		return core.MkSuccess(0)
 	} else { //large message
 		rIndex := int64(message_buffer.O1L15O1T15_HEADER_SIZE)
 		ego._packetHeader.Set(true, false, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
@@ -212,6 +229,7 @@ func (ego *HandlerRegistration) NeoO1L15COT15DecodeClientHandler(c *TCPClientCon
 		_memoryLow:          false,
 		_packetHeader:       message_buffer.NeoMessageHeader(),
 		_connection:         c,
+		_sendingBuffer:      memory.NeoLinearBuffer(32768),
 	}
 
 	if c.KeepAliveConfig().Enable {

@@ -74,6 +74,7 @@ func (ego *MainReactor) onPullIn(evt *inet.EPollEvent) {
 			ego._poller.Log(core.LL_SYS, "Make Neo Connection <%s> Failed. %d", raddr.String(), et)
 		}
 	}
+
 	ego._poller.OnIncomingConnection(connection)
 
 }

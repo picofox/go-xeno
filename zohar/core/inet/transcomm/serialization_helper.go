@@ -1,12 +1,11 @@
-package messages
+package transcomm
 
 import (
 	"xeno/zohar/core"
-	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/memory"
 )
 
-func CheckByteBufferListNode(conn transcomm.IConnection) (*memory.ByteBufferNode, int32) {
+func CheckByteBufferListNode(conn IConnection) (*memory.ByteBufferNode, int32) {
 	bufferList := conn.BufferBlockList()
 	bufNode := bufferList.Back().(*memory.ByteBufferNode)
 	if bufNode == nil {

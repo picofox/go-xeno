@@ -10,7 +10,6 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/inet/message_buffer"
-	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/memory"
 )
 
@@ -150,17 +149,17 @@ func (ego *ProcTestMessage) Validate() bool {
 	return true
 }
 
-func (ego *ProcTestMessage) SerializeToList(conn transcomm.IConnection) (int64, int32) {
-	byteBufferNode, rc := CheckByteBufferListNode(conn)
-	if core.Err(rc) {
-		return 0, rc
-	}
-	if byteBufferNode == nil {
-		return 0, rc
-	}
-
-	return 0, 0
-}
+//func (ego *ProcTestMessage) SerializeToList(conn transcomm.IConnection) (int64, int32) {
+//	byteBufferNode, rc := transcomm.CheckByteBufferListNode(conn)
+//	if core.Err(rc) {
+//		return 0, rc
+//	}
+//	if byteBufferNode == nil {
+//		return 0, rc
+//	}
+//
+//	return 0, 0
+//}
 
 func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	hdrPos := byteBuf.WritePos()
