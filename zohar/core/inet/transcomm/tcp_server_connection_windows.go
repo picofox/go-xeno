@@ -34,7 +34,7 @@ type TCPServerConnection struct {
 }
 
 func (ego *TCPServerConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
-	n := GetByteBufferCache().Get()
+	n := memory.GetByteBuffer4KCache().Get()
 	n.Clear()
 	return n
 }
