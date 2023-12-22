@@ -20,7 +20,11 @@ func (ego *ByteBufferNode) Next() container.ISinglyLinkedListNode {
 }
 
 func (ego *ByteBufferNode) SetNext(node container.ISinglyLinkedListNode) {
-	ego._next = node.(*ByteBufferNode)
+	if node == nil {
+		ego._next = nil
+	} else {
+		ego._next = node.(*ByteBufferNode)
+	}
 }
 
 func NeoByteBufferNode(capa int64) *ByteBufferNode {

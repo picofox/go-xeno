@@ -35,7 +35,11 @@ type TCPClientConnection struct {
 
 func (ego *TCPClientConnection) FlushSendingBuffer() {
 	for {
-		bb := ego._sendBufferList.PopFront().(*memory.ByteBufferNode)
+		bbb := ego._sendBufferList.PopFront()
+		if bbb == nil {
+			return
+		}
+		bb := bbb.(*memory.ByteBufferNode)
 		if bb == nil {
 			return
 		}
@@ -341,6 +345,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_stateCode:      Initialized,
 		_packetHeader:   message_buffer.NeoMessageHeader(),
 		_profiler:       prof.NeoConnectionProfiler(),
+		_sendBufferList: container.NeoSinglyLinkedList(),
 	}
 	var output = make([]reflect.Value, 0, 1)
 	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+c._client._config.Codec, &c)

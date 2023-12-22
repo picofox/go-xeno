@@ -7,7 +7,12 @@ import (
 
 func CheckByteBufferListNode(conn IConnection) (*memory.ByteBufferNode, int32) {
 	bufferList := conn.BufferBlockList()
-	bufNode := bufferList.Back().(*memory.ByteBufferNode)
+	bbb := bufferList.Back()
+	var bufNode *memory.ByteBufferNode = nil
+	if bbb != nil {
+		bufNode = bbb.(*memory.ByteBufferNode)
+	}
+
 	if bufNode == nil {
 		bufNode = conn.AllocByteBufferBlock()
 		if bufNode == nil {

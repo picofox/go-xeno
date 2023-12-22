@@ -41,7 +41,7 @@ func (ego *SinglyLinkedListBared) PopFront() ISinglyLinkedListNode {
 func (ego *SinglyLinkedListBared) PushBack(node ISinglyLinkedListNode) int32 {
 	if ego._count < datatype.INT64_MAX {
 		node.SetNext(nil)
-		if ego._head == nil {
+		if ego._head != nil {
 			ego._tail.SetNext(node)
 		} else {
 			ego._head = node
