@@ -5,25 +5,25 @@ import (
 	"xeno/zohar/core/datatype"
 )
 
-type SinglyLinkedListBared struct {
-	_head  ISinglyLinkedListNode
-	_tail  ISinglyLinkedListNode
+type SinglyLinkedListBared[T ISinglyLinkedListNode] struct {
+	_head  *T
+	_tail  *T
 	_count int64
 }
 
-func (ego *SinglyLinkedListBared) Count() int64 {
+func (ego *SinglyLinkedListBared[T]) Count() int64 {
 	return ego._count
 }
 
-func (ego *SinglyLinkedListBared) Front() ISinglyLinkedListNode {
+func (ego *SinglyLinkedListBared[T]) Front() *T {
 	return ego._head
 }
 
-func (ego *SinglyLinkedListBared) Back() ISinglyLinkedListNode {
+func (ego *SinglyLinkedListBared[T]) Back() *T {
 	return ego._tail
 }
 
-func (ego *SinglyLinkedListBared) PopFront() ISinglyLinkedListNode {
+func (ego *SinglyLinkedListBared[T]) PopFront() *T {
 	if ego._head == nil {
 		return nil
 	}
