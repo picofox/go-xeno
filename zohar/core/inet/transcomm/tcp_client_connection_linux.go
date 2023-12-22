@@ -51,12 +51,6 @@ func (ego *TCPClientConnection) FlushSendingBuffer() {
 	}
 }
 
-func (ego *TCPClientConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
-	n := memory.GetByteBuffer4KCache().Get()
-	n.Clear()
-	return n
-}
-
 func (ego *TCPClientConnection) BufferBlockList() *memory.ByteBufferList {
 	return ego._sendBufferList
 }

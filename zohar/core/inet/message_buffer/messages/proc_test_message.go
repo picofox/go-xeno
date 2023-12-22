@@ -149,17 +149,17 @@ func (ego *ProcTestMessage) Validate() bool {
 	return true
 }
 
-//func (ego *ProcTestMessage) SerializeToList(conn transcomm.IConnection) (int64, int32) {
-//	byteBufferNode, rc := transcomm.CheckByteBufferListNode(conn)
-//	if core.Err(rc) {
-//		return 0, rc
-//	}
-//	if byteBufferNode == nil {
-//		return 0, rc
-//	}
-//
-//	return 0, 0
-//}
+func (ego *ProcTestMessage) SerializeToList(bufferList *memory.ByteBufferList) (int64, int32) {
+	byteBufferNode, rc := CheckByteBufferListNode(bufferList)
+	if core.Err(rc) {
+		return 0, rc
+	}
+	if byteBufferNode == nil {
+		return 0, rc
+	}
+
+	return 0, 0
+}
 
 func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
 	hdrPos := byteBuf.WritePos()

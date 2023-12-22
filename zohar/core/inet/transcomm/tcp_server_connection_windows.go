@@ -12,7 +12,6 @@ import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/config/intrinsic"
-	"xeno/zohar/core/container"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/transcomm/prof"
@@ -29,17 +28,30 @@ type TCPServerConnection struct {
 	_codec          IServerCodecHandler
 	_server         *TCPServer
 	_profiler       *prof.ConnectionProfiler
-	_sendBufferList *container.SinglyLinkedListBared
+	_sendBufferList *memory.ByteBufferList
 	_lock           sync.Mutex
 }
 
-func (ego *TCPServerConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
-	n := memory.GetByteBuffer4KCache().Get()
-	n.Clear()
-	return n
+func (ego *TCPServerConnection) FlushSendingBuffer() {
+	for {
+		bb := ego._sendBufferList.PopFront()
+		if bb == nil {
+			return
+		}
+		ba, _ := bb.Buffer().BytesRef(-1)
+		if ba == nil || len(ba) == 0 {
+			return
+		}
+		nDone, err := ego._conn.Write(ba)
+		if err != nil {
+			return
+		} else {
+			bb.Buffer().ReaderSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
+		}
+	}
 }
 
-func (ego *TCPServerConnection) BufferBlockList() *container.SinglyLinkedListBared {
+func (ego *TCPServerConnection) BufferBlockList() *memory.ByteBufferList {
 	return ego._sendBufferList
 }
 
@@ -293,7 +305,7 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 		_server:         listener.Server(),
 		_codec:          nil,
 		_profiler:       prof.NeoConnectionProfiler(),
-		_sendBufferList: container.NeoSinglyLinkedList(),
+		_sendBufferList: memory.NeoByteBufferList(),
 	}
 
 	c._conn.SetNoDelay(c._server._config.NoDelay)

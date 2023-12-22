@@ -1,15 +1,20 @@
-package transcomm
+package messages
 
 import (
 	"xeno/zohar/core"
 	"xeno/zohar/core/memory"
 )
 
-func CheckByteBufferListNode(conn IConnection) (*memory.ByteBufferNode, int32) {
-	bufferList := conn.BufferBlockList()
+func AllocByteBufferBlock() *memory.ByteBufferNode {
+	n := memory.GetByteBuffer4KCache().Get()
+	n.Clear()
+	return n
+}
+
+func CheckByteBufferListNode(bufferList *memory.ByteBufferList) (*memory.ByteBufferNode, int32) {
 	bufNode := bufferList.Back()
 	if bufNode == nil {
-		bufNode = conn.AllocByteBufferBlock()
+		bufNode = AllocByteBufferBlock()
 		if bufNode == nil {
 			return nil, core.MkErr(core.EC_NULL_VALUE, 1)
 		}
@@ -18,7 +23,7 @@ func CheckByteBufferListNode(conn IConnection) (*memory.ByteBufferNode, int32) {
 
 	} else {
 		if bufNode.Buffer().WriteAvailable() <= 0 {
-			bufNode = conn.AllocByteBufferBlock()
+			bufNode = AllocByteBufferBlock()
 			if bufNode == nil {
 				return nil, core.MkErr(core.EC_NULL_VALUE, 2)
 			}

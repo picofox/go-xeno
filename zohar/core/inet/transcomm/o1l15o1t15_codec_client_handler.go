@@ -51,7 +51,7 @@ func (ego *O1L15COT15CodecClientHandler) OnSend(connection *TCPClientConnection,
 	var ba *[]byte = nil
 	if tLen <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
 		for {
-			curBB, rc := CheckByteBufferListNode(connection)
+			curBB, rc := messages.CheckByteBufferListNode(connection._sendBufferList)
 			if core.Err(rc) {
 				return rc
 			}

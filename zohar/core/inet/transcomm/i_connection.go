@@ -24,7 +24,6 @@ type IConnection interface {
 	SendMessage(msg message_buffer.INetMessage, bFlush bool) int32
 	KeepAliveConfig() *intrinsic.KeepAliveConfig
 	Pulse(ts int64)
-	AllocByteBufferBlock() *memory.ByteBufferNode
 	BufferBlockList() *memory.ByteBufferList
 	FlushSendingBuffer()
 }
