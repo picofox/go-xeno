@@ -6,6 +6,7 @@ import (
 	"syscall"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config/intrinsic"
+	"xeno/zohar/core/container"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/transcomm/prof"
@@ -24,6 +25,17 @@ type TCPServerConnection struct {
 	_reactorIndex   uint32
 	_profiler       *prof.ConnectionProfiler
 	_ev             EPoolEventDataSubReactor
+	_sendBufferList *container.SinglyLinkedListBared
+}
+
+func (ego *TCPServerConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
+	n := memory.GetByteBuffer4KCache().Get()
+	n.Clear()
+	return n
+}
+
+func (ego *TCPServerConnection) BufferBlockList() *container.SinglyLinkedListBared {
+	return ego._sendBufferList
 }
 
 func (ego *TCPServerConnection) GetEV() *EPoolEventDataSubReactor {

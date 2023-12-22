@@ -34,8 +34,9 @@ type TCPClientConnection struct {
 }
 
 func (ego *TCPClientConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
-	//TODO implement me
-	panic("implement me")
+	n := memory.GetByteBuffer4KCache().Get()
+	n.Clear()
+	return n
 }
 
 func (ego *TCPClientConnection) BufferBlockList() *container.SinglyLinkedListBared {
