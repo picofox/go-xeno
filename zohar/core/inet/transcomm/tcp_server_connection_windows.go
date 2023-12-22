@@ -211,9 +211,15 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 	}
 
 	if ego._recvBuffer.WritePos() >= ego._recvBuffer.ReadPos() {
+		fmt.Printf("read at %d mlen %d\n", ego._recvBuffer.WritePos(), ego._recvBuffer.Capacity()-ego._recvBuffer.WritePos())
 		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.Capacity()])
 	} else {
 		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.ReadPos()])
+	}
+	if err != nil {
+		fmt.Printf("read Failed %d (%s)\n", nDone, err.Error())
+	} else {
+		fmt.Printf("read OK %d \n", nDone)
 	}
 
 	if nDone < 0 {
