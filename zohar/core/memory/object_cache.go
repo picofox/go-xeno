@@ -9,6 +9,7 @@ type ObjectCache[T any] struct {
 	_pool         *sync.Pool
 	_creationFunc func() any
 	_count        atomic.Int64
+	_initialCount int64
 }
 
 func (ego *ObjectCache[T]) Get() *T {
@@ -25,14 +26,15 @@ func (ego *ObjectCache[T]) Put(elem *T) {
 	ego._pool.Put(elem)
 }
 
-func NeoObjectCache[T any](initialCount int, cf func() any) *ObjectCache[T] {
+func NeoObjectCache[T any](initialCount int64, cf func() any) *ObjectCache[T] {
 	c := ObjectCache[T]{
 		_pool: &sync.Pool{
 			New: cf,
 		},
 		_creationFunc: cf,
+		_initialCount: initialCount,
 	}
-	for i := 0; i < initialCount; i++ {
+	for i := int64(0); i < initialCount; i++ {
 		var elem *T = cf().(*T)
 		c._pool.Put(elem)
 	}

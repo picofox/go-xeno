@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net"
 	"reflect"
-	"sync"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/container"
@@ -14,21 +13,6 @@ import (
 	"xeno/zohar/core/memory"
 	"xeno/zohar/core/mp"
 )
-
-var sByteBufferCahce *memory.ObjectCache[memory.ByteBufferNode]
-var sByteBufferCacheOnce sync.Once
-
-func ByteBufferNodeCreator() any {
-	return memory.NeoByteBufferNode(4096)
-}
-
-func GetByteBufferCache() *memory.ObjectCache[memory.ByteBufferNode] {
-	sByteBufferCacheOnce.Do(
-		func() {
-			sByteBufferCahce = memory.NeoObjectCache[memory.ByteBufferNode](128, ByteBufferNodeCreator)
-		})
-	return sByteBufferCahce
-}
 
 type TCPClientConnection struct {
 	_index          int
@@ -45,7 +29,7 @@ type TCPClientConnection struct {
 }
 
 func (ego *TCPClientConnection) AllocByteBufferBlock() *memory.ByteBufferNode {
-	n := GetByteBufferCache().Get()
+	n := memory.GetByteBuffer4KCache().Get()
 	n.Clear()
 	return n
 }
