@@ -1,7 +1,7 @@
 package memory
 
 type ByteBufferNode struct {
-	_buffer *LinearBuffer
+	_buffer *LinearBufferFixed
 	_next   *ByteBufferNode
 }
 
@@ -9,7 +9,7 @@ func (ego *ByteBufferNode) Clear() {
 	ego._buffer.Clear()
 }
 
-func (ego *ByteBufferNode) Buffer() *LinearBuffer {
+func (ego *ByteBufferNode) Buffer() *LinearBufferFixed {
 	return ego._buffer
 }
 
@@ -27,7 +27,14 @@ func (ego *ByteBufferNode) SetNext(node *ByteBufferNode) {
 
 func NeoByteBufferNode(capa int64) *ByteBufferNode {
 	return &ByteBufferNode{
-		_buffer: NeoLinearBuffer(capa),
+		_buffer: NeoLinearBufferFixed(capa),
+		_next:   nil,
+	}
+}
+
+func AdoptByteBufferNode(byteBuff *LinearBufferFixed) *ByteBufferNode {
+	return &ByteBufferNode{
+		_buffer: byteBuff,
 		_next:   nil,
 	}
 }

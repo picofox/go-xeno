@@ -12,6 +12,11 @@ type KeepAliveMessage struct {
 	TT uint64 `json:"TT"`
 }
 
+func (ego *KeepAliveMessage) SerializeToList(bufferList *memory.ByteBufferList) (int64, int32) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (ego *KeepAliveMessage) SetTimeStamp(ts int64) {
 	ego.TT = ego.TT & (1 << 63)
 	ego.TT = ego.TT | uint64(ts)
@@ -95,4 +100,4 @@ func (ego *KeepAliveMessage) Command() int16 {
 	return KEEP_ALIVE_MESSAGE_ID
 }
 
-//var _ message_buffer.INetMessage = &KeepAliveMessage{}
+var _ message_buffer.INetMessage = &KeepAliveMessage{}

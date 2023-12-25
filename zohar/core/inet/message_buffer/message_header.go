@@ -24,6 +24,13 @@ func (ego *MessageHeader) String() string {
 	return fmt.Sprintf("%d:%d:%t:%t", l, cmd, o1, o2)
 }
 
+func (ego *MessageHeader) Clear() {
+	ego._data[0] = 0
+	ego._data[1] = 0
+	ego._data[2] = 0
+	ego._data[3] = 0
+}
+
 func (ego *MessageHeader) Set(o0 bool, o1 bool, length int16, cmd int16) {
 	var lenAndO0 int16 = length
 	var cmdAndO1 int16 = cmd

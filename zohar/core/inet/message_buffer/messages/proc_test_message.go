@@ -39,6 +39,181 @@ type ProcTestMessage struct {
 	TextLong      string   `json:"TextLong"`
 }
 
+func (ego *ProcTestMessage) BodyLength() int64 {
+	var sz int = 0
+	var idx int = 0
+	var tmpLen int = 0
+
+	sz += 8 //TimeStamp
+	sz += 4
+	sz += len(ego.Str0) //Str0
+	sz += 4
+	sz += len(ego.StrEmpty) //StrEmpty
+	sz += 1
+	sz += 1
+	sz += 2
+	sz += 2
+	sz += 4
+	sz += 4
+	sz += 8
+	sz += 8
+	sz += 1
+	sz += 4
+	sz += 8
+	sz += 1
+	sz += 2
+	sz += 4
+	sz += 8
+
+	sz += 4
+	tmpLen = len(ego.StrSlice)
+	if ego.StrSlice != nil {
+		for idx = 0; idx < tmpLen; idx++ {
+			sz += 4
+			sz += len(ego.StrSlice[idx])
+		}
+	}
+
+	sz += 4
+	tmpLen = len(ego.StrSliceNull)
+	if ego.StrSliceNull != nil {
+		for idx = 0; idx < tmpLen; idx++ {
+			sz += 4
+			sz += len(ego.StrSliceNull[idx])
+		}
+	}
+
+	sz += 4
+	tmpLen = len(ego.StrSliceEmpty)
+	if ego.StrSliceEmpty != nil {
+		for idx = 0; idx < tmpLen; idx++ {
+			sz += 4
+			sz += len(ego.StrSliceEmpty[idx])
+		}
+	}
+
+	sz += 4
+	sz += len(ego.MD5)
+
+	sz += 4
+	sz += len(ego.TextLong)
+	return int64(sz)
+}
+
+func (ego *ProcTestMessage) SerializeToList(bufferList *memory.ByteBufferList) (int64, int32) {
+	var totalIndex int64 = 0
+	var bodyLenCheck int64 = 0
+	var rc int32 = 0
+	var curNode *memory.ByteBufferNode = nil
+	var preCalBodyLen int64 = 0
+	var logicPacketCount int64 = 0
+	var logicPacketRemain int64 = 0
+	var lastPackBytes int64 = 0
+	var headers []*message_buffer.MessageHeader = nil
+	var headerIdx int = 0
+
+	preCalBodyLen = ego.BodyLength()
+	logicPacketCount = (preCalBodyLen / message_buffer.MAX_PACKET_BODY_SIZE) + 1
+	lastPackBytes = preCalBodyLen % message_buffer.MAX_PACKET_BODY_SIZE
+	headers = AllocHeaders(logicPacketCount, lastPackBytes, ego.Command())
+	logicPacketRemain = 0
+
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeI64Type(ego.TimeStamp, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeStringType(ego.Str0, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeStringType(ego.StrEmpty, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeI8Type(ego.I80, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeI8Type(ego.I81, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeI16Type(ego.I160, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeI16Type(ego.I161, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeI32Type(ego.I320, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeI32Type(ego.I321, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeI64Type(ego.I640, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeI64Type(ego.I641, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeBoolType(ego.IsServer, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeF32Type(ego.F32, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeF64Type(ego.F64, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeU8Type(ego.U80, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeU16Type(ego.U160, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeU32Type(ego.U320, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeU64Type(ego.U640, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeU64Type(ego.U640, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeStringsType(ego.StrSlice, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeStringsType(ego.StrSliceNull, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeStringsType(ego.StrSliceEmpty, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeStringType(ego.TextLong, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+
+	return totalIndex, core.MkSuccess(0)
+}
+
 func (ego *ProcTestMessage) String() string {
 	data, err := json.Marshal(ego)
 	if err != nil {
@@ -147,18 +322,6 @@ func (ego *ProcTestMessage) Validate() bool {
 	}
 
 	return true
-}
-
-func (ego *ProcTestMessage) SerializeToList(bufferList *memory.ByteBufferList) (int64, int32) {
-	byteBufferNode, rc := CheckByteBufferListNode(bufferList)
-	if core.Err(rc) {
-		return 0, rc
-	}
-	if byteBufferNode == nil {
-		return 0, rc
-	}
-
-	return 0, 0
 }
 
 func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {

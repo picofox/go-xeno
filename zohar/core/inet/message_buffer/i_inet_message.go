@@ -7,4 +7,6 @@ type INetMessage interface {
 	Deserialize(memory.IByteBuffer) int32
 	Command() int16
 	String() string
+
+	SerializeToList(bufferList *memory.ByteBufferList) (int64, int32)
 }
