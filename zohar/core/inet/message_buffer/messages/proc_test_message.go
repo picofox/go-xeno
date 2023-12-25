@@ -190,10 +190,6 @@ func (ego *ProcTestMessage) SerializeToList(bufferList *memory.ByteBufferList) (
 	if core.Err(rc) {
 		return totalIndex, rc
 	}
-	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeU64Type(ego.U640, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		return totalIndex, rc
-	}
 	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeStringsType(ego.StrSlice, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
 	if core.Err(rc) {
 		return totalIndex, rc
@@ -203,6 +199,10 @@ func (ego *ProcTestMessage) SerializeToList(bufferList *memory.ByteBufferList) (
 		return totalIndex, rc
 	}
 	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeStringsType(ego.StrSliceEmpty, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	if core.Err(rc) {
+		return totalIndex, rc
+	}
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeBytesType(ego.MD5, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
 	if core.Err(rc) {
 		return totalIndex, rc
 	}

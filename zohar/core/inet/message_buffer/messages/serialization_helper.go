@@ -115,7 +115,6 @@ func SerializeU8Type(v uint8, logicPacketRemain int64, totalIndex int64, bodyLen
 }
 
 func SerializeI8Type(v int8, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64, int64) {
-	var physicalBlockWriteAvailable int64 = curNode.Buffer().WriteAvailable()
 	var rc int32 = 0
 	if curNode == nil {
 		curNode, rc = CheckByteBufferListNode(bufferList)
@@ -123,7 +122,6 @@ func SerializeI8Type(v int8, logicPacketRemain int64, totalIndex int64, bodyLenC
 			return rc, nil, -1, -1, -1, -1, -1
 		}
 	}
-	physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 	if logicPacketRemain < 1 {
 		rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList) //last logical packet is finished
 		if core.Err(rc) {
@@ -131,10 +129,9 @@ func SerializeI8Type(v int8, logicPacketRemain int64, totalIndex int64, bodyLenC
 		}
 		totalIndex += 4
 		logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 	}
 
-	if physicalBlockWriteAvailable < 1 { //remain physical block can hold remain bytes of value
+	if curNode.Buffer().WriteAvailable() < 1 { //remain physical block can hold remain bytes of value
 		curNode, rc = CheckByteBufferListNode(bufferList)
 		if core.Err(rc) {
 			return rc, nil, -1, -1, -1, -1, -1
@@ -142,10 +139,9 @@ func SerializeI8Type(v int8, logicPacketRemain int64, totalIndex int64, bodyLenC
 	}
 	curNode.Buffer().WriteInt8(v)
 	totalIndex += 1
-	physicalBlockWriteAvailable -= 1
 	logicPacketRemain -= 1
 	bodyLenCheck += 1
-	return core.MkSuccess(0), curNode, headerIdx, totalIndex, physicalBlockWriteAvailable, logicPacketRemain, bodyLenCheck
+	return core.MkSuccess(0), curNode, headerIdx, totalIndex, curNode.Buffer().WriteAvailable(), logicPacketRemain, bodyLenCheck
 }
 
 func SerializeU16Type(v uint16, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64, int64) {
@@ -154,7 +150,6 @@ func SerializeU16Type(v uint16, logicPacketRemain int64, totalIndex int64, bodyL
 
 func SerializeI16Type(v int16, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64, int64) {
 	var tmpWriteLen int64 = 0
-	var physicalBlockWriteAvailable int64
 	var rc int32 = 0
 	if curNode == nil {
 		curNode, rc = CheckByteBufferListNode(bufferList)
@@ -162,16 +157,12 @@ func SerializeI16Type(v int16, logicPacketRemain int64, totalIndex int64, bodyLe
 			return rc, nil, -1, -1, -1, -1, -1
 		}
 	}
-	physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-
 	if logicPacketRemain < 2 { //need split packet logically
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-		if physicalBlockWriteAvailable >= logicPacketRemain { //current block can finish current packet
+		if curNode.Buffer().WriteAvailable() >= logicPacketRemain { //current block can finish current packet
 			last1stPartIdx := logicPacketRemain
 			//not at very beginning or really occasionally, not just at begin of a physical block
 			curNode.Buffer().WriteInt16Begin(v, logicPacketRemain) //finish current block
 			totalIndex += logicPacketRemain
-			physicalBlockWriteAvailable -= logicPacketRemain
 			logicPacketRemain -= logicPacketRemain
 			bodyLenCheck += logicPacketRemain
 			rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList) //last logical packet is finished
@@ -181,20 +172,17 @@ func SerializeI16Type(v int16, logicPacketRemain int64, totalIndex int64, bodyLe
 			totalIndex += 4
 			logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
 			//
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-			if physicalBlockWriteAvailable >= 2-last1stPartIdx { //remain physical block can hold remain bytes of value
+			if curNode.Buffer().WriteAvailable() >= 2-last1stPartIdx { //remain physical block can hold remain bytes of value
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx, 2)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			} else { //at the boundary between two physical blocks
-				middlePartIdx := physicalBlockWriteAvailable
+				middlePartIdx := curNode.Buffer().WriteAvailable()
 				rc = curNode.Buffer().WriteTrivialMiddle(last1stPartIdx, middlePartIdx)
-				totalIndex += physicalBlockWriteAvailable
-				logicPacketRemain -= physicalBlockWriteAvailable
-				bodyLenCheck += physicalBlockWriteAvailable
-				physicalBlockWriteAvailable = 0
+				totalIndex += middlePartIdx
+				logicPacketRemain -= middlePartIdx
+				bodyLenCheck += middlePartIdx
 				curNode, rc = CheckByteBufferListNode(bufferList)
 				if core.Err(rc) {
 					return rc, nil, -1, -1, -1, -1, -1
@@ -202,36 +190,30 @@ func SerializeI16Type(v int16, logicPacketRemain int64, totalIndex int64, bodyLe
 				middlePartIdx += last1stPartIdx
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(middlePartIdx, 2)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			}
 		} else { // (physicalBlockWriteAvailable < logicPacketRemain) or current block can not finish current packet
-			last1stPartIdx := physicalBlockWriteAvailable
+			last1stPartIdx := curNode.Buffer().WriteAvailable()
 			curNode.Buffer().WriteInt16Begin(v, last1stPartIdx) //finish current block
 			totalIndex += last1stPartIdx
-			physicalBlockWriteAvailable = 0
 			logicPacketRemain -= last1stPartIdx
 			bodyLenCheck += last1stPartIdx
 			curNode, rc = CheckByteBufferListNode(bufferList)
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 			if logicPacketRemain >= 2-last1stPartIdx {
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx, 2)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
-
 			} else {
 				middlePartIdx := logicPacketRemain
 				rc = curNode.Buffer().WriteTrivialMiddle(last1stPartIdx, middlePartIdx)
 				totalIndex += logicPacketRemain
 				logicPacketRemain = 0
 				bodyLenCheck += logicPacketRemain
-				physicalBlockWriteAvailable -= logicPacketRemain
 				rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList)
 				if core.Err(rc) {
 					return rc, nil, -1, -1, -1, -1, -1
@@ -241,35 +223,31 @@ func SerializeI16Type(v int16, logicPacketRemain int64, totalIndex int64, bodyLe
 				logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx+middlePartIdx, 2)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			}
 		}
 
 	} else {
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-		if physicalBlockWriteAvailable >= 2 {
+		if curNode.Buffer().WriteAvailable() >= 2 {
 			rc = curNode.Buffer().WriteInt16(v)
 			totalIndex += 2
-			physicalBlockWriteAvailable -= 2
 			logicPacketRemain -= 2
 			bodyLenCheck += 2
 		} else {
-			curNode.Buffer().WriteInt16Begin(v, physicalBlockWriteAvailable)
+			curNode.Buffer().WriteInt16Begin(v, curNode.Buffer().WriteAvailable())
 			curNode, rc = CheckByteBufferListNode(bufferList)
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			curNode.Buffer().WriteTrivialEnd(physicalBlockWriteAvailable, 2)
+			curNode.Buffer().WriteTrivialEnd(curNode.Buffer().WriteAvailable(), 2)
 			totalIndex += 2
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 			logicPacketRemain -= 2
 			bodyLenCheck += 2
 		}
 	}
 
-	return core.MkSuccess(0), curNode, headerIdx, totalIndex, physicalBlockWriteAvailable, logicPacketRemain, bodyLenCheck
+	return core.MkSuccess(0), curNode, headerIdx, totalIndex, curNode.Buffer().WriteAvailable(), logicPacketRemain, bodyLenCheck
 }
 
 func SerializeU32Type(v uint32, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64, int64) {
@@ -278,7 +256,6 @@ func SerializeU32Type(v uint32, logicPacketRemain int64, totalIndex int64, bodyL
 
 func SerializeI32Type(v int32, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64, int64) {
 	var tmpWriteLen int64 = 0
-	var physicalBlockWriteAvailable int64
 	var rc int32 = 0
 	if curNode == nil {
 		curNode, rc = CheckByteBufferListNode(bufferList)
@@ -286,15 +263,13 @@ func SerializeI32Type(v int32, logicPacketRemain int64, totalIndex int64, bodyLe
 			return rc, nil, -1, -1, -1, -1, -1
 		}
 	}
-	physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
+
 	if logicPacketRemain < 4 { //need split packet logically
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-		if physicalBlockWriteAvailable >= logicPacketRemain { //current block can finish current packet
+		if curNode.Buffer().WriteAvailable() >= logicPacketRemain { //current block can finish current packet
 			last1stPartIdx := logicPacketRemain
 			//not at very beginning or really occasionally, not just at begin of a physical block
 			curNode.Buffer().WriteInt32Begin(v, logicPacketRemain) //finish current block
 			totalIndex += logicPacketRemain
-			physicalBlockWriteAvailable -= logicPacketRemain
 			logicPacketRemain -= logicPacketRemain
 			bodyLenCheck += logicPacketRemain
 			rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList) //last logical packet is finished
@@ -304,20 +279,18 @@ func SerializeI32Type(v int32, logicPacketRemain int64, totalIndex int64, bodyLe
 			totalIndex += 4
 			logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
 			//
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-			if physicalBlockWriteAvailable >= 4-last1stPartIdx { //remain physical block can hold remain bytes of value
+
+			if curNode.Buffer().WriteAvailable() >= 4-last1stPartIdx { //remain physical block can hold remain bytes of value
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx, 4)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			} else { //at the boundary between two physical blocks
-				middlePartIdx := physicalBlockWriteAvailable
-				rc = curNode.Buffer().WriteTrivialMiddle(last1stPartIdx, physicalBlockWriteAvailable)
-				totalIndex += physicalBlockWriteAvailable
-				logicPacketRemain -= physicalBlockWriteAvailable
-				bodyLenCheck += physicalBlockWriteAvailable
-				physicalBlockWriteAvailable = 0
+				middlePartIdx := curNode.Buffer().WriteAvailable()
+				rc = curNode.Buffer().WriteTrivialMiddle(last1stPartIdx, middlePartIdx)
+				totalIndex += middlePartIdx
+				logicPacketRemain -= middlePartIdx
+				bodyLenCheck += middlePartIdx
 				curNode, rc = CheckByteBufferListNode(bufferList)
 				if core.Err(rc) {
 					return rc, nil, -1, -1, -1, -1, -1
@@ -325,26 +298,22 @@ func SerializeI32Type(v int32, logicPacketRemain int64, totalIndex int64, bodyLe
 				middlePartIdx += last1stPartIdx
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(middlePartIdx, 4)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			}
 		} else { // (physicalBlockWriteAvailable < logicPacketRemain) or current block can not finish current packet
-			last1stPartIdx := physicalBlockWriteAvailable
+			last1stPartIdx := curNode.Buffer().WriteAvailable()
 			curNode.Buffer().WriteInt32Begin(v, last1stPartIdx) //finish current block
 			totalIndex += last1stPartIdx
-			physicalBlockWriteAvailable = 0
 			logicPacketRemain -= last1stPartIdx
 			bodyLenCheck += last1stPartIdx
 			curNode, rc = CheckByteBufferListNode(bufferList)
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 			if logicPacketRemain >= 4-last1stPartIdx {
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx, 4)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 
@@ -354,7 +323,6 @@ func SerializeI32Type(v int32, logicPacketRemain int64, totalIndex int64, bodyLe
 				totalIndex += logicPacketRemain
 				logicPacketRemain = 0
 				bodyLenCheck += logicPacketRemain
-				physicalBlockWriteAvailable -= logicPacketRemain
 				rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList)
 				if core.Err(rc) {
 					return rc, nil, -1, -1, -1, -1, -1
@@ -364,35 +332,31 @@ func SerializeI32Type(v int32, logicPacketRemain int64, totalIndex int64, bodyLe
 				logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx+middlePartIdx, 4)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			}
 		}
 
 	} else {
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-		if physicalBlockWriteAvailable >= 4 {
+		if curNode.Buffer().WriteAvailable() >= 4 {
 			rc = curNode.Buffer().WriteInt32(v)
 			totalIndex += 4
-			physicalBlockWriteAvailable -= 4
 			logicPacketRemain -= 4
 			bodyLenCheck += 4
 		} else {
-			curNode.Buffer().WriteInt32Begin(v, physicalBlockWriteAvailable)
+			curNode.Buffer().WriteInt32Begin(v, curNode.Buffer().WriteAvailable())
 			curNode, rc = CheckByteBufferListNode(bufferList)
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			curNode.Buffer().WriteTrivialEnd(physicalBlockWriteAvailable, 4)
+			curNode.Buffer().WriteTrivialEnd(curNode.Buffer().WriteAvailable(), 4)
 			totalIndex += 4
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 			logicPacketRemain -= 4
 			bodyLenCheck += 4
 		}
 	}
 
-	return core.MkSuccess(0), curNode, headerIdx, totalIndex, physicalBlockWriteAvailable, logicPacketRemain, bodyLenCheck
+	return core.MkSuccess(0), curNode, headerIdx, totalIndex, curNode.Buffer().WriteAvailable(), logicPacketRemain, bodyLenCheck
 }
 
 func SerializeU64Type(v uint64, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64, int64) {
@@ -402,7 +366,6 @@ func SerializeU64Type(v uint64, logicPacketRemain int64, totalIndex int64, bodyL
 func SerializeI64Type(v int64, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64, int64) {
 	var tmpFieldLength int64 = 0
 	var tmpWriteLen int64 = 0
-	var physicalBlockWriteAvailable int64
 	var rc int32 = 0
 	if curNode == nil {
 		curNode, rc = CheckByteBufferListNode(bufferList)
@@ -410,17 +373,13 @@ func SerializeI64Type(v int64, logicPacketRemain int64, totalIndex int64, bodyLe
 			return rc, nil, -1, -1, -1, -1, -1
 		}
 	}
-	physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 	tmpFieldLength = 8
-
 	if logicPacketRemain < tmpFieldLength { //need split packet logically
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-		if physicalBlockWriteAvailable >= logicPacketRemain { //current block can finish current packet
+		if curNode.Buffer().WriteAvailable() >= logicPacketRemain { //current block can finish current packet
 			last1stPartIdx := logicPacketRemain
 			//not at very beginning or really occasionally, not just at begin of a physical block
 			curNode.Buffer().WriteInt64Begin(v, logicPacketRemain) //finish current block
 			totalIndex += logicPacketRemain
-			physicalBlockWriteAvailable -= logicPacketRemain
 			logicPacketRemain -= logicPacketRemain
 			bodyLenCheck += logicPacketRemain
 			rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList) //last logical packet is finished
@@ -430,20 +389,17 @@ func SerializeI64Type(v int64, logicPacketRemain int64, totalIndex int64, bodyLe
 			totalIndex += 4
 			logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
 			//
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-			if physicalBlockWriteAvailable >= tmpFieldLength-last1stPartIdx { //remain physical block can hold remain bytes of value
+			if curNode.Buffer().WriteAvailable() >= tmpFieldLength-last1stPartIdx { //remain physical block can hold remain bytes of value
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx, 8)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			} else { //at the boundary between two physical blocks
-				middlePartIdx := physicalBlockWriteAvailable
-				rc = curNode.Buffer().WriteTrivialMiddle(last1stPartIdx, physicalBlockWriteAvailable)
-				totalIndex += physicalBlockWriteAvailable
-				logicPacketRemain -= physicalBlockWriteAvailable
-				bodyLenCheck += physicalBlockWriteAvailable
-				physicalBlockWriteAvailable = 0
+				middlePartIdx := curNode.Buffer().WriteAvailable()
+				rc = curNode.Buffer().WriteTrivialMiddle(last1stPartIdx, middlePartIdx)
+				totalIndex += middlePartIdx
+				logicPacketRemain -= middlePartIdx
+				bodyLenCheck += middlePartIdx
 				curNode, rc = CheckByteBufferListNode(bufferList)
 				if core.Err(rc) {
 					return rc, nil, -1, -1, -1, -1, -1
@@ -451,26 +407,22 @@ func SerializeI64Type(v int64, logicPacketRemain int64, totalIndex int64, bodyLe
 				middlePartIdx += last1stPartIdx
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(middlePartIdx, 8)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			}
 		} else { // (physicalBlockWriteAvailable < logicPacketRemain) or current block can not finish current packet
-			last1stPartIdx := physicalBlockWriteAvailable
+			last1stPartIdx := curNode.Buffer().WriteAvailable()
 			curNode.Buffer().WriteInt64Begin(v, last1stPartIdx) //finish current block
 			totalIndex += last1stPartIdx
-			physicalBlockWriteAvailable = 0
 			logicPacketRemain -= last1stPartIdx
 			bodyLenCheck += last1stPartIdx
 			curNode, rc = CheckByteBufferListNode(bufferList)
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 			if logicPacketRemain >= tmpFieldLength-last1stPartIdx {
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx, 8)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 
@@ -480,7 +432,6 @@ func SerializeI64Type(v int64, logicPacketRemain int64, totalIndex int64, bodyLe
 				totalIndex += logicPacketRemain
 				logicPacketRemain = 0
 				bodyLenCheck += logicPacketRemain
-				physicalBlockWriteAvailable -= logicPacketRemain
 				rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList)
 				if core.Err(rc) {
 					return rc, nil, -1, -1, -1, -1, -1
@@ -490,40 +441,35 @@ func SerializeI64Type(v int64, logicPacketRemain int64, totalIndex int64, bodyLe
 				logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx+middlePartIdx, 8)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			}
 		}
 
 	} else {
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-		if physicalBlockWriteAvailable >= tmpFieldLength {
+		if curNode.Buffer().WriteAvailable() >= tmpFieldLength {
 			rc = curNode.Buffer().WriteInt64(v)
 			totalIndex += 8
-			physicalBlockWriteAvailable -= 8
 			logicPacketRemain -= 8
 			bodyLenCheck += 8
 		} else {
-			curNode.Buffer().WriteInt64Begin(v, physicalBlockWriteAvailable)
+			curNode.Buffer().WriteInt64Begin(v, curNode.Buffer().WriteAvailable())
 			curNode, rc = CheckByteBufferListNode(bufferList)
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			curNode.Buffer().WriteTrivialEnd(physicalBlockWriteAvailable, 8)
+			curNode.Buffer().WriteTrivialEnd(curNode.Buffer().WriteAvailable(), 8)
 			totalIndex += 8
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 			logicPacketRemain -= 8
 			bodyLenCheck += 8
 		}
 	}
 
-	return core.MkSuccess(0), curNode, headerIdx, totalIndex, physicalBlockWriteAvailable, logicPacketRemain, bodyLenCheck
+	return core.MkSuccess(0), curNode, headerIdx, totalIndex, curNode.Buffer().WriteAvailable(), logicPacketRemain, bodyLenCheck
 }
 
 func SerializeF32Type(v float32, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64, int64) {
 	var tmpWriteLen int64 = 0
-	var physicalBlockWriteAvailable int64
 	var rc int32 = 0
 	if curNode == nil {
 		curNode, rc = CheckByteBufferListNode(bufferList)
@@ -531,15 +477,12 @@ func SerializeF32Type(v float32, logicPacketRemain int64, totalIndex int64, body
 			return rc, nil, -1, -1, -1, -1, -1
 		}
 	}
-	physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 	if logicPacketRemain < 4 { //need split packet logically
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-		if physicalBlockWriteAvailable >= logicPacketRemain { //current block can finish current packet
+		if curNode.Buffer().WriteAvailable() >= logicPacketRemain { //current block can finish current packet
 			last1stPartIdx := logicPacketRemain
 			//not at very beginning or really occasionally, not just at begin of a physical block
 			curNode.Buffer().WriteFloat32Begin(v, logicPacketRemain) //finish current block
 			totalIndex += logicPacketRemain
-			physicalBlockWriteAvailable -= logicPacketRemain
 			logicPacketRemain -= logicPacketRemain
 			bodyLenCheck += logicPacketRemain
 			rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList) //last logical packet is finished
@@ -549,20 +492,17 @@ func SerializeF32Type(v float32, logicPacketRemain int64, totalIndex int64, body
 			totalIndex += 4
 			logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
 			//
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-			if physicalBlockWriteAvailable >= 4-last1stPartIdx { //remain physical block can hold remain bytes of value
+			if curNode.Buffer().WriteAvailable() >= 4-last1stPartIdx { //remain physical block can hold remain bytes of value
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx, 4)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			} else { //at the boundary between two physical blocks
-				middlePartIdx := physicalBlockWriteAvailable
-				rc = curNode.Buffer().WriteTrivialMiddle(last1stPartIdx, physicalBlockWriteAvailable)
-				totalIndex += physicalBlockWriteAvailable
-				logicPacketRemain -= physicalBlockWriteAvailable
-				bodyLenCheck += physicalBlockWriteAvailable
-				physicalBlockWriteAvailable = 0
+				middlePartIdx := curNode.Buffer().WriteAvailable()
+				rc = curNode.Buffer().WriteTrivialMiddle(last1stPartIdx, middlePartIdx)
+				totalIndex += middlePartIdx
+				logicPacketRemain -= middlePartIdx
+				bodyLenCheck += middlePartIdx
 				curNode, rc = CheckByteBufferListNode(bufferList)
 				if core.Err(rc) {
 					return rc, nil, -1, -1, -1, -1, -1
@@ -570,26 +510,22 @@ func SerializeF32Type(v float32, logicPacketRemain int64, totalIndex int64, body
 				middlePartIdx += last1stPartIdx
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(middlePartIdx, 4)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			}
 		} else { // (physicalBlockWriteAvailable < logicPacketRemain) or current block can not finish current packet
-			last1stPartIdx := physicalBlockWriteAvailable
+			last1stPartIdx := curNode.Buffer().WriteAvailable()
 			curNode.Buffer().WriteFloat32Begin(v, last1stPartIdx) //finish current block
 			totalIndex += last1stPartIdx
-			physicalBlockWriteAvailable = 0
 			logicPacketRemain -= last1stPartIdx
 			bodyLenCheck += last1stPartIdx
 			curNode, rc = CheckByteBufferListNode(bufferList)
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 			if logicPacketRemain >= 4-last1stPartIdx {
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx, 4)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 
@@ -599,7 +535,6 @@ func SerializeF32Type(v float32, logicPacketRemain int64, totalIndex int64, body
 				totalIndex += logicPacketRemain
 				logicPacketRemain = 0
 				bodyLenCheck += logicPacketRemain
-				physicalBlockWriteAvailable -= logicPacketRemain
 				rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList)
 				if core.Err(rc) {
 					return rc, nil, -1, -1, -1, -1, -1
@@ -609,41 +544,36 @@ func SerializeF32Type(v float32, logicPacketRemain int64, totalIndex int64, body
 				logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx+middlePartIdx, 4)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			}
 		}
 
 	} else {
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-		if physicalBlockWriteAvailable >= 4 {
+		if curNode.Buffer().WriteAvailable() >= 4 {
 			rc = curNode.Buffer().WriteFloat32(v)
 			totalIndex += 4
-			physicalBlockWriteAvailable -= 4
 			logicPacketRemain -= 4
 			bodyLenCheck += 4
 		} else {
-			curNode.Buffer().WriteFloat32Begin(v, physicalBlockWriteAvailable)
+			curNode.Buffer().WriteFloat32Begin(v, curNode.Buffer().WriteAvailable())
 			curNode, rc = CheckByteBufferListNode(bufferList)
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			curNode.Buffer().WriteTrivialEnd(physicalBlockWriteAvailable, 4)
+			curNode.Buffer().WriteTrivialEnd(curNode.Buffer().WriteAvailable(), 4)
 			totalIndex += 4
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 			logicPacketRemain -= 4
 			bodyLenCheck += 4
 		}
 	}
 
-	return core.MkSuccess(0), curNode, headerIdx, totalIndex, physicalBlockWriteAvailable, logicPacketRemain, bodyLenCheck
+	return core.MkSuccess(0), curNode, headerIdx, totalIndex, curNode.Buffer().WriteAvailable(), logicPacketRemain, bodyLenCheck
 }
 
 func SerializeF64Type(v float64, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64, int64) {
 	var tmpFieldLength int64 = 0
 	var tmpWriteLen int64 = 0
-	var physicalBlockWriteAvailable int64
 	var rc int32 = 0
 	if curNode == nil {
 		curNode, rc = CheckByteBufferListNode(bufferList)
@@ -651,17 +581,14 @@ func SerializeF64Type(v float64, logicPacketRemain int64, totalIndex int64, body
 			return rc, nil, -1, -1, -1, -1, -1
 		}
 	}
-	physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 	tmpFieldLength = 8
 
 	if logicPacketRemain < tmpFieldLength { //need split packet logically
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-		if physicalBlockWriteAvailable >= logicPacketRemain { //current block can finish current packet
+		if curNode.Buffer().WriteAvailable() >= logicPacketRemain { //current block can finish current packet
 			last1stPartIdx := logicPacketRemain
 			//not at very beginning or really occasionally, not just at begin of a physical block
 			curNode.Buffer().WriteFloat64Begin(v, logicPacketRemain) //finish current block
 			totalIndex += logicPacketRemain
-			physicalBlockWriteAvailable -= logicPacketRemain
 			logicPacketRemain -= logicPacketRemain
 			bodyLenCheck += logicPacketRemain
 			rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList) //last logical packet is finished
@@ -671,20 +598,17 @@ func SerializeF64Type(v float64, logicPacketRemain int64, totalIndex int64, body
 			totalIndex += 4
 			logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
 			//
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-			if physicalBlockWriteAvailable >= tmpFieldLength-last1stPartIdx { //remain physical block can hold remain bytes of value
+			if curNode.Buffer().WriteAvailable() >= tmpFieldLength-last1stPartIdx { //remain physical block can hold remain bytes of value
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx, 8)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			} else { //at the boundary between two physical blocks
-				middlePartIdx := physicalBlockWriteAvailable
-				rc = curNode.Buffer().WriteTrivialMiddle(last1stPartIdx, physicalBlockWriteAvailable)
-				totalIndex += physicalBlockWriteAvailable
-				logicPacketRemain -= physicalBlockWriteAvailable
-				bodyLenCheck += physicalBlockWriteAvailable
-				physicalBlockWriteAvailable = 0
+				middlePartIdx := curNode.Buffer().WriteAvailable()
+				rc = curNode.Buffer().WriteTrivialMiddle(last1stPartIdx, middlePartIdx)
+				totalIndex += middlePartIdx
+				logicPacketRemain -= middlePartIdx
+				bodyLenCheck += middlePartIdx
 				curNode, rc = CheckByteBufferListNode(bufferList)
 				if core.Err(rc) {
 					return rc, nil, -1, -1, -1, -1, -1
@@ -692,26 +616,22 @@ func SerializeF64Type(v float64, logicPacketRemain int64, totalIndex int64, body
 				middlePartIdx += last1stPartIdx
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(middlePartIdx, 8)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			}
 		} else { // (physicalBlockWriteAvailable < logicPacketRemain) or current block can not finish current packet
-			last1stPartIdx := physicalBlockWriteAvailable
+			last1stPartIdx := curNode.Buffer().WriteAvailable()
 			curNode.Buffer().WriteFloat64Begin(v, last1stPartIdx) //finish current block
 			totalIndex += last1stPartIdx
-			physicalBlockWriteAvailable = 0
 			logicPacketRemain -= last1stPartIdx
 			bodyLenCheck += last1stPartIdx
 			curNode, rc = CheckByteBufferListNode(bufferList)
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 			if logicPacketRemain >= tmpFieldLength-last1stPartIdx {
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx, 8)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 
@@ -721,7 +641,6 @@ func SerializeF64Type(v float64, logicPacketRemain int64, totalIndex int64, body
 				totalIndex += logicPacketRemain
 				logicPacketRemain = 0
 				bodyLenCheck += logicPacketRemain
-				physicalBlockWriteAvailable -= logicPacketRemain
 				rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList)
 				if core.Err(rc) {
 					return rc, nil, -1, -1, -1, -1, -1
@@ -731,29 +650,25 @@ func SerializeF64Type(v float64, logicPacketRemain int64, totalIndex int64, body
 				logicPacketRemain = message_buffer.MAX_PACKET_BODY_SIZE
 				tmpWriteLen, rc = curNode.Buffer().WriteTrivialEnd(last1stPartIdx+middlePartIdx, 8)
 				totalIndex += tmpWriteLen
-				physicalBlockWriteAvailable -= tmpWriteLen
 				logicPacketRemain -= tmpWriteLen
 				bodyLenCheck += tmpWriteLen
 			}
 		}
 
 	} else {
-		physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
-		if physicalBlockWriteAvailable >= tmpFieldLength {
+		if curNode.Buffer().WriteAvailable() >= tmpFieldLength {
 			rc = curNode.Buffer().WriteFloat64(v)
 			totalIndex += 8
-			physicalBlockWriteAvailable -= 8
 			logicPacketRemain -= 8
 			bodyLenCheck += 8
 		} else {
-			curNode.Buffer().WriteFloat64Begin(v, physicalBlockWriteAvailable)
+			curNode.Buffer().WriteFloat64Begin(v, curNode.Buffer().WriteAvailable())
 			curNode, rc = CheckByteBufferListNode(bufferList)
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			curNode.Buffer().WriteTrivialEnd(physicalBlockWriteAvailable, 8)
+			curNode.Buffer().WriteTrivialEnd(curNode.Buffer().WriteAvailable(), 8)
 			totalIndex += 8
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 			logicPacketRemain -= 8
 			bodyLenCheck += 8
 		}
@@ -769,13 +684,12 @@ func SerializeBytesType(bs []byte, logicPacketRemain int64, totalIndex int64, bo
 	}
 	var bsLen int32 = int32(bsLenCheck)
 	var rc int32 = 0
-	var physicalBlockWriteAvailable int64
-	rc, curNode, headerIdx, totalIndex, physicalBlockWriteAvailable, logicPacketRemain, bodyLenCheck = SerializeI32Type(bsLen, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	rc, curNode, headerIdx, totalIndex, _, logicPacketRemain, bodyLenCheck = SerializeI32Type(bsLen, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
 	if core.Err(rc) {
 		return rc, nil, -1, -1, -1, -1, -1
 	}
 	if bsLen <= 0 {
-		return core.MkSuccess(0), curNode, headerIdx, totalIndex, physicalBlockWriteAvailable, logicPacketRemain, bodyLenCheck
+		return core.MkSuccess(0), curNode, headerIdx, totalIndex, curNode.Buffer().WriteAvailable(), logicPacketRemain, bodyLenCheck
 	}
 	var fieldRemainLen int64 = int64(bsLen)
 	var curIdx int64 = 0
@@ -784,14 +698,13 @@ func SerializeBytesType(bs []byte, logicPacketRemain int64, totalIndex int64, bo
 	var debugIdx = 0
 	for fieldRemainLen > 0 {
 		debugIdx++
-		rc, rIdx, currentSerializeLen = algorithm.MinValue[int64](logicPacketRemain, physicalBlockWriteAvailable, fieldRemainLen)
+		rc, rIdx, currentSerializeLen = algorithm.MinValue[int64](logicPacketRemain, curNode.Buffer().WriteAvailable(), fieldRemainLen)
 		rc = curNode.Buffer().WriteRawBytes(bs, curIdx, currentSerializeLen)
 		if core.Err(rc) {
 			return rc, nil, -1, -1, -1, -1, -1
 		}
 		totalIndex += currentSerializeLen
 		logicPacketRemain -= currentSerializeLen
-		physicalBlockWriteAvailable -= currentSerializeLen
 		bodyLenCheck += currentSerializeLen
 		curIdx += currentSerializeLen
 		fieldRemainLen -= currentSerializeLen
@@ -804,7 +717,6 @@ func SerializeBytesType(bs []byte, logicPacketRemain int64, totalIndex int64, bo
 			if core.Err(rc) {
 				return rc, nil, -1, -1, -1, -1, -1
 			}
-			physicalBlockWriteAvailable = curNode.Buffer().WriteAvailable()
 
 		} else if rIdx == 0 {
 			rc, curNode, headerIdx = WriteHeader(curNode, headers, headerIdx, bufferList)

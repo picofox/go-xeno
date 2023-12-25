@@ -8,5 +8,6 @@ type INetMessage interface {
 	Command() int16
 	String() string
 
+	BodyLength() int64
 	SerializeToList(bufferList *memory.ByteBufferList) (int64, int32)
 }

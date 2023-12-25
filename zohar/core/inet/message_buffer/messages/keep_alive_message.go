@@ -12,6 +12,11 @@ type KeepAliveMessage struct {
 	TT uint64 `json:"TT"`
 }
 
+func (ego *KeepAliveMessage) BodyLength() int64 {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (ego *KeepAliveMessage) SerializeToList(bufferList *memory.ByteBufferList) (int64, int32) {
 	//TODO implement me
 	panic("implement me")
