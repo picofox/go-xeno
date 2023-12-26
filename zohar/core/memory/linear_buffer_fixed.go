@@ -566,7 +566,6 @@ func (ego *LinearBufferFixed) WriteInt16Begin(iv int16, length int64) int32 {
 	Int16IntoBytesBE(iv, &ego._cache, 0)
 	if length > 0 {
 		ego.WriteRawBytes(ego._cache, 0, length)
-		ego._length += length
 	}
 	return core.MkSuccess(0)
 }
@@ -578,7 +577,6 @@ func (ego *LinearBufferFixed) WriteInt32Begin(iv int32, length int64) int32 {
 	Int32IntoBytesBE(iv, &ego._cache, 0)
 	if length > 0 {
 		ego.WriteRawBytes(ego._cache, 0, length)
-		ego._length += length
 	}
 	return core.MkSuccess(0)
 }
@@ -590,7 +588,6 @@ func (ego *LinearBufferFixed) WriteFloat32Begin(iv float32, length int64) int32 
 	Float32IntoBytesBE(iv, &ego._cache, 0)
 	if length > 0 {
 		ego.WriteRawBytes(ego._cache, 0, length)
-		ego._length += length
 	}
 	return core.MkSuccess(0)
 }
@@ -602,7 +599,6 @@ func (ego *LinearBufferFixed) WriteInt64Begin(iv int64, length int64) int32 {
 	Int64IntoBytesBE(iv, &ego._cache, 0)
 	if length > 0 {
 		ego.WriteRawBytes(ego._cache, 0, length)
-		ego._length += length
 	}
 	return core.MkSuccess(0)
 }
@@ -614,7 +610,6 @@ func (ego *LinearBufferFixed) WriteFloat64Begin(iv float64, length int64) int32 
 	Float64IntoBytesBE(iv, &ego._cache, 0)
 	if length > 0 {
 		ego.WriteRawBytes(ego._cache, 0, length)
-		ego._length += length
 	}
 	return core.MkSuccess(0)
 }
@@ -625,7 +620,6 @@ func (ego *LinearBufferFixed) WriteTrivialMiddle(off int64, l int64) int32 {
 	}
 	if l > 0 {
 		ego.WriteRawBytes(ego._cache, off, l)
-		ego._length += l
 	}
 	return core.MkSuccess(0)
 }
@@ -640,7 +634,6 @@ func (ego *LinearBufferFixed) WriteTrivialEnd(off int64, SIZEOFTYPE int64) (int6
 	}
 	if l > 0 {
 		ego.WriteRawBytes(ego._cache, off, l)
-		ego._length += l
 	}
 	return l, core.MkSuccess(0)
 }

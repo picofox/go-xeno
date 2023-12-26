@@ -17,7 +17,7 @@ func (ego *KeepAliveMessage) BodyLength() int64 {
 	panic("implement me")
 }
 
-func (ego *KeepAliveMessage) SerializeToList(bufferList *memory.ByteBufferList) (int64, int32) {
+func (ego *KeepAliveMessage) PiecewiseSerialize(bufferList *memory.ByteBufferList) (int64, int64, int32) {
 	//TODO implement me
 	panic("implement me")
 }

@@ -9,5 +9,5 @@ type INetMessage interface {
 	String() string
 
 	BodyLength() int64
-	SerializeToList(bufferList *memory.ByteBufferList) (int64, int32)
+	PiecewiseSerialize(bufferList *memory.ByteBufferList) (int64, int64, int32)
 }

@@ -31,6 +31,17 @@ func (ego *MessageHeader) Clear() {
 	ego._data[3] = 0
 }
 
+func (ego *MessageHeader) SetRaw2(lenAndO0 int16, cmdAndO1 int16) {
+	memory.Int16IntoBytesBE(lenAndO0, &ego._data, 0)
+	memory.Int16IntoBytesBE(cmdAndO1, &ego._data, 2)
+}
+
+func (ego *MessageHeader) Length() int16 {
+	var lenAndO0 int16
+	lenAndO0 = memory.BytesToInt16BE(&ego._data, 0)
+	return lenAndO0 & 0x7FFF
+}
+
 func (ego *MessageHeader) Set(o0 bool, o1 bool, length int16, cmd int16) {
 	var lenAndO0 int16 = length
 	var cmdAndO1 int16 = cmd
