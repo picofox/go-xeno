@@ -13,13 +13,12 @@ func GetAvailableBufferNode(bufList *memory.ByteBufferList) *memory.ByteBufferNo
 	if curNode == nil {
 		return nil
 	} else if curNode.ReadAvailable() <= 0 {
-		rNode := curNode.Next()
 		bufList.PopFront()
 		memory.GetByteBuffer4KCache().Put(curNode)
-		if rNode == nil {
+		if bufList.Front() == nil {
 			return nil
 		}
-		return rNode
+		return bufList.Front()
 	} else {
 		return curNode
 	}
@@ -222,7 +221,7 @@ func DeserializeBytesType(bufList *memory.ByteBufferList, logicPacketRemain int6
 			remainLength -= minV
 			logicPacketRemain -= minV
 
-			if int64(baLen) >= tmpBAIndex {
+			if tmpBAIndex >= int64(baLen) {
 				break
 			}
 			rc, bufNode, logicPacketRemain, _ = ReadHeader(bufList)
