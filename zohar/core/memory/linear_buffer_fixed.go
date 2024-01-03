@@ -165,6 +165,9 @@ func (ego *LinearBufferFixed) PeekRawBytes(ba []byte, baOff int64, peekLength in
 }
 
 func (ego *LinearBufferFixed) ReadRawBytes(ba []byte, baOff int64, readLength int64, isStrict bool) int64 {
+	if readLength == 0 {
+		return 0
+	}
 	if ego._length < readLength {
 		if isStrict {
 			return 0

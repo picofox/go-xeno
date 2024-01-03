@@ -9,12 +9,10 @@ import (
 )
 
 type O1L15COT15CodecServerHandler struct {
-	_largeMessageBuffer *memory.LinearBuffer
-	_memoryLow          bool
-	_packetHeader       message_buffer.MessageHeader
-	_keepalive          *KeepAlive
-	_connection         *TCPServerConnection
-	_sendingBuffer      *memory.LinearBuffer
+	_memoryLow           bool
+	_keepalive           *KeepAlive
+	_connection          *TCPServerConnection
+	_hdrDeserializeCache []byte
 }
 
 func (ego *O1L15COT15CodecServerHandler) OnKeepAlive(ts int64, delta int32) {
@@ -29,185 +27,136 @@ func (ego *O1L15COT15CodecServerHandler) OnKeepAlive(ts int64, delta int32) {
 
 func (ego *O1L15COT15CodecServerHandler) Pulse(conn IConnection, nowTs int64) {
 	if ego._keepalive != nil {
-		ego._keepalive.Pulse(conn, nowTs)
+		rc := ego._keepalive.Pulse(conn, nowTs)
+		if core.IsErrType(rc, core.EC_TCP_CONNECT_ERROR) {
+			ego._connection.OnConnectingFailed()
+		}
 	}
 }
 
 func (ego *O1L15COT15CodecServerHandler) Reset() {
-	ego._largeMessageBuffer.Reset()
+	if ego._keepalive != nil {
+		ego._keepalive.Reset()
+	}
+}
+
+func (ego *O1L15COT15CodecServerHandler) CheckCompletion(byteBuf *memory.ByteBufferNode) (int64, int32) {
+	var rc int32 = core.MkSuccess(0)
+	var rBodyLen int64 = 0
+	var currentFrameLength int64 = 0
+	var currentSplitType int8 = 0
+	var bodyIndex int64 = 0
+
+	if byteBuf == nil {
+		return rBodyLen, core.MkErr(core.EC_NULL_VALUE, 1)
+	}
+
+	byteBuf, bodyIndex, currentFrameLength, _, currentSplitType, rc = messages.PeekHeaderContent(ego._hdrDeserializeCache, byteBuf, byteBuf.ReadPos())
+	if core.Err(rc) {
+		return rBodyLen, rc
+	}
+	if currentFrameLength <= 0 {
+		return 0, core.MkSuccess(0)
+	}
+
+	fmt.Printf("ST=%d \n", currentSplitType)
+
+	if currentSplitType == message_buffer.PACKET_SPLITION_TYPE_NONE {
+		leftInCurBuffer := byteBuf.ReadAvailable() - bodyIndex
+		if leftInCurBuffer >= currentFrameLength {
+			return currentFrameLength, core.MkSuccess(0)
+		}
+		rBodyLen = leftInCurBuffer
+		byteBuf = byteBuf.Next()
+		for byteBuf != nil {
+			if rBodyLen+byteBuf.Capacity() >= currentFrameLength {
+				rBodyLen += (currentFrameLength - rBodyLen) //todo use abs value currentFrameLength
+				return rBodyLen, core.MkSuccess(0)
+			} else {
+				rBodyLen += byteBuf.Capacity()
+			}
+			byteBuf = byteBuf.Next()
+		}
+		return 0, core.MkErr(core.EC_TRY_AGAIN, 0)
+
+	} else {
+		var fakeReaderPos int64 = byteBuf.ReadPos()
+		for byteBuf != nil {
+			curBodyLen := byteBuf.Capacity() - (fakeReaderPos + bodyIndex)
+			if rBodyLen+curBodyLen >= currentFrameLength {
+				rBodyLen += currentFrameLength - rBodyLen
+				if currentSplitType == message_buffer.PACKET_SPLITION_TYPE_END {
+					return rBodyLen, core.MkSuccess(0)
+				}
+				fakeReaderPos = fakeReaderPos + bodyIndex + curBodyLen
+				byteBuf, bodyIndex, currentFrameLength, _, currentSplitType, rc = messages.PeekHeaderContent(ego._hdrDeserializeCache, byteBuf, fakeReaderPos)
+				fmt.Printf("-ST=%d \n", currentSplitType)
+				if core.Err(rc) {
+					return rBodyLen, rc
+				}
+
+			} else {
+				rBodyLen += curBodyLen
+				bodyIndex = 0
+			}
+
+			byteBuf = byteBuf.Next()
+			fakeReaderPos = 0
+		}
+		return 0, core.MkErr(core.EC_TRY_AGAIN, 0)
+	}
 }
 
 func (ego *O1L15COT15CodecServerHandler) OnReceive(connection *TCPServerConnection) (any, int32) {
-	if connection._recvBuffer.ReadAvailable() <= message_buffer.O1L15O1T15_HEADER_SIZE {
-		fmt.Printf("%d <4  (%d)return EA\n", connection._recvBuffer.ReadAvailable(), connection._recvBuffer.Capacity())
-		return nil, core.MkErr(core.EC_TRY_AGAIN, 1)
-	}
-	o1AndLen, _, _, _ := connection._recvBuffer.PeekUInt16()
-	frameLength := int64(o1AndLen & 0x7FFF)
-	if connection._recvBuffer.ReadAvailable() < int64(frameLength)+message_buffer.O1L15O1T15_HEADER_SIZE {
-		connection._recvBuffer.ResizeTo(message_buffer.MAX_BUFFER_MAX_CAPACITY)
-		fmt.Printf("%d<%d (%d) return EA\n", connection._recvBuffer.ReadAvailable(), frameLength, connection._recvBuffer.Capacity())
-		return nil, core.MkErr(core.EC_TRY_AGAIN, 2)
+	bodyLen, rc := ego.CheckCompletion(ego._connection._recvBufferList.Front())
+	if core.Err(rc) {
+		return nil, rc
 	}
 
-	connection._recvBuffer.ReadInt16() //skip top half of header
-
-	//one packet is loaded
-	o2AndType, _ := connection._recvBuffer.ReadUInt16()
-	opt1 := (o1AndLen >> 15 & 0x1) == 1
-	opt2 := (o2AndType >> 15 & 0x1) == 1
-	cmd := int16(o2AndType & 0x7FFF)
-
-	//connection._recvBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, frameLength)
-
-	fmt.Printf("recv: %d:%d:%t:%t\n", frameLength, cmd, opt1, opt2)
-
-	if !opt1 && !opt2 {
-		beginPos := connection._recvBuffer.ReadPos()
-		msg := messages.GetDefaultMessageBufferDeserializationMapper().Deserialize(cmd, connection._recvBuffer)
-		if msg == nil {
-			connection._server.Log(core.LL_ERR, "Deserialize Message (CMD:%d) error.", cmd)
-			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
-		}
-		endPos := connection._recvBuffer.ReadPos()
-		delta := endPos - beginPos
-		if endPos < beginPos {
-			delta = connection._recvBuffer.Capacity() - beginPos + endPos
-		}
-		if delta != frameLength {
-			connection._server.Log(core.LL_ERR, "Message (CMD:%d) Length Validation Failed, frame length is %d, but got %d read", cmd, frameLength, delta)
-			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
-		}
-
-		rc := GetDefaultMessageHandlerMapper().Handle(connection, msg)
-		if core.IsErrType(rc, core.EC_ALREADY_DONE) {
-			return nil, core.MkSuccess(0)
-		}
-
-		return msg, core.MkSuccess(0)
-
-	} else if opt1 && !opt2 { //long message start
-		ego._largeMessageBuffer.Clear()
-		if ego._largeMessageBuffer.Capacity() < frameLength*2 {
-			ego._largeMessageBuffer.ResizeTo(frameLength * 2)
-		}
-		bs0, bs1 := connection._recvBuffer.BytesRef(frameLength)
-		ego._largeMessageBuffer.WriteRawBytes(bs0, 0, int64(len(bs0)))
-		if bs1 != nil && len(bs1) > 0 {
-			ego._largeMessageBuffer.WriteRawBytes(bs1, 0, int64(len(bs1)))
-		}
-		connection._recvBuffer.Clear()
-		return nil, core.MkErr(core.EC_TRY_AGAIN, 2)
-
-	} else if opt1 && opt2 { //long message trunks
-		bs0, bs1 := connection._recvBuffer.BytesRef(frameLength)
-		ego._largeMessageBuffer.WriteRawBytes(bs0, 0, int64(len(bs0)))
-		if bs1 != nil && len(bs1) > 0 {
-			ego._largeMessageBuffer.WriteRawBytes(bs1, 0, int64(len(bs1)))
-		}
-		connection._recvBuffer.Clear()
-		return nil, core.MkErr(core.EC_TRY_AGAIN, 2)
-
-	} else if !opt1 && opt2 { //long message finished
-		bs0, bs1 := connection._recvBuffer.BytesRef(frameLength)
-		ego._largeMessageBuffer.WriteRawBytes(bs0, 0, int64(len(bs0)))
-		if bs1 != nil && len(bs1) > 0 {
-			ego._largeMessageBuffer.WriteRawBytes(bs1, 0, int64(len(bs1)))
-		}
-		connection._recvBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, frameLength)
-
-		msg := messages.GetDefaultMessageBufferDeserializationMapper().Deserialize(cmd, ego._largeMessageBuffer)
-		if msg == nil {
-			connection._server.Log(core.LL_ERR, "Deserialize Message (CMD:%d) error.", cmd)
-			return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
-		}
-
-		return msg, core.MkSuccess(0)
+	var cmd int16 = 0
+	_, _, _, cmd, _, rc = messages.ReadHeaderContent(ego._hdrDeserializeCache, ego._connection._recvBufferList)
+	if core.Err(rc) {
+		return nil, rc
 	}
 
-	return nil, core.MkErr(core.EC_INVALID_STATE, 1)
+	msg := messages.GetDefaultMessageBufferDeserializationMapper().Deserialize(cmd, ego._connection._recvBufferList, bodyLen)
+	if msg == nil {
+		connection._server.Log(core.LL_ERR, "Deserialize Message (CMD:%d) error.", cmd)
+		return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+	}
+
+	rc = GetDefaultMessageHandlerMapper().Handle(connection, msg)
+	if core.IsErrType(rc, core.EC_ALREADY_DONE) {
+		return nil, core.MkSuccess(0)
+	}
+	return msg, core.MkSuccess(0)
 }
 
 func (ego *O1L15COT15CodecServerHandler) OnSend(connection *TCPServerConnection, a any, bFlush bool) int32 {
 	var message = a.(message_buffer.INetMessage)
-	tLen := message.Serialize(ego._sendingBuffer)
-	if tLen < 0 {
+	_, bLen, rc := message.PiecewiseSerialize(ego._connection._sendBufferList)
+	if bLen != message.BodyLength() {
+		//todo remove this check to boost perfermance
+		return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+	}
+	if core.Err(rc) {
 		return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 	}
 
-	var byteBuf memory.IByteBuffer = connection._sendBuffer
-	var cmd int16 = message.Command()
-	var offset int64 = 0
-	var ba *[]byte = nil
-	if tLen <= message_buffer.MAX_BUFFER_MAX_CAPACITY {
-		for {
-			curBB, rc := messages.CheckByteBufferListNode(connection._sendBufferList)
-			if core.Err(rc) {
-				return rc
-			}
-			writableBytes := curBB.Buffer().WriteAvailable()
-			ba = ego._sendingBuffer.InternalData()
-			if writableBytes >= tLen {
-				rc = curBB.Buffer().WriteRawBytes(*ba, offset, tLen)
-				if bFlush {
-					ego._connection.FlushSendingBuffer()
-				}
-				return rc
-			} else {
-				rc = curBB.Buffer().WriteRawBytes(*ba, offset, writableBytes)
-				if core.Err(rc) {
-					return rc
-				}
-				offset += writableBytes
-			}
-		}
-
-		if bFlush {
-			ego._connection.FlushSendingBuffer()
-		}
-		return core.MkSuccess(0)
-	} else { //large message
-		rIndex := int64(message_buffer.O1L15O1T15_HEADER_SIZE)
-		ego._packetHeader.Set(true, false, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
-		if !byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, message_buffer.O1L15O1T15_HEADER_SIZE) {
-			return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
-		}
-
-		for {
-			_, rc := connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
-			if core.Err(rc) {
-				return rc
-			}
-			_, rc = connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), message_buffer.MAX_PACKET_BODY_SIZE)
-			if core.Err(rc) {
-				return rc
-			}
-			rIndex += message_buffer.MAX_PACKET_BODY_SIZE
-			byteBuf.ReaderSeek(memory.BUFFER_SEEK_SET, rIndex)
-
-			//next loop use non begin version
-			ego._packetHeader.Set(true, true, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
-
-			if byteBuf.ReadAvailable() <= message_buffer.MAX_PACKET_BODY_SIZE {
-				break
-			}
-		}
-		ego._packetHeader.Set(false, true, message_buffer.MAX_PACKET_BODY_SIZE, cmd)
-		_, rc := connection.sendImmediately(ego._packetHeader.Data(), 0, message_buffer.O1L15O1T15_HEADER_SIZE)
-		if core.Err(rc) {
-			return rc
-		}
-		_, rc = connection.sendImmediately(*byteBuf.InternalData(), byteBuf.ReadPos(), byteBuf.ReadAvailable())
+	if bFlush {
+		var bs int64 = 0
+		bs, rc = ego._connection.FlushSendingBuffer()
+		ego._connection._server.Log(core.LL_DEBUG, "conn <%s> sent %d bytes", ego._connection.String(), bs)
 		if core.Err(rc) {
 			return rc
 		}
 	}
+
 	return core.MkSuccess(0)
 }
 
 func (ego *O1L15COT15CodecServerHandler) CheckLowMemory() {
 	if ego._memoryLow {
-		ego._largeMessageBuffer.Reset()
 		ego._memoryLow = false
 	}
 }
@@ -216,20 +165,11 @@ func (ego *O1L15COT15CodecServerHandler) OnLowMemory() {
 	ego._memoryLow = true
 }
 
-func NeoO1L15COT15DecodeServerHandler() *O1L15COT15CodecServerHandler {
-	dec := O1L15COT15CodecServerHandler{
-		_largeMessageBuffer: memory.NeoLinearBuffer(0),
-		_memoryLow:          false,
-	}
-	return &dec
-}
 func (ego *HandlerRegistration) NeoO1L15COT15DecodeServerHandler(c *TCPServerConnection) *O1L15COT15CodecServerHandler {
 	dec := O1L15COT15CodecServerHandler{
-		_largeMessageBuffer: memory.NeoLinearBuffer(0),
-		_memoryLow:          false,
-		_packetHeader:       message_buffer.NeoMessageHeader(),
-		_connection:         c,
-		_sendingBuffer:      memory.NeoLinearBuffer(32768),
+		_memoryLow:           false,
+		_connection:          c,
+		_hdrDeserializeCache: make([]byte, message_buffer.O1L15O1T15_HEADER_SIZE),
 	}
 
 	if c.KeepAliveConfig().Enable {

@@ -1,8 +1,18 @@
 package datatype
 
+var EmptyByteSlice []byte = make([]byte, 0)
+
 const (
 	INT32_MAX = 0x7FFFFFFF
 	INT64_MAX = 1<<63 - 1
+
+	INT64_SIZE    = 8
+	INT32_SIZE    = 4
+	INT16_SIZE    = 2
+	INT8_SIZE     = 1
+	FLOAT32_SIZE  = 4
+	FLOAT64_SIZE  = 8
+	BYTEBOOL_SIZE = 1
 )
 
 const (

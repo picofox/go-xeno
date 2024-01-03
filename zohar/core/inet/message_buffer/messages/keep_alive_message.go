@@ -12,6 +12,11 @@ type KeepAliveMessage struct {
 	TT uint64 `json:"TT"`
 }
 
+func (ego *KeepAliveMessage) PiecewiseDeserialize(bufferList *memory.ByteBufferList, bodyLen int64) (int64, int32) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (ego *KeepAliveMessage) BodyLength() int64 {
 	//TODO implement me
 	panic("implement me")
@@ -79,6 +84,15 @@ func (ego *KeepAliveMessage) Deserialize(buffer memory.IByteBuffer) int32 {
 func KeepAliveMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetMessage {
 	m := KeepAliveMessage{}
 	rc := m.Deserialize(buffer)
+	if core.Err(rc) {
+		return nil
+	}
+	return &m
+}
+
+func KeepAliveMessagePiecewiseDeserialize(bufferList *memory.ByteBufferList, bodyLength int64) message_buffer.INetMessage {
+	m := KeepAliveMessage{}
+	_, rc := m.PiecewiseDeserialize(bufferList, bodyLength)
 	if core.Err(rc) {
 		return nil
 	}

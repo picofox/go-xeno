@@ -23,6 +23,41 @@ func (ego *ByteBufferList) Back() *ByteBufferNode {
 	return ego._tail
 }
 
+func (ego *ByteBufferList) DeleteNodes(n int64) int64 {
+	for n > 0 {
+		if ego.PopFront() == nil {
+			return n
+		}
+		n--
+		ego._count--
+	}
+	return n
+}
+
+func (ego *ByteBufferList) DeleteUntilReadableNode(node *ByteBufferNode) (int64, *ByteBufferNode) {
+	var cnt int64 = 0
+
+	if node != nil {
+		for {
+			cur := ego._head
+			if cur == node {
+				if node.ReadAvailable() > 0 {
+					return cnt, node
+
+				} else {
+					rNode := cur._next
+					ego.PopFront()
+					return cnt, rNode
+				}
+			}
+			ego.PopFront()
+			cnt++
+		}
+	} else {
+		return 0, nil
+	}
+}
+
 func (ego *ByteBufferList) PopFront() *ByteBufferNode {
 	if ego._head == nil {
 		return nil

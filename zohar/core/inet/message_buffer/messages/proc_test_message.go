@@ -100,6 +100,126 @@ func (ego *ProcTestMessage) BodyLength() int64 {
 	return int64(sz)
 }
 
+func (ego *ProcTestMessage) PiecewiseDeserialize(bufferList *memory.ByteBufferList, bodyLength int64) (int64, int32) {
+	var rc int32 = 0
+	var logicPacketLength int64 = message_buffer.MAX_PACKET_BODY_SIZE
+
+	ego.TimeStamp, logicPacketLength, bodyLength, rc = DeserializeI64Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.Str0, logicPacketLength, bodyLength, rc = DeserializeStringType(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.StrEmpty, logicPacketLength, bodyLength, rc = DeserializeStringType(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.I80, logicPacketLength, bodyLength, rc = DeserializeI8Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+	ego.I81, logicPacketLength, bodyLength, rc = DeserializeI8Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.I160, logicPacketLength, bodyLength, rc = DeserializeI16Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+	ego.I161, logicPacketLength, bodyLength, rc = DeserializeI16Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.I320, logicPacketLength, bodyLength, rc = DeserializeI32Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+	ego.I321, logicPacketLength, bodyLength, rc = DeserializeI32Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.I640, logicPacketLength, bodyLength, rc = DeserializeI64Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+	ego.I641, logicPacketLength, bodyLength, rc = DeserializeI64Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.IsServer, logicPacketLength, bodyLength, rc = DeserializeBoolType(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.F32, logicPacketLength, bodyLength, rc = DeserializeF32Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.F64, logicPacketLength, bodyLength, rc = DeserializeF64Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.U80, logicPacketLength, bodyLength, rc = DeserializeU8Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.U160, logicPacketLength, bodyLength, rc = DeserializeU16Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.U320, logicPacketLength, bodyLength, rc = DeserializeU32Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.U640, logicPacketLength, bodyLength, rc = DeserializeU64Type(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.StrSlice, logicPacketLength, bodyLength, rc = DeserializeStringsType(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.StrSliceNull, logicPacketLength, bodyLength, rc = DeserializeStringsType(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.StrSliceEmpty, logicPacketLength, bodyLength, rc = DeserializeStringsType(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.MD5, logicPacketLength, bodyLength, rc = DeserializeBytesType(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	ego.TextLong, logicPacketLength, bodyLength, rc = DeserializeStringType(bufferList, logicPacketLength, bodyLength)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
+	}
+
+	GetAvailableBufferNode(bufferList)
+
+	return bodyLength, core.MkSuccess(0)
+}
+
 func (ego *ProcTestMessage) PiecewiseSerialize(bufferList *memory.ByteBufferList) (int64, int64, int32) {
 	var totalIndex int64 = 0
 	var bodyLenCheck int64 = 0
@@ -472,6 +592,15 @@ func (ego *ProcTestMessage) Deserialize(buffer memory.IByteBuffer) int32 {
 func ProcTestMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetMessage {
 	m := ProcTestMessage{}
 	rc := m.Deserialize(buffer)
+	if core.Err(rc) {
+		return nil
+	}
+	return &m
+}
+
+func ProcTestMessagePiecewiseDeserialize(bufferList *memory.ByteBufferList, bodyLength int64) message_buffer.INetMessage {
+	m := ProcTestMessage{}
+	_, rc := m.PiecewiseDeserialize(bufferList, bodyLength)
 	if core.Err(rc) {
 		return nil
 	}

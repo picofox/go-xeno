@@ -25,7 +25,7 @@ type IConnection interface {
 	KeepAliveConfig() *intrinsic.KeepAliveConfig
 	Pulse(ts int64)
 	BufferBlockList() *memory.ByteBufferList
-	FlushSendingBuffer()
+	FlushSendingBuffer() (int64, int32)
 }
 
 const (

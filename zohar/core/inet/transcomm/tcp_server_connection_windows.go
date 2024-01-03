@@ -23,32 +23,71 @@ type TCPServerConnection struct {
 	_conn           *net.TCPConn
 	_localEndPoint  inet.IPV4EndPoint
 	_remoteEndPoint inet.IPV4EndPoint
-	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
 	_codec          IServerCodecHandler
 	_server         *TCPServer
 	_profiler       *prof.ConnectionProfiler
 	_sendBufferList *memory.ByteBufferList
+	_recvBufferList *memory.ByteBufferList
+	_lastPulseTs    int64
 	_lock           sync.Mutex
 }
 
-func (ego *TCPServerConnection) FlushSendingBuffer() {
-	for {
-		bb := ego._sendBufferList.PopFront()
-		if bb == nil {
-			return
+func (ego *TCPServerConnection) GetBufferNodeForReceiving() *memory.ByteBufferNode {
+	byteBuf := ego._recvBufferList.Back()
+	if byteBuf == nil || byteBuf.ReadAvailable() <= 0 {
+		byteBuf = memory.NeoByteBufferNode(4096)
+		if byteBuf == nil {
+			ego._server.Log(core.LL_ERR, "Get ByteBufferNode for writing Failed.")
+			return nil
 		}
-		ba, _ := bb.Buffer().BytesRef(-1)
-		if ba == nil || len(ba) == 0 {
-			return
-		}
-		nDone, err := ego._conn.Write(ba)
-		if err != nil {
-			return
-		} else {
-			bb.Buffer().ReaderSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
-		}
+		ego._recvBufferList.PushBack(byteBuf)
 	}
+	return byteBuf
+}
+
+func (ego *TCPServerConnection) FlushSendingBuffer() (int64, int32) {
+	ego._lock.Lock()
+	defer ego._lock.Unlock()
+
+	var sentBytes int64 = 0
+	byteBuf := ego._sendBufferList.Front()
+	for byteBuf != nil {
+		ba, _ := byteBuf.BytesRef(-1)
+		if ba == nil {
+			return sentBytes, core.MkErr(core.EC_NULL_VALUE, 2)
+		}
+
+		remainLength := len(ba)
+		if remainLength == 0 {
+			ego._server.Log(core.LL_ERR, "Found 0 Len buffer")
+			ego._sendBufferList.PopFront()
+			memory.GetByteBuffer4KCache().Put(byteBuf)
+			continue
+		}
+		for remainLength > 0 {
+			nDone, err := ego._conn.Write(ba)
+			if err != nil {
+				if err == syscall.EAGAIN || err == syscall.EWOULDBLOCK {
+					return sentBytes, core.MkErr(core.EC_TRY_AGAIN, 0)
+				}
+				return sentBytes, core.MkErr(core.EC_TCP_SEND_FAILED, 0)
+			} else {
+				sentBytes += int64(nDone)
+				byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
+				remainLength -= nDone
+				if byteBuf.ReadAvailable() <= 0 {
+					ego._sendBufferList.PopFront()
+					memory.GetByteBuffer4KCache().Put(byteBuf)
+				}
+			}
+		}
+
+		byteBuf = ego._sendBufferList.Front()
+	}
+
+	return sentBytes, core.MkSuccess(0)
+
 }
 
 func (ego *TCPServerConnection) BufferBlockList() *memory.ByteBufferList {
@@ -141,10 +180,29 @@ func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int
 	}
 }
 
+func (ego *TCPServerConnection) clearBufferList() {
+	for {
+		byteBuf := ego._sendBufferList.PopFront()
+		if byteBuf != nil {
+			memory.GetByteBuffer4KCache().Put(byteBuf)
+		} else {
+			break
+		}
+	}
+	for {
+		byteBuf := ego._recvBufferList.PopFront()
+		if byteBuf != nil {
+			memory.GetByteBuffer4KCache().Put(byteBuf)
+		} else {
+			break
+		}
+	}
+}
+
 func (ego *TCPServerConnection) Close() int32 {
 	ego._conn.Close()
-	ego._recvBuffer.Clear()
 	ego._sendBuffer.Clear()
+	ego.clearBufferList()
 	ego._codec.Reset()
 	return core.MkSuccess(0)
 }
@@ -190,23 +248,6 @@ func (ego *TCPServerConnection) LocalEndPoint() *inet.IPV4EndPoint {
 func (ego *TCPServerConnection) Shutdown() {
 	ego._conn.Close()
 }
-func (ego *TCPServerConnection) checkRecvBufferCapacity() int32 {
-	if ego._recvBuffer.WriteAvailable() > 0 {
-		return core.MkSuccess(0)
-	}
-
-	if ego._recvBuffer.Capacity() < message_buffer.MAX_BUFFER_MAX_CAPACITY {
-		neoSz := ego._recvBuffer.Capacity() * 2
-		if neoSz > message_buffer.MAX_BUFFER_MAX_CAPACITY {
-			neoSz = message_buffer.MAX_BUFFER_MAX_CAPACITY
-		}
-		if ego._recvBuffer.ResizeTo(neoSz) > 0 {
-			return core.MkSuccess(0)
-		}
-	}
-
-	return core.MkErr(core.EC_REACH_LIMIT, 1)
-}
 
 func (ego *TCPServerConnection) PreStop() {
 	ego._conn.SetReadDeadline(time.Now())
@@ -217,35 +258,33 @@ func (ego *TCPServerConnection) Pulse(ts int64) {
 }
 
 func (ego *TCPServerConnection) OnIncomingData() int32 {
-	rc := ego.checkRecvBufferCapacity()
-	if core.IsErrType(rc, core.EC_REACH_LIMIT) {
-		ego._server.Log(core.LL_ERR, "[SNH] Buffer reach max")
-		return rc //TODO close connection
-	}
-	baPtr := ego._recvBuffer.InternalData()
 	var nDone int = 0
 	var err error
+	var nowTs = chrono.GetRealTimeMilli()
 
-	if ego._server._config.KeepAlive.Enable {
-		readT0 := time.Duration(intrinsic.GetIntrinsicConfig().Poller.SubReactorPulseInterval)
-		d := time.Duration(readT0 * time.Millisecond) // 30 seconds
-		w := time.Now()                               // from now
-		w = w.Add(d)
-		ego._conn.SetReadDeadline(w)
+	if nowTs-ego._lastPulseTs > int64(intrinsic.GetIntrinsicConfig().Poller.SubReactorPulseInterval) {
+		ego.Pulse(nowTs)
+		ego._lastPulseTs = nowTs
 	}
 
-	if ego._recvBuffer.WritePos() >= ego._recvBuffer.ReadPos() {
-		fmt.Printf("read at %d mlen %d\n", ego._recvBuffer.WritePos(), ego._recvBuffer.Capacity()-ego._recvBuffer.WritePos())
-		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.Capacity()])
-	} else {
-		nDone, err = ego._conn.Read((*baPtr)[ego._recvBuffer.WritePos():ego._recvBuffer.ReadPos()])
+	readT0 := time.Duration(intrinsic.GetIntrinsicConfig().Poller.SubReactorPulseInterval)
+	d := time.Duration(readT0 * time.Millisecond) // 30 seconds
+	w := time.Now()                               // from now
+	w = w.Add(d)
+	ego._conn.SetReadDeadline(w)
+
+	byteBuffer := ego.GetBufferNodeForReceiving()
+	if byteBuffer == nil {
+		//todo close conn
+		return core.MkErr(core.EC_NULL_VALUE, 1)
 	}
+
+	nDone, err = ego._conn.Read((*byteBuffer.InternalData())[byteBuffer.WritePos():byteBuffer.Capacity()])
 	if err != nil {
 		fmt.Printf("read Failed %d (%s)\n", nDone, err.Error())
 	} else {
 		fmt.Printf("read OK %d \n", nDone)
 	}
-
 	if nDone < 0 {
 		if err != nil {
 			ego._server.Log(core.LL_SYS, "Connection <%s> SysRead Failed: %s", ego.String(), err.Error())
@@ -260,26 +299,26 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 				ok := errors.As(err, &e)
 				if ok {
 					if e.Timeout() {
-						ego.Pulse(chrono.GetRealTimeMilli())
+						if nowTs-ego._lastPulseTs > int64(intrinsic.GetIntrinsicConfig().Poller.SubReactorPulseInterval) {
+							ego.Pulse(nowTs)
+							ego._lastPulseTs = nowTs
+						}
 						return core.MkSuccess(0)
 					}
 				}
 			}
 			return core.MkErr(core.EC_TCO_RECV_ERROR, 1)
 		}
-
 	} else {
-		src := ego._recvBuffer.WriterSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
-		if !src {
+		bOk := byteBuffer.WriterSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
+		if !bOk {
 			return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 		}
-
 		for {
 			msg, rc := ego._codec.OnReceive(ego)
 			if core.Err(rc) || msg == nil {
 				return rc
 			}
-
 			ego._server.OnIncomingMessage(ego, msg.(message_buffer.INetMessage), nil)
 		}
 
@@ -300,12 +339,13 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 		_conn:           conn,
 		_localEndPoint:  inet.NeoIPV4EndPointByAddr(conn.LocalAddr()),
 		_remoteEndPoint: inet.NeoIPV4EndPointByAddr(conn.RemoteAddr()),
-		_recvBuffer:     memory.NeoRingBuffer(1024),
 		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_server:         listener.Server(),
 		_codec:          nil,
 		_profiler:       prof.NeoConnectionProfiler(),
 		_sendBufferList: memory.NeoByteBufferList(),
+		_recvBufferList: memory.NeoByteBufferList(),
+		_lastPulseTs:    chrono.GetRealTimeMilli(),
 	}
 
 	c._conn.SetNoDelay(c._server._config.NoDelay)

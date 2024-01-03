@@ -74,6 +74,49 @@ func AllocHeaders(logicPacketCount int64, lastPacketLength int64, cmd int16) []*
 	return ret
 }
 
+func ReadHeader(bufList *memory.ByteBufferList) (int32, *memory.ByteBufferNode, int64, int16) {
+	var logicPacketRemain int16
+	var cmd int16
+
+	curNode := GetAvailableBufferNode(bufList)
+	if curNode == nil {
+		return core.MkErr(core.EC_NULL_VALUE, 1), nil, -1, -1
+	}
+	if curNode.ReadAvailable() >= message_buffer.O1L15O1T15_HEADER_SIZE {
+		lenAndO1, _ := curNode.ReadInt16()
+		cmdAndO2, _ := curNode.ReadInt16()
+		logicPacketRemain = lenAndO1 & 0x7FFF
+		cmd = cmdAndO2 & 0x7FFF
+		return core.MkSuccess(0), curNode, int64(logicPacketRemain), cmd
+
+	} else if curNode.ReadAvailable() == 0 {
+		curNode = GetAvailableBufferNode(bufList)
+		if curNode == nil {
+			return core.MkErr(core.EC_NULL_VALUE, 1), nil, -1, -1
+		}
+		lenAndO1, _ := curNode.ReadInt16()
+		cmdAndO2, _ := curNode.ReadInt16()
+		logicPacketRemain = lenAndO1 & 0x7FFF
+		cmd = cmdAndO2 & 0x7FFF
+		return core.MkSuccess(0), curNode, int64(logicPacketRemain), cmd
+
+	} else {
+		var ba []byte = make([]byte, message_buffer.O1L15O1T15_HEADER_SIZE)
+		var lenToRead = curNode.ReadAvailable()
+		curNode.ReadRawBytes(ba, 0, lenToRead, true)
+		curNode = GetAvailableBufferNode(bufList)
+		if curNode == nil {
+			return core.MkErr(core.EC_NULL_VALUE, 1), nil, -1, -1
+		}
+		curNode.ReadRawBytes(ba, lenToRead, message_buffer.O1L15O1T15_HEADER_SIZE-lenToRead, true)
+		lenAndO1 := memory.BytesToInt16BE(&ba, 0)
+		cmdAndO2 := memory.BytesToInt16BE(&ba, 2)
+		logicPacketRemain = lenAndO1 & 0x7FFF
+		cmd = cmdAndO2 & 0x7FFF
+		return core.MkSuccess(0), curNode, int64(logicPacketRemain), cmd
+	}
+}
+
 func WriteHeader(curNode *memory.ByteBufferNode, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList) (int32, *memory.ByteBufferNode, int) {
 	var rc int32 = 0
 	if curNode == nil {
@@ -678,7 +721,11 @@ func SerializeF64Type(v float64, logicPacketRemain int64, totalIndex int64, body
 }
 
 func SerializeBytesType(bs []byte, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64) {
-	bsLenCheck := len(bs)
+	var bsLenCheck int = -1
+	if bs != nil {
+		bsLenCheck = len(bs)
+	}
+
 	if bsLenCheck > datatype.INT32_MAX {
 		return core.MkErr(core.EC_REACH_LIMIT, 0), nil, -1, -1, -1, -1
 	}
@@ -749,12 +796,19 @@ func SerializeBytesType(bs []byte, logicPacketRemain int64, totalIndex int64, bo
 }
 
 func SerializeStringType(str string, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64) {
+	if len(str) == 0 {
+		return SerializeBytesType(datatype.EmptyByteSlice, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
+	}
 	ba := memory.ByteRef(str, 0, int(len(str)))
 	return SerializeBytesType(ba, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
 }
 
 func SerializeBytesSliceType(ba [][]byte, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64) {
-	l := int32(len(ba))
+	var l int32 = -1
+	if ba != nil {
+		l = int32(len(ba))
+	}
+
 	var rc int32
 	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI32Type(l, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
 	if core.Err(rc) {
@@ -770,13 +824,19 @@ func SerializeBytesSliceType(ba [][]byte, logicPacketRemain int64, totalIndex in
 }
 
 func SerializeStringsType(str []string, logicPacketRemain int64, totalIndex int64, bodyLenCheck int64, headers []*message_buffer.MessageHeader, headerIdx int, bufferList *memory.ByteBufferList, curNode *memory.ByteBufferNode) (int32, *memory.ByteBufferNode, int, int64, int64, int64) {
-	l := int32(len(str))
+	var l int32 = -1
+	if str != nil {
+		l = int32(len(str))
+	}
+
 	var rc int32
 	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI32Type(l, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
 	if core.Err(rc) {
 		return rc, nil, -1, -1, -1, -1
 	}
-	if l <= 0 {
+	if l == 0 {
+		return core.MkSuccess(0), curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck
+	} else if l < 0 {
 		return core.MkSuccess(0), curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck
 	}
 	for i := int32(0); i < l; i++ {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"reflect"
+	"syscall"
 	"xeno/zohar/core"
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
@@ -18,32 +19,51 @@ type TCPClientConnection struct {
 	_conn           *net.TCPConn
 	_localEndPoint  inet.IPV4EndPoint
 	_remoteEndPoint inet.IPV4EndPoint
-	_recvBuffer     *memory.RingBuffer
-	_sendBuffer     *memory.LinearBuffer
 	_codec          IClientCodecHandler
 	_client         *TCPClient
 	_profiler       *prof.ConnectionProfiler
 	_sendBufferList *memory.ByteBufferList
+	_recvBufferList *memory.ByteBufferList
 	_isConnected    bool
 }
 
-func (ego *TCPClientConnection) FlushSendingBuffer() {
-	for {
-		bb := ego._sendBufferList.PopFront()
-		if bb == nil {
-			return
+func (ego *TCPClientConnection) FlushSendingBuffer() (int64, int32) {
+	var sentBytes int64 = 0
+	byteBuf := ego._sendBufferList.Front()
+	for byteBuf != nil {
+		ba, _ := byteBuf.BytesRef(-1)
+		if ba == nil {
+			return sentBytes, core.MkErr(core.EC_NULL_VALUE, 2)
 		}
-		ba, _ := bb.Buffer().BytesRef(-1)
-		if ba == nil || len(ba) == 0 {
-			return
+
+		remainLength := len(ba)
+		if remainLength == 0 {
+			ego._client.Log(core.LL_ERR, "Found 0 Len buffer")
+			ego._sendBufferList.PopFront()
+			memory.GetByteBuffer4KCache().Put(byteBuf)
+			continue
 		}
-		nDone, err := ego._conn.Write(ba)
-		if err != nil {
-			return
-		} else {
-			bb.Buffer().ReaderSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
+		for remainLength > 0 {
+			nDone, err := ego._conn.Write(ba)
+			if err != nil {
+				if err == syscall.EAGAIN || err == syscall.EWOULDBLOCK {
+					return sentBytes, core.MkErr(core.EC_TRY_AGAIN, 0)
+				}
+				return sentBytes, core.MkErr(core.EC_TCP_SEND_FAILED, 0)
+			} else {
+				sentBytes += int64(nDone)
+				byteBuf.ReaderSeek(memory.BUFFER_SEEK_CUR, int64(nDone))
+				remainLength -= nDone
+				if byteBuf.ReadAvailable() <= 0 {
+					ego._sendBufferList.PopFront()
+					memory.GetByteBuffer4KCache().Put(byteBuf)
+				}
+			}
 		}
+		byteBuf = ego._sendBufferList.Front()
 	}
+
+	return sentBytes, core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) BufferBlockList() *memory.ByteBufferList {
@@ -159,12 +179,11 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_conn:           nil,
 		_localEndPoint:  inet.NeoIPV4EndPointByIdentifier(-1),
 		_remoteEndPoint: rAddr,
-		_recvBuffer:     memory.NeoRingBuffer(1024),
-		_sendBuffer:     memory.NeoLinearBuffer(1024),
 		_codec:          nil,
 		_client:         client,
 		_isConnected:    false,
 		_sendBufferList: memory.NeoByteBufferList(),
+		_recvBufferList: memory.NeoByteBufferList(),
 		_profiler:       prof.NeoConnectionProfiler(),
 	}
 
