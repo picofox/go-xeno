@@ -35,10 +35,10 @@ func extractValuesFromHeader(hdrBS []byte) (int64, int16, int8) {
 	return l, cmd, st
 }
 
-func ReadHeaderContent(hdrCache []byte, bufList *memory.ByteBufferList) (*memory.ByteBufferNode, int64, int64, int16, int8, int32) {
+func SkipHeader(bufList *memory.ByteBufferList) int32 {
 	byteBuf := bufList.Front()
 	if byteBuf == nil {
-		return nil, -1, 0, -1, -1, core.MkErr(core.EC_TRY_AGAIN, 0)
+		return core.MkErr(core.EC_TRY_AGAIN, 0)
 	}
 
 	if byteBuf.ReadAvailable() <= 0 {
@@ -47,42 +47,25 @@ func ReadHeaderContent(hdrCache []byte, bufList *memory.ByteBufferList) (*memory
 		byteBuf = bufList.Front()
 
 		if byteBuf == nil {
-			return nil, -1, 0, -1, -1, core.MkErr(core.EC_TRY_AGAIN, 0)
+			return core.MkErr(core.EC_TRY_AGAIN, 0)
 		}
-		O1AndLen, _ := byteBuf.ReadInt16()
-		O2AndCmd, _ := byteBuf.ReadInt16()
-		o1 := int8(O1AndLen >> 15 & 0x1)
-		o2 := int8(O2AndCmd >> 15 & 0x1)
-		l := int64(O1AndLen & 0x7FFF)
-		cmd := O2AndCmd & 0x7FFF
-		var st = (o1 << 1) | o2
-		return byteBuf, message_buffer.O1L15O1T15_HEADER_SIZE, l, cmd, st, core.MkSuccess(0)
+		byteBuf.ReadInt32()
+		return core.MkSuccess(0)
 
 	} else if byteBuf.ReadAvailable() <= message_buffer.O1L15O1T15_HEADER_SIZE {
 		part2Len := message_buffer.O1L15O1T15_HEADER_SIZE - byteBuf.ReadAvailable()
-		srcBA, _ := byteBuf.BytesRef(byteBuf.ReadAvailable())
-		copy(hdrCache, srcBA)
-
 		memory.GetByteBuffer4KCache().Put(byteBuf)
 		bufList.PopFront()
 		byteBuf = bufList.Front()
-
 		if byteBuf == nil {
-			return nil, -1, 0, -1, -1, core.MkErr(core.EC_TRY_AGAIN, 0)
+			return core.MkErr(core.EC_TRY_AGAIN, 0)
 		}
-		srcBA, _ = byteBuf.BytesRef(part2Len)
-		l, c, t := extractValuesFromHeader(hdrCache)
-		return byteBuf, part2Len, l, c, t, core.MkSuccess(0)
+		byteBuf.ReaderSeek(memory.BUFFER_SEEK_SET, part2Len)
+		return core.MkSuccess(0)
 
 	} else {
-		O1AndLen, _ := byteBuf.ReadInt16()
-		O2AndCmd, _ := byteBuf.ReadInt16()
-		o1 := int8(O1AndLen >> 15 & 0x1)
-		o2 := int8(O2AndCmd >> 15 & 0x1)
-		l := int64(O1AndLen & 0x7FFF)
-		cmd := O2AndCmd & 0x7FFF
-		var st = (o1 << 1) | o2
-		return byteBuf, message_buffer.O1L15O1T15_HEADER_SIZE, l, cmd, st, core.MkSuccess(0)
+		byteBuf.ReadInt32()
+		return core.MkSuccess(0)
 	}
 }
 

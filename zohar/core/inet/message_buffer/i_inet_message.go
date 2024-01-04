@@ -7,7 +7,7 @@ type INetMessage interface {
 	Deserialize(memory.IByteBuffer) int32
 	Command() int16
 	String() string
-
+	IdentifierString() string
 	BodyLength() int64
 	PiecewiseSerialize(bufferList *memory.ByteBufferList) (int64, int64, int32)
 	PiecewiseDeserialize(bufferList *memory.ByteBufferList, bodyLength int64) (int64, int32)

@@ -39,6 +39,10 @@ type ProcTestMessage struct {
 	TextLong      string   `json:"TextLong"`
 }
 
+func (ego *ProcTestMessage) IdentifierString() string {
+	return ego.Str0
+}
+
 func (ego *ProcTestMessage) BodyLength() int64 {
 	var sz int = 0
 	var idx int = 0
@@ -103,6 +107,11 @@ func (ego *ProcTestMessage) BodyLength() int64 {
 func (ego *ProcTestMessage) PiecewiseDeserialize(bufferList *memory.ByteBufferList, bodyLength int64) (int64, int32) {
 	var rc int32 = 0
 	var logicPacketLength int64 = message_buffer.MAX_PACKET_BODY_SIZE
+
+	rc = SkipHeader(bufferList)
+	if core.Err(rc) {
+		return bodyLength, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+	}
 
 	ego.TimeStamp, logicPacketLength, bodyLength, rc = DeserializeI64Type(bufferList, logicPacketLength, bodyLength)
 	if core.Err(rc) {
@@ -238,9 +247,9 @@ func (ego *ProcTestMessage) PiecewiseSerialize(bufferList *memory.ByteBufferList
 	headers = AllocHeaders(logicPacketCount, lastPackBytes, ego.Command())
 	logicPacketRemain = 0
 
-	for i := 0; i < len(headers); i++ {
-		fmt.Printf("->: %s\n", headers[i].String())
-	}
+	//for i := 0; i < len(headers); i++ {
+	//	fmt.Printf("->: %s\n", headers[i].String())
+	//}
 
 	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI64Type(ego.TimeStamp, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
 	if core.Err(rc) { //lm:32756 bl:8
