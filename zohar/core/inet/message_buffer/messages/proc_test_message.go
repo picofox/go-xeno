@@ -641,7 +641,7 @@ func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
 		IsServer:      isClient,
 	}
 	var ss strings.Builder
-	for i := 0; i < 1024*16; i++ {
+	for i := 0; i < 1024*16-12; i++ {
 		ss.WriteString("@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*")
 	}
 	m.TextLong = ss.String()

@@ -5,6 +5,14 @@ type ByteBufferNode struct {
 	_next *ByteBufferNode
 }
 
+func (ego *ByteBufferNode) ReadAvailableByOffset(offset int64) int64 {
+	if offset < ego._beginPos {
+		panic("offset < begin")
+	} else {
+		return ego._length - (offset - ego._beginPos)
+	}
+}
+
 func (ego *ByteBufferNode) Clear() {
 	ego.LinearBufferFixed.Clear()
 }

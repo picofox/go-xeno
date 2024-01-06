@@ -8,6 +8,18 @@ import (
 	"xeno/zohar/core/memory"
 )
 
+func DebugCheckHeader(hdr []byte) {
+	if hdr[0] == 255 && hdr[1] == 252 && hdr[2] == 255 && hdr[3] == 255 {
+		//fmt.Printf("%d %d %d %d\n", (hdr)[0], (hdr)[1], hdr[2], (hdr)[3])
+	} else if hdr[0] == 2 && hdr[1] == 7 && hdr[2] == 255 && hdr[3] == 255 {
+		//fmt.Printf("%d %d %d %d\n", (hdr)[0], (hdr)[1], hdr[2], (hdr)[3])
+	} else if hdr[0] == 255 && hdr[1] == 252 && hdr[2] == 127 && hdr[3] == 255 {
+		//fmt.Printf("%d %d %d %d\n", (hdr)[0], (hdr)[1], hdr[2], (hdr)[3])
+	} else {
+		//fmt.Printf("%d %d %d %d\n", (hdr)[0], (hdr)[1], hdr[2], (hdr)[3])
+	}
+}
+
 func GetAvailableBufferNode(bufList *memory.ByteBufferList) *memory.ByteBufferNode {
 	curNode := bufList.Front()
 	if curNode == nil {
@@ -69,8 +81,17 @@ func SkipHeader(bufList *memory.ByteBufferList) int32 {
 	}
 }
 
+//func PeekHeader(hdrCache []byte, byteBuf *memory.ByteBufferNode, begin int64) (*memory.ByteBufferNode, int64, int64, int16, int8, int32) {
+//
+//}
+
 func PeekHeaderContent(hdrCache []byte, byteBuf *memory.ByteBufferNode, physicalIndex int64) (*memory.ByteBufferNode, int64, int64, int16, int8, int32) {
-	var avail int64 = byteBuf.Capacity() - physicalIndex
+	if physicalIndex < byteBuf.ReadPos() {
+		panic("pos error")
+	}
+	var delta int64 = physicalIndex - byteBuf.ReadPos()
+	var avail int64 = byteBuf.ReadAvailable() - delta
+
 	if avail <= 0 {
 		byteBuf = byteBuf.Next()
 		if byteBuf == nil {
@@ -78,6 +99,8 @@ func PeekHeaderContent(hdrCache []byte, byteBuf *memory.ByteBufferNode, physical
 		}
 		srcBA := byteBuf.InternalData()
 		l, c, t := extractValuesFromHeader((*srcBA)[0:message_buffer.O1L15O1T15_HEADER_SIZE])
+		DebugCheckHeader(*srcBA)
+
 		return byteBuf, message_buffer.O1L15O1T15_HEADER_SIZE, l, c, t, core.MkSuccess(0)
 
 	} else if avail <= message_buffer.O1L15O1T15_HEADER_SIZE {
@@ -90,11 +113,15 @@ func PeekHeaderContent(hdrCache []byte, byteBuf *memory.ByteBufferNode, physical
 		part2Len := message_buffer.O1L15O1T15_HEADER_SIZE - avail
 		srcBA = byteBuf.InternalData()
 		copy(hdrCache[avail:], (*srcBA)[0:part2Len])
+
+		DebugCheckHeader(hdrCache)
+
 		l, c, t := extractValuesFromHeader(hdrCache)
 		return byteBuf, part2Len, l, c, t, core.MkSuccess(0)
 
 	} else {
 		srcBA := byteBuf.InternalData()
+		DebugCheckHeader(*srcBA)
 		l, c, t := extractValuesFromHeader((*srcBA)[physicalIndex : physicalIndex+message_buffer.O1L15O1T15_HEADER_SIZE])
 		return byteBuf, physicalIndex + message_buffer.O1L15O1T15_HEADER_SIZE, l, c, t, core.MkSuccess(0)
 	}

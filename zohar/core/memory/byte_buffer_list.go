@@ -1,6 +1,8 @@
 package memory
 
 import (
+	"fmt"
+	"strings"
 	"xeno/zohar/core"
 	"xeno/zohar/core/datatype"
 )
@@ -9,6 +11,91 @@ type ByteBufferList struct {
 	_head  *ByteBufferNode
 	_tail  *ByteBufferNode
 	_count int64
+}
+
+var sSplittingTypeString []string = []string{"Sgl", "END", "BEG", "MID"}
+
+func SplittingTypeString(t int8) string {
+	return sSplittingTypeString[t]
+}
+
+func (ego *ByteBufferList) String() string {
+	var ss strings.Builder
+	var idx int64 = 0
+	var offset int64 = 0
+	var frameLength int64 = 0
+	var totalFrameLen int64 = 0
+	var cmd int16 = 0
+	var st int8
+	cur := ego._head
+	for cur != nil {
+		if offset >= cur.ReadAvailable() {
+			return ss.String()
+		}
+		ss.WriteString(fmt.Sprintf("%8d -> ", idx))
+		if frameLength == 0 { //header parse
+
+			i0 := BytesToInt16BE(&cur._data, offset)
+			i1 := BytesToInt16BE(&cur._data, offset+2)
+			frameLength = int64(i0 & 0x7FFF)
+			cmd = i1 & 0x7FFF
+			o1 := int8(i0 >> 15 & 0x1)
+			o2 := int8(i1 >> 15 & 0x1)
+			st = (o1 << 1) | o2
+			offset += 4
+			if cmd != 32767 {
+				panic("cmd error")
+			}
+		}
+		rl := cur.ReadAvailableByOffset(offset)
+		if frameLength <= rl {
+			totalFrameLen += frameLength
+			offset += frameLength
+			if st == 1 {
+				s := fmt.Sprintf("Fin,%d - %d", totalFrameLen, frameLength)
+				ss.WriteString(s)
+				totalFrameLen = 0
+				if offset < 4096 {
+					frameLength = 0
+					continue
+				}
+
+			} else if st == 3 {
+				s := fmt.Sprintf("MID,%d - %d", totalFrameLen, frameLength)
+				ss.WriteString(s)
+				if offset < 4096 {
+					frameLength = 0
+					continue
+				}
+
+			} else if st == 2 {
+				s := fmt.Sprintf("BEG,%d - %d", totalFrameLen, frameLength)
+				ss.WriteString(s)
+				if offset < 4096 {
+					frameLength = 0
+					continue
+				}
+			} else {
+				panic("type error")
+			}
+
+			frameLength = 0
+
+		} else {
+			totalFrameLen += rl
+			frameLength -= rl
+			offset = 0
+			s := fmt.Sprintf("%s,%0d - %d - %d", SplittingTypeString(st), totalFrameLen, frameLength, rl)
+			ss.WriteString(s)
+		}
+
+		ss.WriteString("\n")
+
+		cur = cur._next
+		offset = 0
+		idx++
+	}
+	return ss.String()
 }
 
 func (ego *ByteBufferList) Count() int64 {
@@ -23,16 +110,16 @@ func (ego *ByteBufferList) Back() *ByteBufferNode {
 	return ego._tail
 }
 
-func (ego *ByteBufferList) DeleteNodes(n int64) int64 {
-	for n > 0 {
-		if ego.PopFront() == nil {
-			return n
-		}
-		n--
-		ego._count--
-	}
-	return n
-}
+//func (ego *ByteBufferList) DeleteNodes(n int64) int64 {
+//	for n > 0 {
+//		if ego.PopFront() == nil {
+//			return n
+//		}
+//		n--
+//		ego._count--
+//	}
+//	return n
+//}
 
 func (ego *ByteBufferList) DeleteUntilReadableNode(node *ByteBufferNode) (int64, *ByteBufferNode) {
 	var cnt int64 = 0

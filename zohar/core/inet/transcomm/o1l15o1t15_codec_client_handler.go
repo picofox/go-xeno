@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"fmt"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
@@ -68,7 +69,7 @@ func (ego *O1L15COT15CodecClientHandler) CheckCompletion(byteBuf *memory.ByteBuf
 				}
 				fakeReaderPos = fakeReaderPos + bodyIndex + curBodyLen
 				byteBuf, bodyIndex, currentFrameLength, _, currentSplitType, rc = messages.PeekHeaderContent(ego._hdrDeserializeCache, byteBuf, fakeReaderPos)
-
+				fmt.Printf("-> st=%d\n", currentSplitType)
 				if core.Err(rc) {
 					return rBodyLenLarge, command, rc
 				}

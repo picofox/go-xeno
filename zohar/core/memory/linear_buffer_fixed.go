@@ -13,6 +13,10 @@ type LinearBufferFixed struct {
 	_cache    []byte
 }
 
+func (ego *LinearBufferFixed) DataRef() *[]byte {
+	return &ego._data
+}
+
 func (ego *LinearBufferFixed) WriteStrings(strs []string) int32 {
 	if strs == nil {
 		ego.WriteInt32(-1)
