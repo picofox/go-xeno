@@ -27,6 +27,13 @@ func StringRef(ba []byte) string {
 	return *(*string)(unsafe.Pointer(&ba))
 }
 
+func Int8ArrayToByteArrayRef(ia []int8) []byte {
+	return *(*[]byte)(unsafe.Pointer(&ia))
+}
+func UInt8ArrayToByteArrayRef(ia []uint8) []byte {
+	return *(*[]byte)(unsafe.Pointer(&ia))
+}
+
 //func StringSerialize(str string, list *ByteBufferList, blockSize int64) (*ByteBufferList, int32, int32) {
 //	l := len(str)
 //	if l > datatype.INT32_MAX {

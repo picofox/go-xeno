@@ -9,7 +9,7 @@ import (
 )
 
 func AllocByteBufferBlock() *memory.ByteBufferNode {
-	n := memory.GetByteBuffer4KCache().Get()
+	n := memory.GetByteBufferCache().Get()
 	n.Clear()
 	return n
 }

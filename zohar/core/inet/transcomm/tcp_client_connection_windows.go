@@ -40,7 +40,7 @@ func (ego *TCPClientConnection) FlushSendingBuffer() (int64, int32) {
 		if remainLength == 0 {
 			ego._client.Log(core.LL_ERR, "Found 0 Len buffer")
 			ego._sendBufferList.PopFront()
-			memory.GetByteBuffer4KCache().Put(byteBuf)
+			memory.GetByteBufferCache().Put(byteBuf)
 			continue
 		}
 		for remainLength > 0 {
@@ -56,7 +56,7 @@ func (ego *TCPClientConnection) FlushSendingBuffer() (int64, int32) {
 				remainLength -= nDone
 				if byteBuf.ReadAvailable() <= 0 {
 					ego._sendBufferList.PopFront()
-					memory.GetByteBuffer4KCache().Put(byteBuf)
+					memory.GetByteBufferCache().Put(byteBuf)
 				}
 			}
 		}

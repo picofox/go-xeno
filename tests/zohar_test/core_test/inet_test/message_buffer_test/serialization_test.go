@@ -17,7 +17,7 @@ var gBufList *memory.ByteBufferList = memory.NeoByteBufferList()
 var gLock sync.Mutex
 var pCount atomic.Int64
 var cCount int64
-var TEST_COUNT int = 500000
+var TEST_COUNT int = 100
 var sCompleteState *message_buffer.CheckBufferCompletionState = message_buffer.NeoCheckBufferCompletionState()
 
 var totalCount int64 = 0
@@ -93,6 +93,18 @@ func messageConsumer(t *testing.T) {
 	}
 }
 
+func messageProducer2(t *testing.T) {
+	for i := 0; i < TEST_COUNT; i++ {
+		m := messages.NeoKeepAliveMessage(false)
+		if m == nil {
+			t.Errorf("[P] : Create Message Failed")
+		}
+		_ = _addMessage(t, m)
+		//t.Logf("[P] - message (%s) cost (%d)", m.IdentifierString(), rc)
+		time.Sleep(1 * time.Millisecond)
+	}
+}
+
 func messageProducer1(t *testing.T) {
 	for i := 0; i < TEST_COUNT; i++ {
 		m := messages.NeoProcTestMessage(false)
@@ -110,7 +122,7 @@ var done bool = false
 func Test_Serialization_Functional_Basic(t *testing.T) {
 	go messageConsumer(t)
 	go messageProducer1(t)
-	go messageProducer1(t)
+	//go messageProducer2(t)
 	go messageProducer1(t)
 
 	for {

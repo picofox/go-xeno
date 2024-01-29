@@ -116,7 +116,7 @@ func (ego *ByteBufferList) Back() *ByteBufferNode {
 //			return n
 //		}
 //		n--
-//		ego._count--
+//		ego._balance--
 //	}
 //	return n
 //}

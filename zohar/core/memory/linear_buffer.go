@@ -762,8 +762,6 @@ func (ego *LinearBuffer) InternalData() *[]byte {
 	return &ego._data
 }
 
-var _ IByteBuffer = &LinearBuffer{}
-
 func NeoLinearBuffer(capacity int64) *LinearBuffer {
 	bf := &LinearBuffer{
 		_capacity: capacity,

@@ -1,6 +1,7 @@
 package transcomm
 
 import (
+	"fmt"
 	"xeno/zohar/core"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
@@ -65,18 +66,19 @@ func (ego *O1L15COT15CodecServerHandler) CheckCompletion(byteBuf *memory.ByteBuf
 			o2 := int8(i1 >> 15 & 0x1)
 			st = (o1 << 1) | o2
 			offset += message_buffer.O1L15O1T15_HEADER_SIZE
+			if cmd != 32767 {
+				fmt.Printf("xxx\n")
+			}
 		}
 		rl := cur.ReadAvailableByOffset(offset)
 		if frameLength <= rl {
 			totalFrameLen += frameLength
 			offset += frameLength
-			if st == 1 {
+			if st == 0 {
 				return totalFrameLen, cmd, core.MkSuccess(0)
-				totalFrameLen = 0
-				if offset < cur.Capacity() {
-					frameLength = 0
-					continue
-				}
+
+			} else if st == 1 {
+				return totalFrameLen, cmd, core.MkSuccess(0)
 
 			} else if st == 3 {
 				if offset < cur.Capacity() {

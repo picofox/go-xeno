@@ -611,6 +611,8 @@ func ProcTestMessagePiecewiseDeserialize(bufferList *memory.ByteBufferList, body
 	m := ProcTestMessage{}
 	_, rc := m.PiecewiseDeserialize(bufferList, bodyLength)
 	if core.Err(rc) {
+		_, em := core.ExErr(rc)
+		fmt.Printf("mark = %d\n", em)
 		return nil
 	}
 	return &m

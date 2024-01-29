@@ -19,7 +19,7 @@ func allocationP(wg *sync.WaitGroup) {
 	defer wg.Done()
 	list := memory.NeoByteBufferList()
 	for i := 0; i < 1024*128; i++ {
-		n := memory.GetByteBuffer4KCache().Get()
+		n := memory.GetByteBufferCache().Get()
 		list.PushBack(n)
 	}
 }

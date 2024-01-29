@@ -25,12 +25,17 @@ func GetAvailableBufferNode(bufList *memory.ByteBufferList) *memory.ByteBufferNo
 	if curNode == nil {
 		return nil
 	} else if curNode.ReadAvailable() <= 0 {
-		bufList.PopFront()
-		memory.GetByteBuffer4KCache().Put(curNode)
-		if bufList.Front() == nil {
+		if curNode.ReadPos() >= curNode.Capacity() {
+			bufList.PopFront()
+			memory.GetByteBufferCache().Put(curNode)
+			if bufList.Front() == nil {
+				return nil
+			}
+			return bufList.Front()
+		} else {
 			return nil
 		}
-		return bufList.Front()
+
 	} else {
 		return curNode
 	}
@@ -54,7 +59,7 @@ func SkipHeader(bufList *memory.ByteBufferList) int32 {
 	}
 
 	if byteBuf.ReadAvailable() <= 0 {
-		memory.GetByteBuffer4KCache().Put(byteBuf)
+		memory.GetByteBufferCache().Put(byteBuf)
 		bufList.PopFront()
 		byteBuf = bufList.Front()
 
@@ -66,7 +71,7 @@ func SkipHeader(bufList *memory.ByteBufferList) int32 {
 
 	} else if byteBuf.ReadAvailable() <= message_buffer.O1L15O1T15_HEADER_SIZE {
 		part2Len := message_buffer.O1L15O1T15_HEADER_SIZE - byteBuf.ReadAvailable()
-		memory.GetByteBuffer4KCache().Put(byteBuf)
+		memory.GetByteBufferCache().Put(byteBuf)
 		bufList.PopFront()
 		byteBuf = bufList.Front()
 		if byteBuf == nil {

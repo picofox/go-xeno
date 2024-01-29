@@ -62,7 +62,7 @@ func (ego *TCPServerConnection) FlushSendingBuffer() (int64, int32) {
 		if remainLength == 0 {
 			ego._server.Log(core.LL_ERR, "Found 0 Len buffer")
 			ego._sendBufferList.PopFront()
-			memory.GetByteBuffer4KCache().Put(byteBuf)
+			memory.GetByteBufferCache().Put(byteBuf)
 			continue
 		}
 		for remainLength > 0 {
@@ -78,7 +78,7 @@ func (ego *TCPServerConnection) FlushSendingBuffer() (int64, int32) {
 				remainLength -= nDone
 				if byteBuf.ReadAvailable() <= 0 {
 					ego._sendBufferList.PopFront()
-					memory.GetByteBuffer4KCache().Put(byteBuf)
+					memory.GetByteBufferCache().Put(byteBuf)
 				}
 			}
 		}
@@ -184,7 +184,7 @@ func (ego *TCPServerConnection) clearBufferList() {
 	for {
 		byteBuf := ego._sendBufferList.PopFront()
 		if byteBuf != nil {
-			memory.GetByteBuffer4KCache().Put(byteBuf)
+			memory.GetByteBufferCache().Put(byteBuf)
 		} else {
 			break
 		}
@@ -192,7 +192,7 @@ func (ego *TCPServerConnection) clearBufferList() {
 	for {
 		byteBuf := ego._recvBufferList.PopFront()
 		if byteBuf != nil {
-			memory.GetByteBuffer4KCache().Put(byteBuf)
+			memory.GetByteBufferCache().Put(byteBuf)
 		} else {
 			break
 		}

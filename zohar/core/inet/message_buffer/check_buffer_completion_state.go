@@ -24,7 +24,7 @@ func (ego *CheckBufferCompletionState) CouldTry(list *memory.ByteBufferList) boo
 }
 
 func (ego *CheckBufferCompletionState) Update(bComplete bool, buffer *memory.ByteBufferNode, readIndex int64) {
-	ego._lastComplete = true
+	ego._lastComplete = bComplete
 	ego._lastEndBuffer = buffer
 	ego._lastReadIndex = readIndex
 }
