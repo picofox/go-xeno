@@ -104,7 +104,8 @@ func (ego *O1L15O1T15DeserializationHelper) ReadRawBytes(bs []byte, baOff int64,
 		}
 		ego._logicDataLength -= int16(curTurnReadBytes)
 		if ego._logicDataLength == 0 {
-			if !ego._buffer.ReaderSeek(memory.BUFFER_SEEK_CUR, 8) {
+			eLen, r := ego._buffer.ReadInt64()
+			if core.Err(r) || eLen != ego._extDataLength { //TODO: simplify here logic
 				return core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 			}
 		}
@@ -126,6 +127,6 @@ func (ego *O1L15O1T15DeserializationHelper) ReadRawBytes(bs []byte, baOff int64,
 			panic("_extDataLength < 0")
 		}
 	}
-	
+
 	return core.MkSuccess(0)
 }
