@@ -133,7 +133,7 @@ func GetArguments() *Arguments {
 		errString := ""
 		cmdArgInstance, errString = Initialize()
 		if cmdArgInstance == nil {
-			panic(fmt.Sprintf("Init Command Line Arguments \t\t\t[Failed:%s]", errString))
+			panic(fmt.Sprintf("_init _command Line Arguments \t\t\t[Failed:%s]", errString))
 		}
 	})
 	return cmdArgInstance

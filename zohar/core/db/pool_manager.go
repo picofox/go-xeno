@@ -38,7 +38,7 @@ func (ego *PoolManager) Initialize(cfgDB *config.DBConfig) (int32, string) {
 	for k, v := range ego._config.Pools {
 		pool, rc := NeoConnectionPool(k, v)
 		if core.Err(rc) {
-			return rc, fmt.Sprintf("Init DB Connection Pool (%s) Failed", k)
+			return rc, fmt.Sprintf("_init DB Connection Pool (%s) Failed", k)
 		}
 		ego._pools[k] = pool
 	}

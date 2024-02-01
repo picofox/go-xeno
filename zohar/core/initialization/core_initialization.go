@@ -131,7 +131,7 @@ func Initialize() {
 			for k, v := range intrinsic.GetIntrinsicConfig().Logging {
 				logger := logging.NeoLocalSyncTextLogger(k, &v)
 				if logger == nil {
-					fmt.Printf("[Failed: Logger Init (%s)]", k)
+					fmt.Printf("[Failed: Logger _init (%s)]", k)
 					panic("can't continued!")
 				}
 				logging.GetLoggerManager().Add(logger)

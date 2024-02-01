@@ -1,5 +1,7 @@
 package memory
 
+import "container/list"
+
 const (
 	BUFFER_SEEK_CUR = 0
 	BUFFER_SEEK_SET = 1
@@ -11,7 +13,7 @@ type IByteBuffer interface {
 	WriteAvailable() int64
 	Clear()
 	PeekRawBytes(int64, []byte, int64, int64, bool) (int64, int32)
-	ReadRawBytes([]byte, int64, int64, bool) int64
+	ReadRawBytes([]byte, int64, int64, bool) (int64, int32)
 	WriteRawBytes([]byte, int64, int64) int32
 	PeekFloat32(int64) (float32, int32)
 	ReadFloat32() (float32, int32)
@@ -55,10 +57,19 @@ type IByteBuffer interface {
 	ReadPos() int64
 	WritePos() int64
 	ReaderSeek(int, int64) bool
-	WriterSeek(int, int64) bool
+	WriterSeek(int, int64) int32
 
 	WriteStrings([]string) int32
 	ReadStrings() ([]string, int32)
 	WriteBytesArray([][]byte) int32
 	ReadBytesArray() ([][]byte, int32)
+
+	SetRawBytes(int64, []byte, int64, int64) int32
+	SetRawBytesByNode(*list.Element, int64, []byte, int64, int64) int32
+
+	SetInt32(int64, int32) int32
+	SetInt32ByNode(*list.Element, int64, int32) int32
+
+	SetInt64(int64, int64) int32
+	SetInt64ByNode(*list.Element, int64, int64) int32
 }

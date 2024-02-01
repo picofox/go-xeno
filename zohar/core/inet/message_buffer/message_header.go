@@ -63,6 +63,15 @@ func (ego *MessageHeader) Length() int16 {
 	return lenAndO0 & 0x7FFF
 }
 
+func (ego *MessageHeader) SetLength(length int16) {
+	u0 := memory.BytesToInt16BE(&ego._data, 0)
+	if uint16(u0)&0x8000 == 0 {
+		memory.Int16IntoBytesBE(length&0x7FFF, &ego._data, 0)
+	} else {
+		memory.Int16IntoBytesBE(int16(uint16(length&0x7FFF)|uint16(1)<<15), &ego._data, 0)
+	}
+}
+
 func (ego *MessageHeader) Set(o0 bool, o1 bool, length int16, cmd int16) {
 	var lenAndO0 int16 = length
 	var cmdAndO1 int16 = cmd

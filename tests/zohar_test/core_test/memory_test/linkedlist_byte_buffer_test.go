@@ -37,6 +37,11 @@ func readLongText() int64 {
 	return int64(len(bs))
 }
 
+// ------------------------ Set Test-------------------------------------------------------------------------------------
+func Test_LinkedListByteBuffer_Functional_SetTest(t *testing.T) {
+
+}
+
 // ------------------------Test bool Arr types-------------------------------------------------------------------------
 func proBoolArrType() {
 	lock.Lock()

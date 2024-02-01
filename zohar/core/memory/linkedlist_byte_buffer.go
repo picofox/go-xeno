@@ -33,6 +33,81 @@ type LinkedListByteBuffer struct {
 	_list      *list.List
 }
 
+func (ego *LinkedListByteBuffer) SetInt64(pos int64, iv int64) int32 {
+	node, begPos := ego.findNode(pos)
+	if node == nil {
+		return core.MkErr(core.EC_REACH_LIMIT, 1)
+	}
+	return ego.SetInt64ByNode(node, begPos, iv)
+}
+
+func (ego *LinkedListByteBuffer) SetInt64ByNode(node *list.Element, pos int64, iv int64) int32 {
+	remainSpaceInCurBlock := ego._pieceSize - pos
+	if remainSpaceInCurBlock >= datatype.INT64_SIZE {
+		Int64IntoBytesBE(iv, node.Value.(*[]byte), pos)
+		return core.MkSuccess(0)
+	} else {
+		Int64IntoBytesBE(iv, &ego._cache, 0)
+		return ego.SetRawBytesByNode(node, pos, ego._cache, 0, datatype.INT64_SIZE)
+	}
+}
+
+func (ego *LinkedListByteBuffer) SetInt32(pos int64, iv int32) int32 {
+	node, begPos := ego.findNode(pos)
+	if node == nil {
+		return core.MkErr(core.EC_REACH_LIMIT, 1)
+	}
+	return ego.SetInt32ByNode(node, begPos, iv)
+}
+
+func (ego *LinkedListByteBuffer) SetInt32ByNode(node *list.Element, pos int64, iv int32) int32 {
+	remainSpaceInCurBlock := ego._pieceSize - pos
+	if remainSpaceInCurBlock >= datatype.INT32_SIZE {
+		Int32IntoBytesBE(iv, node.Value.(*[]byte), pos)
+		return core.MkSuccess(0)
+	} else {
+		Int32IntoBytesBE(iv, &ego._cache, 0)
+		return ego.SetRawBytesByNode(node, pos, ego._cache, 0, datatype.INT32_SIZE)
+	}
+}
+
+func (ego *LinkedListByteBuffer) SetRawBytesByNode(node *list.Element, pos int64, bs []byte, offset int64, length int64) int32 {
+	remainSpaceInCurBlock := ego._pieceSize - pos
+	if remainSpaceInCurBlock >= length {
+		copy((*(node.Value.(*[]byte)))[pos:pos+length], bs[offset:offset+length])
+		return core.MkSuccess(0)
+	} else {
+		curTurnToWrite := remainSpaceInCurBlock
+		off := int64(0)
+		for length > 0 {
+			copy((*(node.Value.(*[]byte)))[pos:pos+curTurnToWrite], bs[offset+off:offset+off+curTurnToWrite])
+			ego._length += curTurnToWrite
+			off += curTurnToWrite
+			length -= curTurnToWrite
+			if length < 0 {
+				panic("[SNH] src Len <0")
+			} else if length == 0 {
+				break
+			}
+			if node.Next() == nil {
+				return core.MkErr(core.EC_NULL_VALUE, 1)
+			}
+			node = node.Next()
+			pos = 0
+			curTurnToWrite = min(ego._pieceSize, length)
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *LinkedListByteBuffer) SetRawBytes(pos int64, bs []byte, offset int64, length int64) int32 {
+	node, begPos := ego.findNode(pos)
+	if node == nil {
+		return core.MkErr(core.EC_REACH_LIMIT, 1)
+	}
+	return ego.SetRawBytesByNode(node, begPos, bs, offset, length)
+}
+
 func (ego *LinkedListByteBuffer) SetLength(ll int64) {
 	ego._length = ll
 }
@@ -43,7 +118,7 @@ func (ego *LinkedListByteBuffer) String() string {
 	return ss.String()
 }
 
-func (ego *LinkedListByteBuffer) findReaderNode(beginPos int64) (*list.Element, int64) {
+func (ego *LinkedListByteBuffer) findNode(beginPos int64) (*list.Element, int64) {
 	if beginPos >= ego._beginPos+ego._length {
 		return nil, -1
 	}
@@ -54,6 +129,9 @@ func (ego *LinkedListByteBuffer) findReaderNode(beginPos int64) (*list.Element, 
 	skipNodes := beginPos / ego._pieceSize
 	begPos := beginPos % ego._pieceSize
 	for skipNodes > 0 {
+		if begNode.Next() == nil {
+			return nil, -1
+		}
 		begNode = begNode.Next()
 		skipNodes--
 	}
@@ -223,7 +301,7 @@ func (ego *LinkedListByteBuffer) PeekInt8(srcOff int64) (int8, int32) {
 	if ego._length+srcOff < datatype.INT8_SIZE {
 		return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 	}
-	begNode, segBeginPos := ego.findReaderNode(ego._beginPos + srcOff)
+	begNode, segBeginPos := ego.findNode(ego._beginPos + srcOff)
 	if begNode == nil || segBeginPos < 0 {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
@@ -284,19 +362,19 @@ func (ego *LinkedListByteBuffer) WriteRawBytes(bs []byte, srcOff int64, srcLengt
 	return core.MkSuccess(0)
 }
 
-func (ego *LinkedListByteBuffer) ReadRawBytes(bs []byte, baOff int64, readLength int64, isStrict bool) int64 {
+func (ego *LinkedListByteBuffer) ReadRawBytes(bs []byte, baOff int64, readLength int64, isStrict bool) (int64, int32) {
 	if readLength < 0 {
 		readLength = int64(cap(bs)) - baOff
 	}
 	if ego._length < readLength {
 		if isStrict {
-			return 0
+			return 0, core.MkErr(core.EC_REACH_LIMIT, 1)
 		} else {
 			readLength = ego._length
 		}
 	}
-	if ego._length < readLength || ego._list.Front() == nil {
-		return 0
+	if ego._length < readLength {
+		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
 	curTurnReadLength := ego._pieceSize - ego._beginPos
 	if curTurnReadLength > readLength {
@@ -305,6 +383,9 @@ func (ego *LinkedListByteBuffer) ReadRawBytes(bs []byte, baOff int64, readLength
 	idx := int64(0)
 	var origReadLength int64 = readLength
 	for readLength > 0 {
+		if ego._list.Front() == nil {
+			return origReadLength - readLength, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
+		}
 		copy(bs[baOff+idx:baOff+idx+curTurnReadLength], (*(ego._list.Front().Value.(*[]byte)))[ego._beginPos:ego._beginPos+curTurnReadLength])
 		idx += curTurnReadLength
 		ego._beginPos += curTurnReadLength
@@ -313,11 +394,9 @@ func (ego *LinkedListByteBuffer) ReadRawBytes(bs []byte, baOff int64, readLength
 		if ego._beginPos >= ego._pieceSize {
 			rc := ego._clearFront()
 			if core.Err(rc) {
-				return origReadLength - readLength
+				return origReadLength - readLength, rc
 			}
-			if ego._list.Front() == nil {
-				return origReadLength - readLength
-			}
+
 		}
 		if readLength == 0 {
 			break
@@ -330,7 +409,7 @@ func (ego *LinkedListByteBuffer) ReadRawBytes(bs []byte, baOff int64, readLength
 			curTurnReadLength = readLength
 		}
 	}
-	return origReadLength
+	return origReadLength, core.MkSuccess(0)
 }
 
 func (ego *LinkedListByteBuffer) PeekRawBytes(srcOff int64, dstBuf []byte, dstOff int64, readLength int64, isStrict bool) (int64, int32) {
@@ -354,7 +433,7 @@ func (ego *LinkedListByteBuffer) PeekRawBytes(srcOff int64, dstBuf []byte, dstOf
 	if readLength == 0 {
 		return 0, core.MkSuccess(0)
 	}
-	begNode, segBeginPos := ego.findReaderNode(simuBeginPos)
+	begNode, segBeginPos := ego.findNode(simuBeginPos)
 	if begNode == nil || segBeginPos < 0 {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
@@ -427,7 +506,8 @@ func (ego *LinkedListByteBuffer) ReadInt32() (int32, int32) {
 		}
 		return v, core.MkSuccess(0)
 	} else {
-		if ego.ReadRawBytes(ego._cache, 0, datatype.INT32_SIZE, true) != datatype.INT32_SIZE {
+		_, rc := ego.ReadRawBytes(ego._cache, 0, datatype.INT32_SIZE, true)
+		if core.Err(rc) {
 			return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
 		v := BytesToInt32BE(&ego._cache, 0)
@@ -439,7 +519,7 @@ func (ego *LinkedListByteBuffer) PeekInt32(srcOff int64) (int32, int32) {
 	if ego._length-srcOff < datatype.INT32_SIZE {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
-	begNode, segBeginPos := ego.findReaderNode(ego._beginPos + srcOff)
+	begNode, segBeginPos := ego.findNode(ego._beginPos + srcOff)
 	if begNode == nil || segBeginPos < 0 {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
@@ -555,7 +635,8 @@ func (ego *LinkedListByteBuffer) ReadBytes() ([]byte, int32) {
 	}
 	ego.ReadInt32()
 	rBA := make([]byte, bLen)
-	if ego.ReadRawBytes(rBA, 0, int64(bLen), true) != int64(bLen) {
+	_, rc = ego.ReadRawBytes(rBA, 0, int64(bLen), true)
+	if core.Err(rc) {
 		return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 	}
 	return rBA, core.MkSuccess(0)
@@ -714,7 +795,7 @@ func (ego *LinkedListByteBuffer) PeekFloat32(srcOff int64) (float32, int32) {
 	if ego._length-srcOff < datatype.FLOAT32_SIZE {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
-	begNode, segBeginPos := ego.findReaderNode(ego._beginPos + srcOff)
+	begNode, segBeginPos := ego.findNode(ego._beginPos + srcOff)
 	if begNode == nil || segBeginPos < 0 {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
@@ -750,7 +831,8 @@ func (ego *LinkedListByteBuffer) ReadFloat32() (float32, int32) {
 		}
 		return v, core.MkSuccess(0)
 	} else {
-		if ego.ReadRawBytes(ego._cache, 0, datatype.FLOAT32_SIZE, true) != datatype.FLOAT32_SIZE {
+		_, rc := ego.ReadRawBytes(ego._cache, 0, datatype.FLOAT32_SIZE, true)
+		if core.Err(rc) {
 			return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
 		v := BytesToFloat32BE(&ego._cache, 0)
@@ -779,7 +861,7 @@ func (ego *LinkedListByteBuffer) PeekFloat64(srcOff int64) (float64, int32) {
 	if ego._length-srcOff < datatype.FLOAT64_SIZE {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
-	begNode, segBeginPos := ego.findReaderNode(ego._beginPos + srcOff)
+	begNode, segBeginPos := ego.findNode(ego._beginPos + srcOff)
 	if begNode == nil || segBeginPos < 0 {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
@@ -814,7 +896,8 @@ func (ego *LinkedListByteBuffer) ReadFloat64() (float64, int32) {
 		}
 		return v, core.MkSuccess(0)
 	} else {
-		if ego.ReadRawBytes(ego._cache, 0, datatype.FLOAT64_SIZE, true) != datatype.FLOAT64_SIZE {
+		_, rc := ego.ReadRawBytes(ego._cache, 0, datatype.FLOAT64_SIZE, true)
+		if core.Err(rc) {
 			return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
 		v := BytesToFloat64BE(&ego._cache, 0)
@@ -872,7 +955,7 @@ func (ego *LinkedListByteBuffer) PeekInt16(srcOff int64) (int16, int32) {
 	if ego._length-srcOff < datatype.INT16_SIZE {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
-	begNode, segBeginPos := ego.findReaderNode(ego._beginPos + srcOff)
+	begNode, segBeginPos := ego.findNode(ego._beginPos + srcOff)
 	if begNode == nil || segBeginPos < 0 {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
@@ -907,7 +990,8 @@ func (ego *LinkedListByteBuffer) ReadInt16() (int16, int32) {
 		}
 		return v, core.MkSuccess(0)
 	} else {
-		if ego.ReadRawBytes(ego._cache, 0, datatype.INT16_SIZE, true) != datatype.INT16_SIZE {
+		_, rc := ego.ReadRawBytes(ego._cache, 0, datatype.INT16_SIZE, true)
+		if core.Err(rc) {
 			return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
 		v := BytesToInt16BE(&ego._cache, 0)
@@ -963,7 +1047,7 @@ func (ego *LinkedListByteBuffer) PeekInt64(srcOff int64) (int64, int32) {
 	if ego._length-srcOff < datatype.INT64_SIZE {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
-	begNode, segBeginPos := ego.findReaderNode(ego._beginPos + srcOff)
+	begNode, segBeginPos := ego.findNode(ego._beginPos + srcOff)
 	if begNode == nil || segBeginPos < 0 {
 		return 0, core.MkErr(core.EC_TRY_AGAIN, 1)
 	}
@@ -999,7 +1083,8 @@ func (ego *LinkedListByteBuffer) ReadInt64() (int64, int32) {
 		}
 		return v, core.MkSuccess(0)
 	} else {
-		if ego.ReadRawBytes(ego._cache, 0, datatype.INT64_SIZE, true) != datatype.INT64_SIZE {
+		_, rc := ego.ReadRawBytes(ego._cache, 0, datatype.INT64_SIZE, true)
+		if core.Err(rc) {
 			return 0, core.MkErr(core.EC_INCOMPLETE_DATA, 2)
 		}
 		v := BytesToInt64BE(&ego._cache, 0)
@@ -1044,6 +1129,37 @@ func (ego *LinkedListByteBuffer) ReadPos() int64 {
 
 func (ego *LinkedListByteBuffer) WritePos() int64 {
 	return ego._beginPos + ego._length
+}
+
+func (ego *LinkedListByteBuffer) WriterSeek(whence int, offset int64) int32 {
+	if whence == BUFFER_SEEK_CUR {
+		if ego._list == nil {
+			return core.MkErr(core.EC_NULL_VALUE, 1)
+		}
+		if offset < 0 {
+			return core.MkErr(core.EC_REACH_LIMIT, 1)
+		} else if offset == 0 {
+			return core.MkSuccess(0)
+		}
+
+		avail := ego._pieceSize - ego._beginPos - ego._length
+		if offset < avail {
+			ego._length += offset
+			if ego._list.Len() == 0 {
+				ego.addNode()
+			}
+		} else {
+			curTurnBytes := avail
+			for offset > 0 {
+				ego.addNode()
+				offset -= curTurnBytes
+				curTurnBytes = ego._pieceSize
+			}
+			ego._length += offset
+		}
+		return core.MkSuccess(0)
+	}
+	return core.MkErr(core.EC_INVALID_STATE, 1)
 }
 
 func (ego *LinkedListByteBuffer) ReaderSeek(whence int, offset int64) bool {
@@ -1623,11 +1739,6 @@ func (ego *LinkedListByteBuffer) ReadFloat64Array() ([]float64, int32) {
 	} else {
 		return nil, rc
 	}
-}
-
-func (ego *LinkedListByteBuffer) WriterSeek(whence int, offset int64) bool {
-	//TODO implement me
-	panic("implement me")
 }
 
 func (ego *LinkedListByteBuffer) PieceCount() int64 {
