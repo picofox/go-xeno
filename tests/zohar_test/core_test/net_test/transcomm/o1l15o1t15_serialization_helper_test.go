@@ -18,7 +18,7 @@ func Test_O1L15O1C15Serializer_Functional_Basic(t *testing.T) {
 		panic("InitializeSerialization Failed")
 	}
 
-	s := strs.CreateSampleString(32764, "@", "$")
+	s := strs.CreateSampleString(32760, "@", "$")
 	rc = ctx.WriteString(s)
 	if core.Err(rc) {
 		panic("InitializeSerialization Failed")
