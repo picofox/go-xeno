@@ -28,6 +28,58 @@ func ConstEmptyBytes() []byte {
 	return sEmptyBuffer
 }
 
+func ConstEmptyBoolArray() []bool {
+	return sEmptyBoolArr
+}
+
+func ConstEmptyBytesArray() [][]byte {
+	return sEmptyByteArr
+}
+
+func ConstEmptyStringArr() []string {
+	return sEmptyStringArr
+}
+
+func ConstEmptyInt8Arr() []int8 {
+	return sEmptyInt8Arr
+}
+
+func ConstEmptyUInt8Arr() []uint8 {
+	return sEmptyUInt8Arr
+}
+
+func ConstEmptyInt16Arr() []int16 {
+	return sEmptyInt16Arr
+}
+
+func ConstEmptyUInt16Arr() []uint16 {
+	return sEmptyUInt16Arr
+}
+
+func ConstEmptyInt32Arr() []int32 {
+	return sEmptyInt32Arr
+}
+
+func ConstEmptyUInt32Arr() []uint32 {
+	return sEmptyUInt32Arr
+}
+
+func ConstEmptyInt64Arr() []int64 {
+	return sEmptyInt64Arr
+}
+
+func ConstEmptyUInt64Arr() []uint64 {
+	return sEmptyUInt64Arr
+}
+
+func ConstEmptyFloat32Arr() []float32 {
+	return sEmptyFloat32Arr
+}
+
+func ConstEmptyFloat64Arr() []float64 {
+	return sEmptyFloat64Arr
+}
+
 type LinkedListByteBuffer struct {
 	_pieceSize int64
 	_capacity  int64
@@ -1238,10 +1290,13 @@ func (ego *LinkedListByteBuffer) WriteInt8Array(ia []int8) int32 {
 	}
 	l := len(ia)
 	ego.WriteInt32(int32(l))
-	rc := ego.WriteRawBytes(Int8ArrayToByteArrayRef(ia), 0, -1)
-	if core.Err(rc) {
-		return rc
+	if l > 0 {
+		rc := ego.WriteRawBytes(Int8ArrayToByteArrayRef(ia), 0, -1)
+		if core.Err(rc) {
+			return rc
+		}
 	}
+
 	return core.MkSuccess(0)
 }
 
@@ -1297,10 +1352,13 @@ func (ego *LinkedListByteBuffer) WriteUInt8Array(ia []uint8) int32 {
 	}
 	l := len(ia)
 	ego.WriteInt32(int32(l))
-	rc := ego.WriteRawBytes(UInt8ArrayToByteArrayRef(ia), 0, -1)
-	if core.Err(rc) {
-		return rc
+	if l > 0 {
+		rc := ego.WriteRawBytes(UInt8ArrayToByteArrayRef(ia), 0, -1)
+		if core.Err(rc) {
+			return rc
+		}
 	}
+
 	return core.MkSuccess(0)
 }
 

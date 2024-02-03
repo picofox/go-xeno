@@ -451,3 +451,214 @@ func (ego *O1L15O1T15SerializationHelper) WriteFloat64(fv float64) int32 {
 	}
 	return core.MkSuccess(0)
 }
+
+func (ego *O1L15O1T15SerializationHelper) WriteStrings(strs []string) int32 {
+	if strs == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(strs)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteString(strs[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteBytesArray(bya [][]byte) int32 {
+	if bya == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(bya)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteBytes(bya[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteInt8Array(ia []int8) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+	if l > 0 {
+		rc := ego.WriteRawBytes(memory.Int8ArrayToByteArrayRef(ia), 0, int64(l))
+		if core.Err(rc) {
+			return rc
+		}
+	}
+
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteUInt8Array(ia []uint8) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+	if l > 0 {
+		rc := ego.WriteRawBytes(memory.UInt8ArrayToByteArrayRef(ia), 0, int64(l))
+		if core.Err(rc) {
+			return rc
+		}
+	}
+
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteInt16Array(ia []int16) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+
+	for i := 0; i < l; i++ {
+		rc := ego.WriteInt16(ia[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteUInt16Array(ia []uint16) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteUInt16(ia[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteInt32Array(ia []int32) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteInt32(ia[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteUInt32Array(ia []uint32) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteUInt32(ia[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteInt64Array(ia []int64) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteInt64(ia[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteUInt64Array(ia []uint64) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteUInt64(ia[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteBoolArray(ia []bool) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteBool(ia[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteFloat32Array(ia []float32) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteFloat32(ia[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15SerializationHelper) WriteFloat64Array(ia []float64) int32 {
+	if ia == nil {
+		ego.WriteInt32(-1)
+		return core.MkSuccess(0)
+	}
+	l := len(ia)
+	ego.WriteInt32(int32(l))
+	for i := 0; i < l; i++ {
+		rc := ego.WriteFloat64(ia[i])
+		if core.Err(rc) {
+			return rc
+		}
+	}
+	return core.MkSuccess(0)
+}

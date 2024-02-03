@@ -20,7 +20,7 @@ var sAllSizeLen int = len(sAllSize)
 var buffer *memory.LinkedListByteBuffer = memory.NeoLinkedListByteBuffer(datatype.SIZE_4K)
 var totalBs int64 = 0
 var tmplock sync.Mutex
-var tCount int64 = 1000000000
+var tCount int64 = 100000000
 
 func genOne(idx int64) {
 	tmplock.Lock()
@@ -33,6 +33,12 @@ func genOne(idx int64) {
 		panic("InitializeSerialization Failed")
 	}
 	defer sHelper.FinalizeSerialization()
+
+	ss, _ := proRandomStrings()
+	rc = sHelper.WriteStrings(ss)
+	if core.Err(rc) {
+		panic("ser ss Failed")
+	}
 
 	s := strs.CreateSampleString(int(sAllSize[strL]), "@", "$")
 	if len(s) != int(sAllSize[strL]) {
@@ -107,6 +113,18 @@ func genOne(idx int64) {
 		panic("ser f64 Failed")
 	}
 
+	i8arr, _ := proRandomInt8Arr()
+	rc = sHelper.WriteInt8Array(i8arr)
+	if core.Err(rc) {
+		panic("ser i8arr Failed")
+	}
+
+	u8arr, _ := proRandomUInt8Arr()
+	rc = sHelper.WriteUInt8Array(u8arr)
+	if core.Err(rc) {
+		panic("ser ui8arr Failed")
+	}
+
 }
 
 func gen() {
@@ -147,6 +165,21 @@ func baseTestOne() int64 {
 	}
 
 	defer dHelper.FinalizeDeserialization()
+
+	var ss []string = nil
+	ss, rc = dHelper.ReadStrings()
+	if core.Err(rc) {
+		panic("read ss failed")
+	}
+	if len(ss) > 0 {
+		for i := 0; i < len(ss); i++ {
+			if len(ss[i]) > 1 {
+				if ss[i][0] != '@' || ss[i][len(ss[i])-1] != '$' {
+					panic("valid ss failed")
+				}
+			}
+		}
+	}
 
 	//fmt.Printf("%t, %d, %d, %d\n", isInternal, cmd, ll, el)
 	var rs string
@@ -268,6 +301,31 @@ func baseTestOne() int64 {
 		panic("validate u64 failed")
 	}
 
+	var i8arr []int8 = nil
+	i8arr, rc = dHelper.ReadInt8Array()
+	if core.Err(rc) {
+		panic("read ss failed")
+	}
+	if len(i8arr) > 0 {
+		for i := 0; i < len(i8arr); i++ {
+			if i8arr[i] != int8(i%127) {
+				panic("valid i8arr failed")
+			}
+		}
+	}
+	var u8arr []uint8 = nil
+	u8arr, rc = dHelper.ReadUInt8Array()
+	if core.Err(rc) {
+		panic("read ss failed")
+	}
+	if len(u8arr) > 0 {
+		for i := 0; i < len(u8arr); i++ {
+			if u8arr[i] != uint8(i%255) {
+				panic("valid i8arr failed")
+			}
+		}
+	}
+
 	ci++
 	return sz
 }
@@ -303,5 +361,222 @@ func Test_O1L15O1C15Serializer_Functional_Basic(t *testing.T) {
 			bsPrintNext++
 		}
 	}
+}
 
+func proRandomStrings() ([]string, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyStringArr(), 4
+		//fmt.Printf("Prod empty Strings\n")
+	} else {
+		var ss []string = make([]string, cnt)
+		for i := 0; i < cnt; i++ {
+			ll := rand.Intn(32767)
+			if ll < 2 {
+				ss[i] = ""
+			} else {
+				ss[i] = strs.CreateSampleString(ll, "@", "$")
+			}
+			bsRet += int64(4 + ll)
+		}
+		return ss, bsRet
+	}
+}
+
+func proRandomBoolArr() ([]bool, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyBoolArray(), 4
+	} else {
+		var ss []bool = make([]bool, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = true
+			bsRet += 1
+		}
+		return ss, bsRet
+	}
+}
+
+func proRandomInt8Arr() ([]int8, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyInt8Arr(), 4
+	} else {
+		var ss []int8 = make([]int8, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = int8(i % 127)
+			bsRet += 1
+		}
+		return ss, bsRet
+	}
+}
+func proRandomUInt8Arr() ([]uint8, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyUInt8Arr(), 4
+	} else {
+		var ss []uint8 = make([]uint8, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = uint8(i % 255)
+			bsRet += 1
+		}
+		return ss, bsRet
+	}
+}
+
+func proRandomInt16Arr() ([]int16, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyInt16Arr(), 4
+	} else {
+		var ss []int16 = make([]int16, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = int16(i % 32767)
+			bsRet += 2
+		}
+		return ss, bsRet
+	}
+}
+func proRandomUInt16Arr() ([]uint16, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyUInt16Arr(), 4
+	} else {
+		var ss []uint16 = make([]uint16, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = uint16(i % 65535)
+			bsRet += 2
+		}
+		return ss, bsRet
+	}
+}
+
+func proRandomInt32Arr() ([]int32, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyInt32Arr(), 4
+	} else {
+		var ss []int32 = make([]int32, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = int32(i % 0x7FFFFFFF)
+			bsRet += 4
+		}
+		return ss, bsRet
+	}
+}
+func proRandomUInt32Arr() ([]uint32, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyUInt32Arr(), 4
+	} else {
+		var ss []uint32 = make([]uint32, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = uint32(i % 0xFFFFFFFF)
+			bsRet += 4
+		}
+		return ss, bsRet
+	}
+}
+
+func proRandomInt64Arr() ([]int64, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyInt64Arr(), 4
+	} else {
+		var ss []int64 = make([]int64, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = int64(i)
+			bsRet += 8
+		}
+		return ss, bsRet
+	}
+}
+func proRandomUInt64Arr() ([]uint64, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyUInt64Arr(), 4
+	} else {
+		var ss []uint64 = make([]uint64, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = uint64(i)
+			bsRet += 8
+		}
+		return ss, bsRet
+	}
+}
+
+func proRandomFloat32Arr() ([]float32, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyFloat32Arr(), 4
+	} else {
+		var ss []float32 = make([]float32, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = 3.14
+			bsRet += 4
+		}
+		return ss, bsRet
+	}
+}
+
+func proRandomFloat64Arr() ([]float64, int64) {
+	cnt := rand.Intn(18)
+	cnt--
+	var bsRet int64 = 0
+	if cnt < 0 {
+		return nil, 4
+	} else if cnt == 0 {
+		return memory.ConstEmptyFloat64Arr(), 4
+	} else {
+		var ss []float64 = make([]float64, cnt)
+		for i := 0; i < cnt; i++ {
+			ss[i] = 2.71828
+			bsRet += 8
+		}
+		return ss, bsRet
+	}
 }
