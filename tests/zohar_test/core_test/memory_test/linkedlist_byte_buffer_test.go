@@ -39,6 +39,240 @@ func readLongText() int64 {
 
 // ------------------------ Set Test-------------------------------------------------------------------------------------
 func Test_LinkedListByteBuffer_Functional_SetTest(t *testing.T) {
+	sw.Begin("x")
+
+	//for i := 0; i < 1024*1024*1024/28; i++ {
+	//	lb.WriteInt16(1)
+	//	lb.WriteFloat32(10.0)
+	//	lb.WriteFloat64(0.0)
+	//	lb.WriteBool(true)
+	//	lb.WriteInt8(1)
+	//	lb.WriteInt16(1)
+	//	lb.WriteInt32(1)
+	//	lb.WriteInt64(1)
+	//	bsCount.Add(28)
+	//}
+	a := sw.Stop("x")
+	fmt.Printf("spd = %f\n", 1024.0/float64(a)*1000000000)
+
+}
+
+// ------------------------Test Single types-------------------------------------------------------------------------
+func proRandomSingleType(i int) {
+
+	lock.Lock()
+	defer lock.Unlock()
+	tp := i % 11
+	if tp == 0 {
+		lb.WriteInt8(-128)
+		bsCount.Add(1)
+	} else if tp == 1 {
+		lb.WriteFloat32(3.14)
+		bsCount.Add(4)
+	} else if tp == 2 {
+		lb.WriteFloat64(2.71828)
+		bsCount.Add(8)
+	} else if tp == 3 {
+		lb.WriteInt32(0x7FFFFFFF)
+		bsCount.Add(4)
+	} else if tp == 4 {
+		lb.WriteUInt32(0xFFFFFFFF)
+		bsCount.Add(4)
+	} else if tp == 5 {
+		lb.WriteUInt8(255)
+		bsCount.Add(1)
+	} else if tp == 6 {
+		lb.WriteInt16(32767)
+		bsCount.Add(2)
+	} else if tp == 7 {
+		lb.WriteInt64(12345678987654321)
+		bsCount.Add(8)
+	} else if tp == 8 {
+		lb.WriteBool(true)
+		bsCount.Add(1)
+	} else if tp == 9 {
+		lb.WriteUInt16(65535)
+		bsCount.Add(2)
+	} else if tp == 10 {
+		lb.WriteUInt64(0xFFFFFFFFFFFFFFFF)
+		bsCount.Add(8)
+	}
+}
+func conRandomSingleType(i int) int {
+	lock.Lock()
+	defer lock.Unlock()
+	tp := i % 11
+	if tp == 0 {
+		i8, rc := lb.ReadInt8()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+
+			panic(fmt.Sprintf("ReadInt8 Failed %s \n", core.ErrStr(rc)))
+		}
+		if i8 != -128 {
+			panic("ReadInt8 val Failed")
+		}
+	} else if tp == 1 {
+		f32, rc := lb.ReadFloat32()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+			panic(fmt.Sprintf("ReadF32 Failed %s \n", core.ErrStr(rc)))
+		}
+		if f32 != 3.14 {
+			panic("ReadF32 val Failed")
+		}
+
+	} else if tp == 2 {
+		f64, rc := lb.ReadFloat64()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+			panic(fmt.Sprintf("ReadF64 Failed %s \n", core.ErrStr(rc)))
+		}
+		if f64 != 2.71828 {
+			panic("ReadF64 val Failed")
+		}
+
+	} else if tp == 3 {
+		i32, rc := lb.ReadInt32()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+			panic(fmt.Sprintf("ReadI32 Failed %s \n", core.ErrStr(rc)))
+		}
+		if i32 != 0x7FFFFFFF {
+			panic("ReadI32 val Failed")
+		}
+	} else if tp == 4 {
+		i32, rc := lb.ReadUInt32()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+			panic(fmt.Sprintf("ReadU32 Failed %s \n", core.ErrStr(rc)))
+		}
+		if i32 != 0xFFFFFFFF {
+			panic("ReadU32 val Failed")
+		}
+
+	} else if tp == 5 {
+		i8, rc := lb.ReadUInt8()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+
+			panic(fmt.Sprintf("ReadUInt8 Failed %s \n", core.ErrStr(rc)))
+		}
+		if i8 != 255 {
+			panic("ReadUInt8 val Failed")
+		}
+
+	} else if tp == 6 {
+		iv, rc := lb.ReadInt16()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+
+			panic(fmt.Sprintf("ReadInt16 Failed %s \n", core.ErrStr(rc)))
+		}
+		if iv != 32767 {
+			panic("ReadUInt8 val Failed")
+		}
+
+	} else if tp == 7 {
+		iv, rc := lb.ReadInt64()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+
+			panic(fmt.Sprintf("ReadInt64 Failed %s \n", core.ErrStr(rc)))
+		}
+		if iv != 12345678987654321 {
+			panic("ReadUInt8 val Failed")
+		}
+
+	} else if tp == 8 {
+		iv, rc := lb.ReadBool()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+
+			panic(fmt.Sprintf("ReadBool Failed %s \n", core.ErrStr(rc)))
+		}
+		if iv != true {
+			panic("ReadBool val Failed")
+		}
+
+	} else if tp == 9 {
+		iv, rc := lb.ReadUInt16()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+
+			panic(fmt.Sprintf("ReadUInt16 Failed %s \n", core.ErrStr(rc)))
+		}
+		if iv != 65535 {
+			panic("ReadUInt16 val Failed")
+		}
+
+	} else if tp == 10 {
+		iv, rc := lb.ReadUInt64()
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				return i
+			}
+
+			panic(fmt.Sprintf("ReadUInt64 Failed %s \n", core.ErrStr(rc)))
+		}
+		if iv != 0xFFFFFFFFFFFFFFFF {
+			panic("ReadUInt64 val Failed")
+		}
+
+	} else {
+		panic("^^")
+	}
+
+	conCount.Add(1)
+	return i + 1
+}
+
+func ProducerSingleType() {
+	for i := 0; i < SingleTestCount; i++ {
+		proRandomSingleType(i)
+	}
+}
+
+func Test_LinkedListByteBuffer_Functional_SingleTypes(t *testing.T) {
+	if lb.ReadAvailable() != 0 {
+		fmt.Printf("read avial is not zero %d\n", lb.ReadAvailable())
+	}
+	conCount.Store(0)
+	bsCount.Store(0)
+	sw.Clear()
+	go ProducerSingleType()
+
+	sw.Begin("sglB")
+	idx := 0
+	for {
+		idx = conRandomSingleType(idx)
+		if conCount.Load() >= int64(SingleTestCount) {
+			rSec := float64(sw.Stop("seqE")) / 1000000000.0
+			rSpeed := float64(bsCount.Load()/1024.0/1024.0) / rSec
+			fmt.Printf("cnt:%d, rSpd:%f lb: %s\n", conCount.Load(), rSpeed, lb.String())
+			return
+		}
+	}
 
 }
 
@@ -928,224 +1162,6 @@ func Test_LinkedListByteBuffer_Functional_Int32ArrTypes(t *testing.T) {
 			panic("conInt32ArrType error")
 		}
 		if conCount.Load() >= int64(Int32TestCount) {
-			rSec := float64(sw.Stop("seqE")) / 1000000000.0
-			rSpeed := float64(bsCount.Load()/1024.0/1024.0) / rSec
-			fmt.Printf("cnt:%d, rSpd:%f lb: %s\n", conCount.Load(), rSpeed, lb.String())
-			return
-		}
-	}
-
-}
-
-// ------------------------Test Single types-------------------------------------------------------------------------
-func proRandomSingleType(i int) {
-	lock.Lock()
-	defer lock.Unlock()
-	tp := i % 11
-	if tp == 0 {
-		lb.WriteInt8(-128)
-		bsCount.Add(1)
-	} else if tp == 1 {
-		lb.WriteFloat32(3.14)
-		bsCount.Add(4)
-	} else if tp == 2 {
-		lb.WriteFloat64(2.71828)
-		bsCount.Add(8)
-	} else if tp == 3 {
-		lb.WriteInt32(0x7FFFFFFF)
-		bsCount.Add(4)
-	} else if tp == 4 {
-		lb.WriteUInt32(0xFFFFFFFF)
-		bsCount.Add(4)
-	} else if tp == 5 {
-		lb.WriteUInt8(255)
-		bsCount.Add(1)
-	} else if tp == 6 {
-		lb.WriteInt16(32767)
-		bsCount.Add(2)
-	} else if tp == 7 {
-		lb.WriteInt64(12345678987654321)
-		bsCount.Add(8)
-	} else if tp == 8 {
-		lb.WriteBool(true)
-		bsCount.Add(1)
-	} else if tp == 9 {
-		lb.WriteUInt16(65535)
-		bsCount.Add(2)
-	} else if tp == 10 {
-		lb.WriteUInt64(0xFFFFFFFFFFFFFFFF)
-		bsCount.Add(8)
-	}
-}
-func conRandomSingleType(i int) int {
-	lock.Lock()
-	defer lock.Unlock()
-	tp := i % 11
-	if tp == 0 {
-		i8, rc := lb.ReadInt8()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-
-			panic(fmt.Sprintf("ReadInt8 Failed %s \n", core.ErrStr(rc)))
-		}
-		if i8 != -128 {
-			panic("ReadInt8 val Failed")
-		}
-	} else if tp == 1 {
-		f32, rc := lb.ReadFloat32()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-			panic(fmt.Sprintf("ReadF32 Failed %s \n", core.ErrStr(rc)))
-		}
-		if f32 != 3.14 {
-			panic("ReadF32 val Failed")
-		}
-
-	} else if tp == 2 {
-		f64, rc := lb.ReadFloat64()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-			panic(fmt.Sprintf("ReadF64 Failed %s \n", core.ErrStr(rc)))
-		}
-		if f64 != 2.71828 {
-			panic("ReadF64 val Failed")
-		}
-
-	} else if tp == 3 {
-		i32, rc := lb.ReadInt32()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-			panic(fmt.Sprintf("ReadI32 Failed %s \n", core.ErrStr(rc)))
-		}
-		if i32 != 0x7FFFFFFF {
-			panic("ReadI32 val Failed")
-		}
-	} else if tp == 4 {
-		i32, rc := lb.ReadUInt32()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-			panic(fmt.Sprintf("ReadU32 Failed %s \n", core.ErrStr(rc)))
-		}
-		if i32 != 0xFFFFFFFF {
-			panic("ReadU32 val Failed")
-		}
-
-	} else if tp == 5 {
-		i8, rc := lb.ReadUInt8()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-
-			panic(fmt.Sprintf("ReadUInt8 Failed %s \n", core.ErrStr(rc)))
-		}
-		if i8 != 255 {
-			panic("ReadUInt8 val Failed")
-		}
-
-	} else if tp == 6 {
-		iv, rc := lb.ReadInt16()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-
-			panic(fmt.Sprintf("ReadInt16 Failed %s \n", core.ErrStr(rc)))
-		}
-		if iv != 32767 {
-			panic("ReadUInt8 val Failed")
-		}
-
-	} else if tp == 7 {
-		iv, rc := lb.ReadInt64()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-
-			panic(fmt.Sprintf("ReadInt64 Failed %s \n", core.ErrStr(rc)))
-		}
-		if iv != 12345678987654321 {
-			panic("ReadUInt8 val Failed")
-		}
-
-	} else if tp == 8 {
-		iv, rc := lb.ReadBool()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-
-			panic(fmt.Sprintf("ReadBool Failed %s \n", core.ErrStr(rc)))
-		}
-		if iv != true {
-			panic("ReadBool val Failed")
-		}
-
-	} else if tp == 9 {
-		iv, rc := lb.ReadUInt16()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-
-			panic(fmt.Sprintf("ReadUInt16 Failed %s \n", core.ErrStr(rc)))
-		}
-		if iv != 65535 {
-			panic("ReadUInt16 val Failed")
-		}
-
-	} else if tp == 10 {
-		iv, rc := lb.ReadUInt64()
-		if core.Err(rc) {
-			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
-				return i
-			}
-
-			panic(fmt.Sprintf("ReadUInt64 Failed %s \n", core.ErrStr(rc)))
-		}
-		if iv != 0xFFFFFFFFFFFFFFFF {
-			panic("ReadUInt64 val Failed")
-		}
-
-	} else {
-		panic("^^")
-	}
-
-	conCount.Add(1)
-	return i + 1
-}
-
-func ProducerSingleType() {
-	for i := 0; i < SingleTestCount; i++ {
-		proRandomSingleType(i)
-	}
-}
-
-func Test_LinkedListByteBuffer_Functional_SingleTypes(t *testing.T) {
-	if lb.ReadAvailable() != 0 {
-		fmt.Printf("read avial is not zero %d\n", lb.ReadAvailable())
-	}
-	conCount.Store(0)
-	bsCount.Store(0)
-	sw.Clear()
-	go ProducerSingleType()
-
-	sw.Begin("sglB")
-	idx := 0
-	for {
-		idx = conRandomSingleType(idx)
-		if conCount.Load() >= int64(SingleTestCount) {
 			rSec := float64(sw.Stop("seqE")) / 1000000000.0
 			rSpeed := float64(bsCount.Load()/1024.0/1024.0) / rSec
 			fmt.Printf("cnt:%d, rSpd:%f lb: %s\n", conCount.Load(), rSpeed, lb.String())

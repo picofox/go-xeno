@@ -56,6 +56,7 @@ func (ego *StopWatch) Mark(markStr string) {
 	e := GetRealTimeNano()
 	ego._record = append(ego._record, e)
 	ego._descs = append(ego._descs, markStr)
+
 }
 
 func (ego *StopWatch) GetRecord(times int) int64 {
@@ -67,11 +68,11 @@ func (ego *StopWatch) GetRecordRaw(times int) int64 {
 }
 
 func (ego *StopWatch) GetRecordRel(times int) int64 {
-	if times > 0 {
-		return ego._record[times] - ego._record[times-1]
-	} else {
-		return ego._record[times] - ego._record[0]
-	}
+	return ego._record[times] - ego._record[times-1]
+}
+
+func (ego *StopWatch) GetRecordRecent() int64 {
+	return ego._record[len(ego._record)-1] - ego._record[0]
 }
 
 func (ego *StopWatch) Clear() {
