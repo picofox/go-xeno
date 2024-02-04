@@ -61,8 +61,8 @@ type IByteBuffer interface {
 
 	WriteStrings([]string) int32
 	ReadStrings() ([]string, int32)
-	WriteBytesArray([][]byte) int32
-	ReadBytesArray() ([][]byte, int32)
+	WriteBytess([][]byte) int32
+	ReadBytess() ([][]byte, int32)
 
 	SetRawBytes(int64, []byte, int64, int64) int32
 	SetRawBytesByNode(*list.Element, int64, []byte, int64, int64) int32

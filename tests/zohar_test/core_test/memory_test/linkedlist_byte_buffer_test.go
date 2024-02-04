@@ -282,17 +282,17 @@ func proBoolArrType() {
 	defer lock.Unlock()
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteBoolArray(make([]bool, 0))
+		lb.WriteBools(make([]bool, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteBoolArray(nil)
+		lb.WriteBools(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]bool, cnt)
 		ia[0] = false
 		ia[cnt-1] = true
-		lb.WriteBoolArray(ia)
+		lb.WriteBools(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -300,12 +300,12 @@ func proBoolArrType() {
 func conBoolArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadBoolArray()
+	ia, rc := lb.ReadBools()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
 		}
-		fmt.Printf("ReadBoolArray error\n")
+		fmt.Printf("ReadBools error\n")
 		return false
 	}
 	if ia == nil {
@@ -314,12 +314,12 @@ func conBoolArrType() bool {
 
 	} else if len(ia) == 1 {
 		if ia[0] != true {
-			fmt.Printf("ReadBoolArray validate error\n")
+			fmt.Printf("ReadBools validate error\n")
 			return false
 		}
 	} else {
 		if ia[0] != false || ia[len(ia)-1] != true {
-			fmt.Printf("ReadBoolArray validate error\n")
+			fmt.Printf("ReadBools validate error\n")
 			return false
 		}
 	}
@@ -363,17 +363,17 @@ func proFloat64ArrType() {
 	defer lock.Unlock()
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteFloat64Array(make([]float64, 0))
+		lb.WriteFloat64s(make([]float64, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteFloat64Array(nil)
+		lb.WriteFloat64s(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]float64, cnt)
 		ia[0] = 3.1415926
 		ia[cnt-1] = 2.71828
-		lb.WriteFloat64Array(ia)
+		lb.WriteFloat64s(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -381,12 +381,12 @@ func proFloat64ArrType() {
 func conFloat64ArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadFloat64Array()
+	ia, rc := lb.ReadFloat64s()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
 		}
-		fmt.Printf("ReadFloat64Array error\n")
+		fmt.Printf("ReadFloat64s error\n")
 		return false
 	}
 	if ia == nil {
@@ -395,12 +395,12 @@ func conFloat64ArrType() bool {
 
 	} else if len(ia) == 1 {
 		if ia[0] != 2.71828 {
-			fmt.Printf("ReadFloat64Array validate error\n")
+			fmt.Printf("ReadFloat64s validate error\n")
 			return false
 		}
 	} else {
 		if ia[0] != 3.1415926 || ia[len(ia)-1] != 2.71828 {
-			fmt.Printf("ReadFloat64Array validate error\n")
+			fmt.Printf("ReadFloat64s validate error\n")
 			return false
 		}
 	}
@@ -444,17 +444,17 @@ func proFloat32ArrType() {
 	defer lock.Unlock()
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteFloat32Array(make([]float32, 0))
+		lb.WriteFloat32s(make([]float32, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteFloat32Array(nil)
+		lb.WriteFloat32s(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]float32, cnt)
 		ia[0] = 3.14
 		ia[cnt-1] = 2.71
-		lb.WriteFloat32Array(ia)
+		lb.WriteFloat32s(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -462,12 +462,12 @@ func proFloat32ArrType() {
 func conFloat32ArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadFloat32Array()
+	ia, rc := lb.ReadFloat32s()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
 		}
-		fmt.Printf("ReadFloat32Array error\n")
+		fmt.Printf("ReadFloat32s error\n")
 		return false
 	}
 	if ia == nil {
@@ -476,12 +476,12 @@ func conFloat32ArrType() bool {
 
 	} else if len(ia) == 1 {
 		if ia[0] != 2.71 {
-			fmt.Printf("ReadFloat32Array validate error\n")
+			fmt.Printf("ReadFloat32s validate error\n")
 			return false
 		}
 	} else {
 		if ia[0] != 3.14 || ia[len(ia)-1] != 2.71 {
-			fmt.Printf("ReadInt32Array validate error\n")
+			fmt.Printf("ReadInt32s validate error\n")
 			return false
 		}
 	}
@@ -526,17 +526,17 @@ func proUInt8ArrType() {
 
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteUInt8Array(make([]uint8, 0))
+		lb.WriteUInt8s(make([]uint8, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteUInt8Array(nil)
+		lb.WriteUInt8s(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]uint8, cnt)
 		ia[0] = 1
 		ia[cnt-1] = 255
-		lb.WriteUInt8Array(ia)
+		lb.WriteUInt8s(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -544,7 +544,7 @@ func proUInt8ArrType() {
 func conUInt8ArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadUInt8Array()
+	ia, rc := lb.ReadUInt8s()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
@@ -607,17 +607,17 @@ func proInt8ArrType() {
 
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteInt8Array(make([]int8, 0))
+		lb.WriteInt8s(make([]int8, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteInt8Array(nil)
+		lb.WriteInt8s(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]int8, cnt)
 		ia[0] = -128
 		ia[cnt-1] = 127
-		lb.WriteInt8Array(ia)
+		lb.WriteInt8s(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -625,7 +625,7 @@ func proInt8ArrType() {
 func conInt8ArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadInt8Array()
+	ia, rc := lb.ReadInt8s()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
@@ -688,17 +688,17 @@ func proUInt16ArrType() {
 
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteUInt16Array(make([]uint16, 0))
+		lb.WriteUInt16s(make([]uint16, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteUInt16Array(nil)
+		lb.WriteUInt16s(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]uint16, cnt)
 		ia[0] = 12345
 		ia[cnt-1] = 65535
-		lb.WriteUInt16Array(ia)
+		lb.WriteUInt16s(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -706,7 +706,7 @@ func proUInt16ArrType() {
 func conUInt16ArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadUInt16Array()
+	ia, rc := lb.ReadUInt16s()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
@@ -770,17 +770,17 @@ func proInt16ArrType() {
 
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteInt16Array(make([]int16, 0))
+		lb.WriteInt16s(make([]int16, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteUInt16Array(nil)
+		lb.WriteUInt16s(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]int16, cnt)
 		ia[0] = -32768
 		ia[cnt-1] = 32767
-		lb.WriteInt16Array(ia)
+		lb.WriteInt16s(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -788,7 +788,7 @@ func proInt16ArrType() {
 func conInt16ArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadInt16Array()
+	ia, rc := lb.ReadInt16s()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
@@ -852,17 +852,17 @@ func proUInt64ArrType() {
 
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteUInt64Array(make([]uint64, 0))
+		lb.WriteUInt64s(make([]uint64, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteUInt64Array(nil)
+		lb.WriteUInt64s(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]uint64, cnt)
 		ia[0] = 0x1234567890123456
 		ia[cnt-1] = 0x3142750893480187
-		lb.WriteUInt64Array(ia)
+		lb.WriteUInt64s(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -870,12 +870,12 @@ func proUInt64ArrType() {
 func conUInt64ArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadUInt64Array()
+	ia, rc := lb.ReadUInt64s()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
 		}
-		fmt.Printf("ReadUInt64Array error\n")
+		fmt.Printf("ReadUInt64s error\n")
 		return false
 	}
 	if ia == nil {
@@ -884,12 +884,12 @@ func conUInt64ArrType() bool {
 
 	} else if len(ia) == 1 {
 		if ia[0] != 0x3142750893480187 {
-			fmt.Printf("ReadUInt64Array validate error\n")
+			fmt.Printf("ReadUInt64s validate error\n")
 			return false
 		}
 	} else {
 		if ia[0] != 0x1234567890123456 || ia[len(ia)-1] != 0x3142750893480187 {
-			fmt.Printf("ReadUInt64Array validate error\n")
+			fmt.Printf("ReadUInt64s validate error\n")
 			return false
 		}
 	}
@@ -934,17 +934,17 @@ func proInt64ArrType() {
 
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteInt64Array(make([]int64, 0))
+		lb.WriteInt64s(make([]int64, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteInt64Array(nil)
+		lb.WriteInt64s(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]int64, cnt)
 		ia[0] = 0x1234567890123456
 		ia[cnt-1] = 0x3142750893480187
-		lb.WriteInt64Array(ia)
+		lb.WriteInt64s(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -952,12 +952,12 @@ func proInt64ArrType() {
 func conInt64ArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadInt64Array()
+	ia, rc := lb.ReadInt64s()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
 		}
-		fmt.Printf("ReadInt64Array error\n")
+		fmt.Printf("ReadInt64s error\n")
 		return false
 	}
 	if ia == nil {
@@ -966,12 +966,12 @@ func conInt64ArrType() bool {
 
 	} else if len(ia) == 1 {
 		if ia[0] != 0x3142750893480187 {
-			fmt.Printf("ReadInt64Array validate error\n")
+			fmt.Printf("ReadInt64s validate error\n")
 			return false
 		}
 	} else {
 		if ia[0] != 0x1234567890123456 || ia[len(ia)-1] != 0x3142750893480187 {
-			fmt.Printf("ReadInt64Array validate error\n")
+			fmt.Printf("ReadInt64s validate error\n")
 			return false
 		}
 	}
@@ -1016,17 +1016,17 @@ func proUInt32ArrType() {
 	defer lock.Unlock()
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteUInt32Array(make([]uint32, 0))
+		lb.WriteUInt32s(make([]uint32, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteUInt32Array(nil)
+		lb.WriteUInt32s(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]uint32, cnt)
 		ia[0] = 0x12345678
 		ia[cnt-1] = 0x76543210
-		lb.WriteUInt32Array(ia)
+		lb.WriteUInt32s(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -1034,12 +1034,12 @@ func proUInt32ArrType() {
 func conUInt32ArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadInt32Array()
+	ia, rc := lb.ReadInt32s()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
 		}
-		fmt.Printf("ReadInt32Array error\n")
+		fmt.Printf("ReadInt32s error\n")
 		return false
 	}
 	if ia == nil {
@@ -1048,12 +1048,12 @@ func conUInt32ArrType() bool {
 
 	} else if len(ia) == 1 {
 		if ia[0] != 0x76543210 {
-			fmt.Printf("ReadInt32Array validate error\n")
+			fmt.Printf("ReadInt32s validate error\n")
 			return false
 		}
 	} else {
 		if ia[0] != 0x12345678 || ia[len(ia)-1] != 0x76543210 {
-			fmt.Printf("ReadInt32Array validate error\n")
+			fmt.Printf("ReadInt32s validate error\n")
 			return false
 		}
 	}
@@ -1096,17 +1096,17 @@ func proInt32ArrType() {
 	defer lock.Unlock()
 	rEmp := rand.Intn(16)
 	if rEmp == 0 {
-		lb.WriteInt32Array(make([]int32, 0))
+		lb.WriteInt32s(make([]int32, 0))
 		bsCount.Add(4)
 	} else if rEmp == 1 {
-		lb.WriteInt32Array(nil)
+		lb.WriteInt32s(nil)
 		bsCount.Add(4)
 	} else {
 		cnt := rand.Intn(10000) + 1
 		ia := make([]int32, cnt)
 		ia[0] = 0x12345678
 		ia[cnt-1] = 0x76543210
-		lb.WriteInt32Array(ia)
+		lb.WriteInt32s(ia)
 		bsCount.Add(int64(4 + cnt*4))
 	}
 }
@@ -1114,12 +1114,12 @@ func proInt32ArrType() {
 func conInt32ArrType() bool {
 	lock.Lock()
 	defer lock.Unlock()
-	ia, rc := lb.ReadInt32Array()
+	ia, rc := lb.ReadInt32s()
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return true
 		}
-		fmt.Printf("ReadInt32Array error\n")
+		fmt.Printf("ReadInt32s error\n")
 		return false
 	}
 	if ia == nil {
@@ -1128,12 +1128,12 @@ func conInt32ArrType() bool {
 
 	} else if len(ia) == 1 {
 		if ia[0] != 0x76543210 {
-			fmt.Printf("ReadInt32Array validate error\n")
+			fmt.Printf("ReadInt32s validate error\n")
 			return false
 		}
 	} else {
 		if ia[0] != 0x12345678 || ia[len(ia)-1] != 0x76543210 {
-			fmt.Printf("ReadInt32Array validate error\n")
+			fmt.Printf("ReadInt32s validate error\n")
 			return false
 		}
 	}

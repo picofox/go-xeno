@@ -32,7 +32,7 @@ func genOne(idx int64) {
 	if core.Err(rc) {
 		panic("InitializeSerialization Failed")
 	}
-	defer sHelper.FinalizeSerialization()
+	defer sHelper.Finalize()
 
 	ss, _ := proRandomStrings()
 	rc = sHelper.WriteStrings(ss)
@@ -114,17 +114,70 @@ func genOne(idx int64) {
 	}
 
 	i8arr, _ := proRandomInt8Arr()
-	rc = sHelper.WriteInt8Array(i8arr)
+	rc = sHelper.WriteInt8s(i8arr)
 	if core.Err(rc) {
 		panic("ser i8arr Failed")
 	}
 
 	u8arr, _ := proRandomUInt8Arr()
-	rc = sHelper.WriteUInt8Array(u8arr)
+	rc = sHelper.WriteUInt8s(u8arr)
 	if core.Err(rc) {
 		panic("ser ui8arr Failed")
 	}
 
+	i16arr, _ := proRandomInt16Arr()
+	rc = sHelper.WriteInt16s(i16arr)
+	if core.Err(rc) {
+		panic("ser i16arr Failed")
+	}
+
+	u16arr, _ := proRandomUInt16Arr()
+	rc = sHelper.WriteUInt16s(u16arr)
+	if core.Err(rc) {
+		panic("ser u168arr Failed")
+	}
+
+	i32arr, _ := proRandomInt32Arr()
+	rc = sHelper.WriteInt32s(i32arr)
+	if core.Err(rc) {
+		panic("ser i32arr Failed")
+	}
+
+	u32arr, _ := proRandomUInt32Arr()
+	rc = sHelper.WriteUInt32s(u32arr)
+	if core.Err(rc) {
+		panic("ser u32arr Failed")
+	}
+
+	i64arr, _ := proRandomInt64Arr()
+	rc = sHelper.WriteInt64s(i64arr)
+	if core.Err(rc) {
+		panic("ser i64arr Failed")
+	}
+
+	u64arr, _ := proRandomUInt64Arr()
+	rc = sHelper.WriteUInt64s(u64arr)
+	if core.Err(rc) {
+		panic("ser u64arr Failed")
+	}
+
+	boolArr, _ := proRandomBoolArr()
+	rc = sHelper.WriteBools(boolArr)
+	if core.Err(rc) {
+		panic("ser boolarr Failed")
+	}
+
+	f64arr, _ := proRandomFloat64Arr()
+	rc = sHelper.WriteFloat64s(f64arr)
+	if core.Err(rc) {
+		panic("ser u64arr Failed")
+	}
+
+	f32arr, _ := proRandomFloat32Arr()
+	rc = sHelper.WriteFloat32s(f32arr)
+	if core.Err(rc) {
+		panic("ser u32arr Failed")
+	}
 }
 
 func gen() {
@@ -164,7 +217,7 @@ func baseTestOne() int64 {
 		panic("create dHelper failed")
 	}
 
-	defer dHelper.FinalizeDeserialization()
+	defer dHelper.Finalize()
 
 	var ss []string = nil
 	ss, rc = dHelper.ReadStrings()
@@ -302,7 +355,7 @@ func baseTestOne() int64 {
 	}
 
 	var i8arr []int8 = nil
-	i8arr, rc = dHelper.ReadInt8Array()
+	i8arr, rc = dHelper.ReadInt8s()
 	if core.Err(rc) {
 		panic("read ss failed")
 	}
@@ -314,7 +367,7 @@ func baseTestOne() int64 {
 		}
 	}
 	var u8arr []uint8 = nil
-	u8arr, rc = dHelper.ReadUInt8Array()
+	u8arr, rc = dHelper.ReadUInt8s()
 	if core.Err(rc) {
 		panic("read ss failed")
 	}
@@ -322,6 +375,120 @@ func baseTestOne() int64 {
 		for i := 0; i < len(u8arr); i++ {
 			if u8arr[i] != uint8(i%255) {
 				panic("valid i8arr failed")
+			}
+		}
+	}
+
+	var i16arr []int16 = nil
+	i16arr, rc = dHelper.ReadInt16s()
+	if core.Err(rc) {
+		panic("read ss failed")
+	}
+	if len(i16arr) > 0 {
+		for i := 0; i < len(i16arr); i++ {
+			if i16arr[i] != int16(i%32767) {
+				panic("valid i8arr failed")
+			}
+		}
+	}
+	var u16arr []uint16 = nil
+	u16arr, rc = dHelper.ReadUInt16s()
+	if core.Err(rc) {
+		panic("read ss failed")
+	}
+	if len(u16arr) > 0 {
+		for i := 0; i < len(u16arr); i++ {
+			if u16arr[i] != uint16(i%65535) {
+				panic("valid i8arr failed")
+			}
+		}
+	}
+
+	var i32arr []int32 = nil
+	i32arr, rc = dHelper.ReadInt32s()
+	if core.Err(rc) {
+		panic("read ss failed")
+	}
+	if len(i32arr) > 0 {
+		for i := 0; i < len(i32arr); i++ {
+			if i32arr[i] != int32(i%0x7FFFFFFF) {
+				panic("valid i32arr failed")
+			}
+		}
+	}
+	var u32arr []uint32 = nil
+	u32arr, rc = dHelper.ReadUInt32s()
+	if core.Err(rc) {
+		panic("read ss failed")
+	}
+	if len(u32arr) > 0 {
+		for i := 0; i < len(u32arr); i++ {
+			if u32arr[i] != uint32(i%0xFFFFFFFF) {
+				panic("valid u32arr failed")
+			}
+		}
+	}
+
+	var i64arr []int64 = nil
+	i64arr, rc = dHelper.ReadInt64s()
+	if core.Err(rc) {
+		panic("read ss failed")
+	}
+	if len(i64arr) > 0 {
+		for i := 0; i < len(i64arr); i++ {
+			if i64arr[i] != int64(i) {
+				panic("valid i64arr failed")
+			}
+		}
+	}
+	var u64arr []uint64 = nil
+	u64arr, rc = dHelper.ReadUInt64s()
+	if core.Err(rc) {
+		panic("read ss failed")
+	}
+	if len(u64arr) > 0 {
+		for i := 0; i < len(u64arr); i++ {
+			if u64arr[i] != uint64(i) {
+				panic("valid i64arr failed")
+			}
+		}
+	}
+
+	var blarr []bool = nil
+	blarr, rc = dHelper.ReadBools()
+	if core.Err(rc) {
+		panic("read bl arr failed")
+	}
+	if len(blarr) > 0 {
+		for i := 0; i < len(blarr); i++ {
+			if blarr[i] != true {
+				panic("valid bl arr failed")
+			}
+		}
+	}
+
+	var f64arr []float64 = nil
+	f64arr, rc = dHelper.ReadFloat64s()
+	if core.Err(rc) {
+		panic("read f64 failed")
+	}
+	if len(f64arr) > 0 {
+		for i := 0; i < len(f64arr); i++ {
+			if f64arr[i] != 2.71828 {
+				panic("valid i64arr failed")
+			}
+		}
+	}
+
+	var f32arr []float32 = nil
+	f32arr, rc = dHelper.ReadFloat32s()
+	if core.Err(rc) {
+		panic("read f32 failed")
+	}
+	if len(f32arr) > 0 {
+		for i := 0; i < len(f32arr); i++ {
+			if f32arr[i] != 3.14 {
+				panic("valid i32arr failed")
 			}
 		}
 	}

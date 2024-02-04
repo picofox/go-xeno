@@ -101,7 +101,7 @@ func InitializeDeserialization(buffer memory.IByteBuffer, isInternal bool, cmd i
 	return helper, helper._init(buffer, isInternal, cmd, logicLength, extLength)
 }
 
-func (ego *O1L15O1T15DeserializationHelper) FinalizeDeserialization() int32 {
+func (ego *O1L15O1T15DeserializationHelper) Finalize() int32 {
 	defer sO1L15O1T15DeserializationHelperCache.Put(ego)
 	if ego._logicDataLength != 0 || ego._extDataLength != 0 {
 		panic("xxxx")
@@ -470,7 +470,7 @@ func (ego *O1L15O1T15DeserializationHelper) ReadStrings() ([]string, int32) {
 	}
 }
 
-func (ego *O1L15O1T15DeserializationHelper) ReadInt8Array() ([]int8, int32) {
+func (ego *O1L15O1T15DeserializationHelper) ReadInt8s() ([]int8, int32) {
 	ac, rc := ego.ReadInt32()
 	if ac == -1 {
 		return nil, core.MkSuccess(0)
@@ -488,7 +488,7 @@ func (ego *O1L15O1T15DeserializationHelper) ReadInt8Array() ([]int8, int32) {
 	}
 }
 
-func (ego *O1L15O1T15DeserializationHelper) ReadUInt8Array() ([]uint8, int32) {
+func (ego *O1L15O1T15DeserializationHelper) ReadUInt8s() ([]uint8, int32) {
 	ac, rc := ego.ReadInt32()
 	if ac == -1 {
 		return nil, core.MkSuccess(0)
@@ -498,6 +498,168 @@ func (ego *O1L15O1T15DeserializationHelper) ReadUInt8Array() ([]uint8, int32) {
 		var ret []uint8 = make([]uint8, ac)
 		for i := int32(0); i < ac; i++ {
 			ret[i], rc = ego.ReadUInt8()
+			if core.Err(rc) {
+				return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+			}
+		}
+		return ret, core.MkSuccess(0)
+	}
+}
+
+func (ego *O1L15O1T15DeserializationHelper) ReadInt16s() ([]int16, int32) {
+	ac, rc := ego.ReadInt32()
+	if ac == -1 {
+		return nil, core.MkSuccess(0)
+	} else if ac == 0 {
+		return memory.ConstEmptyInt16Arr(), core.MkSuccess(0)
+	} else {
+		var ret []int16 = make([]int16, ac)
+		for i := int32(0); i < ac; i++ {
+			ret[i], rc = ego.ReadInt16()
+			if core.Err(rc) {
+				return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+			}
+		}
+		return ret, core.MkSuccess(0)
+	}
+}
+
+func (ego *O1L15O1T15DeserializationHelper) ReadUInt16s() ([]uint16, int32) {
+	ac, rc := ego.ReadInt32()
+	if ac == -1 {
+		return nil, core.MkSuccess(0)
+	} else if ac == 0 {
+		return memory.ConstEmptyUInt16Arr(), core.MkSuccess(0)
+	} else {
+		var ret []uint16 = make([]uint16, ac)
+		for i := int32(0); i < ac; i++ {
+			ret[i], rc = ego.ReadUInt16()
+			if core.Err(rc) {
+				return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+			}
+		}
+		return ret, core.MkSuccess(0)
+	}
+}
+
+func (ego *O1L15O1T15DeserializationHelper) ReadInt32s() ([]int32, int32) {
+	ac, rc := ego.ReadInt32()
+	if ac == -1 {
+		return nil, core.MkSuccess(0)
+	} else if ac == 0 {
+		return memory.ConstEmptyInt32Arr(), core.MkSuccess(0)
+	} else {
+		var ret []int32 = make([]int32, ac)
+		for i := int32(0); i < ac; i++ {
+			ret[i], rc = ego.ReadInt32()
+			if core.Err(rc) {
+				return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+			}
+		}
+		return ret, core.MkSuccess(0)
+	}
+}
+
+func (ego *O1L15O1T15DeserializationHelper) ReadUInt32s() ([]uint32, int32) {
+	ac, rc := ego.ReadInt32()
+	if ac == -1 {
+		return nil, core.MkSuccess(0)
+	} else if ac == 0 {
+		return memory.ConstEmptyUInt32Arr(), core.MkSuccess(0)
+	} else {
+		var ret []uint32 = make([]uint32, ac)
+		for i := int32(0); i < ac; i++ {
+			ret[i], rc = ego.ReadUInt32()
+			if core.Err(rc) {
+				return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+			}
+		}
+		return ret, core.MkSuccess(0)
+	}
+}
+
+func (ego *O1L15O1T15DeserializationHelper) ReadInt64s() ([]int64, int32) {
+	ac, rc := ego.ReadInt32()
+	if ac == -1 {
+		return nil, core.MkSuccess(0)
+	} else if ac == 0 {
+		return memory.ConstEmptyInt64Arr(), core.MkSuccess(0)
+	} else {
+		var ret []int64 = make([]int64, ac)
+		for i := int32(0); i < ac; i++ {
+			ret[i], rc = ego.ReadInt64()
+			if core.Err(rc) {
+				return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+			}
+		}
+		return ret, core.MkSuccess(0)
+	}
+}
+
+func (ego *O1L15O1T15DeserializationHelper) ReadUInt64s() ([]uint64, int32) {
+	ac, rc := ego.ReadInt32()
+	if ac == -1 {
+		return nil, core.MkSuccess(0)
+	} else if ac == 0 {
+		return memory.ConstEmptyUInt64Arr(), core.MkSuccess(0)
+	} else {
+		var ret []uint64 = make([]uint64, ac)
+		for i := int32(0); i < ac; i++ {
+			ret[i], rc = ego.ReadUInt64()
+			if core.Err(rc) {
+				return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+			}
+		}
+		return ret, core.MkSuccess(0)
+	}
+}
+
+func (ego *O1L15O1T15DeserializationHelper) ReadBools() ([]bool, int32) {
+	ac, rc := ego.ReadInt32()
+	if ac == -1 {
+		return nil, core.MkSuccess(0)
+	} else if ac == 0 {
+		return memory.ConstEmptyBoolArray(), core.MkSuccess(0)
+	} else {
+		var ret []bool = make([]bool, ac)
+		for i := int32(0); i < ac; i++ {
+			ret[i], rc = ego.ReadBool()
+			if core.Err(rc) {
+				return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+			}
+		}
+		return ret, core.MkSuccess(0)
+	}
+}
+
+func (ego *O1L15O1T15DeserializationHelper) ReadFloat32s() ([]float32, int32) {
+	ac, rc := ego.ReadInt32()
+	if ac == -1 {
+		return nil, core.MkSuccess(0)
+	} else if ac == 0 {
+		return memory.ConstEmptyFloat32Arr(), core.MkSuccess(0)
+	} else {
+		var ret []float32 = make([]float32, ac)
+		for i := int32(0); i < ac; i++ {
+			ret[i], rc = ego.ReadFloat32()
+			if core.Err(rc) {
+				return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+			}
+		}
+		return ret, core.MkSuccess(0)
+	}
+}
+
+func (ego *O1L15O1T15DeserializationHelper) ReadFloat64s() ([]float64, int32) {
+	ac, rc := ego.ReadInt32()
+	if ac == -1 {
+		return nil, core.MkSuccess(0)
+	} else if ac == 0 {
+		return memory.ConstEmptyFloat64Arr(), core.MkSuccess(0)
+	} else {
+		var ret []float64 = make([]float64, ac)
+		for i := int32(0); i < ac; i++ {
+			ret[i], rc = ego.ReadFloat64()
 			if core.Err(rc) {
 				return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 			}

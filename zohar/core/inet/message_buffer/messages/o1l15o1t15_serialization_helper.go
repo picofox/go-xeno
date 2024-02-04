@@ -114,7 +114,7 @@ func InitializeSerialization(buffer memory.IByteBuffer, isInternal bool, cmd int
 	return helper, helper._init(buffer, isInternal, cmd)
 }
 
-func (ego *O1L15O1T15SerializationHelper) FinalizeSerialization() int32 {
+func (ego *O1L15O1T15SerializationHelper) Finalize() int32 {
 	defer sO1L15O1T15SerializationHelperCache.Put(ego)
 	if ego._extDataLength > 0 {
 		rc := ego._buffer.SetInt64(ego._extraLengthPos, ego._extDataLength)
@@ -468,7 +468,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteStrings(strs []string) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteBytesArray(bya [][]byte) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteBytess(bya [][]byte) int32 {
 	if bya == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -484,7 +484,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteBytesArray(bya [][]byte) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteInt8Array(ia []int8) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteInt8s(ia []int8) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -501,7 +501,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteInt8Array(ia []int8) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteUInt8Array(ia []uint8) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteUInt8s(ia []uint8) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -518,7 +518,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteUInt8Array(ia []uint8) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteInt16Array(ia []int16) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteInt16s(ia []int16) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -535,7 +535,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteInt16Array(ia []int16) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteUInt16Array(ia []uint16) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteUInt16s(ia []uint16) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -551,7 +551,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteUInt16Array(ia []uint16) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteInt32Array(ia []int32) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteInt32s(ia []int32) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -559,7 +559,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteInt32Array(ia []int32) int32 {
 	l := len(ia)
 	ego.WriteInt32(int32(l))
 	for i := 0; i < l; i++ {
-		rc := ego.WriteInt32(ia[i])
+		rc := ego.WriteInt32(ia[i] % 0x7FFFFFFF)
 		if core.Err(rc) {
 			return rc
 		}
@@ -567,7 +567,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteInt32Array(ia []int32) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteUInt32Array(ia []uint32) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteUInt32s(ia []uint32) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -575,7 +575,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteUInt32Array(ia []uint32) int32 {
 	l := len(ia)
 	ego.WriteInt32(int32(l))
 	for i := 0; i < l; i++ {
-		rc := ego.WriteUInt32(ia[i])
+		rc := ego.WriteUInt32(ia[i] % 0xFFFFFFFF)
 		if core.Err(rc) {
 			return rc
 		}
@@ -583,7 +583,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteUInt32Array(ia []uint32) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteInt64Array(ia []int64) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteInt64s(ia []int64) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -599,7 +599,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteInt64Array(ia []int64) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteUInt64Array(ia []uint64) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteUInt64s(ia []uint64) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -615,7 +615,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteUInt64Array(ia []uint64) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteBoolArray(ia []bool) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteBools(ia []bool) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -631,7 +631,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteBoolArray(ia []bool) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteFloat32Array(ia []float32) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteFloat32s(ia []float32) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -647,7 +647,7 @@ func (ego *O1L15O1T15SerializationHelper) WriteFloat32Array(ia []float32) int32 
 	return core.MkSuccess(0)
 }
 
-func (ego *O1L15O1T15SerializationHelper) WriteFloat64Array(ia []float64) int32 {
+func (ego *O1L15O1T15SerializationHelper) WriteFloat64s(ia []float64) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)

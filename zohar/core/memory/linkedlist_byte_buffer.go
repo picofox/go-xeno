@@ -617,11 +617,7 @@ func (ego *LinkedListByteBuffer) WriteBytes(srcBA []byte) int32 {
 	return rc
 }
 
-func (ego *LinkedListByteBuffer) PeekBytesArray() ([][]byte, int32) {
-	return nil, 0
-}
-
-func (ego *LinkedListByteBuffer) ReadBytesArray() ([][]byte, int32) {
+func (ego *LinkedListByteBuffer) ReadBytess() ([][]byte, int32) {
 	rc := ego.isByteArrayDataReadyToRead()
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -773,7 +769,7 @@ func (ego *LinkedListByteBuffer) PeekString(srcOff int64) (string, int32) {
 	return StringRef(rBA), core.MkSuccess(0)
 }
 
-func (ego *LinkedListByteBuffer) WriteBytesArray(bya [][]byte) int32 {
+func (ego *LinkedListByteBuffer) WriteBytess(bya [][]byte) int32 {
 	if bya == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1283,7 +1279,7 @@ func (ego *LinkedListByteBuffer) ReaderSeek(whence int, offset int64) bool {
 	return false
 }
 
-func (ego *LinkedListByteBuffer) WriteInt8Array(ia []int8) int32 {
+func (ego *LinkedListByteBuffer) WriteInt8s(ia []int8) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1300,7 +1296,7 @@ func (ego *LinkedListByteBuffer) WriteInt8Array(ia []int8) int32 {
 	return core.MkSuccess(0)
 }
 
-//func (ego *LinkedListByteBuffer) WriteInt8Array(ia []int8) int32 {
+//func (ego *LinkedListByteBuffer) WriteInt8s(ia []int8) int32 {
 //	if ia == nil {
 //		ego.WriteInt32(-1)
 //		return core.MkSuccess(0)
@@ -1316,7 +1312,7 @@ func (ego *LinkedListByteBuffer) WriteInt8Array(ia []int8) int32 {
 //	return core.MkSuccess(0)
 //}
 
-func (ego *LinkedListByteBuffer) ReadInt8Array() ([]int8, int32) {
+func (ego *LinkedListByteBuffer) ReadInt8s() ([]int8, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.INT8_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -1345,7 +1341,7 @@ func (ego *LinkedListByteBuffer) ReadInt8Array() ([]int8, int32) {
 	}
 }
 
-func (ego *LinkedListByteBuffer) WriteUInt8Array(ia []uint8) int32 {
+func (ego *LinkedListByteBuffer) WriteUInt8s(ia []uint8) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1362,7 +1358,7 @@ func (ego *LinkedListByteBuffer) WriteUInt8Array(ia []uint8) int32 {
 	return core.MkSuccess(0)
 }
 
-//func (ego *LinkedListByteBuffer) WriteUInt8Array(ia []uint8) int32 {
+//func (ego *LinkedListByteBuffer) WriteUInt8s(ia []uint8) int32 {
 //	if ia == nil {
 //		ego.WriteInt32(-1)
 //		return core.MkSuccess(0)
@@ -1378,7 +1374,7 @@ func (ego *LinkedListByteBuffer) WriteUInt8Array(ia []uint8) int32 {
 //	return core.MkSuccess(0)
 //}
 
-func (ego *LinkedListByteBuffer) ReadUInt8Array() ([]uint8, int32) {
+func (ego *LinkedListByteBuffer) ReadUInt8s() ([]uint8, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.INT8_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -1407,7 +1403,7 @@ func (ego *LinkedListByteBuffer) ReadUInt8Array() ([]uint8, int32) {
 	}
 }
 
-func (ego *LinkedListByteBuffer) WriteInt16Array(ia []int16) int32 {
+func (ego *LinkedListByteBuffer) WriteInt16s(ia []int16) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1423,7 +1419,7 @@ func (ego *LinkedListByteBuffer) WriteInt16Array(ia []int16) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinkedListByteBuffer) ReadInt16Array() ([]int16, int32) {
+func (ego *LinkedListByteBuffer) ReadInt16s() ([]int16, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.INT16_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -1452,7 +1448,7 @@ func (ego *LinkedListByteBuffer) ReadInt16Array() ([]int16, int32) {
 	}
 }
 
-func (ego *LinkedListByteBuffer) WriteUInt16Array(ia []uint16) int32 {
+func (ego *LinkedListByteBuffer) WriteUInt16s(ia []uint16) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1468,7 +1464,7 @@ func (ego *LinkedListByteBuffer) WriteUInt16Array(ia []uint16) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinkedListByteBuffer) ReadUInt16Array() ([]uint16, int32) {
+func (ego *LinkedListByteBuffer) ReadUInt16s() ([]uint16, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.INT16_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -1497,7 +1493,7 @@ func (ego *LinkedListByteBuffer) ReadUInt16Array() ([]uint16, int32) {
 	}
 }
 
-func (ego *LinkedListByteBuffer) WriteInt32Array(ia []int32) int32 {
+func (ego *LinkedListByteBuffer) WriteInt32s(ia []int32) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1513,7 +1509,7 @@ func (ego *LinkedListByteBuffer) WriteInt32Array(ia []int32) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinkedListByteBuffer) ReadInt32Array() ([]int32, int32) {
+func (ego *LinkedListByteBuffer) ReadInt32s() ([]int32, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.INT32_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -1542,7 +1538,7 @@ func (ego *LinkedListByteBuffer) ReadInt32Array() ([]int32, int32) {
 	}
 }
 
-func (ego *LinkedListByteBuffer) WriteUInt32Array(ia []uint32) int32 {
+func (ego *LinkedListByteBuffer) WriteUInt32s(ia []uint32) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1558,7 +1554,7 @@ func (ego *LinkedListByteBuffer) WriteUInt32Array(ia []uint32) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinkedListByteBuffer) ReadUInt32Array() ([]uint32, int32) {
+func (ego *LinkedListByteBuffer) ReadUInt32s() ([]uint32, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.INT32_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -1587,7 +1583,7 @@ func (ego *LinkedListByteBuffer) ReadUInt32Array() ([]uint32, int32) {
 	}
 }
 
-func (ego *LinkedListByteBuffer) WriteInt64Array(ia []int64) int32 {
+func (ego *LinkedListByteBuffer) WriteInt64s(ia []int64) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1603,7 +1599,7 @@ func (ego *LinkedListByteBuffer) WriteInt64Array(ia []int64) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinkedListByteBuffer) ReadInt64Array() ([]int64, int32) {
+func (ego *LinkedListByteBuffer) ReadInt64s() ([]int64, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.INT64_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -1634,7 +1630,7 @@ func (ego *LinkedListByteBuffer) ReadInt64Array() ([]int64, int32) {
 	}
 }
 
-func (ego *LinkedListByteBuffer) WriteUInt64Array(ia []uint64) int32 {
+func (ego *LinkedListByteBuffer) WriteUInt64s(ia []uint64) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1650,7 +1646,7 @@ func (ego *LinkedListByteBuffer) WriteUInt64Array(ia []uint64) int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *LinkedListByteBuffer) ReadUInt64Array() ([]uint64, int32) {
+func (ego *LinkedListByteBuffer) ReadUInt64s() ([]uint64, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.INT64_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -1679,7 +1675,7 @@ func (ego *LinkedListByteBuffer) ReadUInt64Array() ([]uint64, int32) {
 	}
 }
 
-func (ego *LinkedListByteBuffer) WriteBoolArray(ia []bool) int32 {
+func (ego *LinkedListByteBuffer) WriteBools(ia []bool) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1694,7 +1690,7 @@ func (ego *LinkedListByteBuffer) WriteBoolArray(ia []bool) int32 {
 	}
 	return core.MkSuccess(0)
 }
-func (ego *LinkedListByteBuffer) ReadBoolArray() ([]bool, int32) {
+func (ego *LinkedListByteBuffer) ReadBools() ([]bool, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.BYTEBOOL_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -1723,7 +1719,7 @@ func (ego *LinkedListByteBuffer) ReadBoolArray() ([]bool, int32) {
 	}
 }
 
-func (ego *LinkedListByteBuffer) WriteFloat32Array(ia []float32) int32 {
+func (ego *LinkedListByteBuffer) WriteFloat32s(ia []float32) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1738,7 +1734,7 @@ func (ego *LinkedListByteBuffer) WriteFloat32Array(ia []float32) int32 {
 	}
 	return core.MkSuccess(0)
 }
-func (ego *LinkedListByteBuffer) ReadFloat32Array() ([]float32, int32) {
+func (ego *LinkedListByteBuffer) ReadFloat32s() ([]float32, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.FLOAT32_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
@@ -1767,7 +1763,7 @@ func (ego *LinkedListByteBuffer) ReadFloat32Array() ([]float32, int32) {
 	}
 }
 
-func (ego *LinkedListByteBuffer) WriteFloat64Array(ia []float64) int32 {
+func (ego *LinkedListByteBuffer) WriteFloat64s(ia []float64) int32 {
 	if ia == nil {
 		ego.WriteInt32(-1)
 		return core.MkSuccess(0)
@@ -1782,7 +1778,7 @@ func (ego *LinkedListByteBuffer) WriteFloat64Array(ia []float64) int32 {
 	}
 	return core.MkSuccess(0)
 }
-func (ego *LinkedListByteBuffer) ReadFloat64Array() ([]float64, int32) {
+func (ego *LinkedListByteBuffer) ReadFloat64s() ([]float64, int32) {
 	rc := ego.isIntArrayReadyToRead(datatype.FLOAT64_SIZE)
 	et, em := core.ExErr(rc)
 	if et == core.EC_TRY_AGAIN {
