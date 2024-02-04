@@ -3,12 +3,10 @@ package message_buffer
 import "xeno/zohar/core/memory"
 
 type INetMessage interface {
-	Serialize(memory.IByteBuffer) int64
-	Deserialize(memory.IByteBuffer) int32
+	O1L15O1T15Serialize(memory.IByteBuffer) (int64, int32)
+	O1L15O1T15Deserialize(memory.IByteBuffer, int16, int64) (int64, int32)
 	Command() int16
 	String() string
+	MsgGrpType() int8
 	IdentifierString() string
-	BodyLength() int64
-	PiecewiseSerialize(bufferList *memory.ByteBufferList) (int64, int64, int32)
-	PiecewiseDeserialize(bufferList *memory.ByteBufferList, bodyLength int64) (int64, int32)
 }

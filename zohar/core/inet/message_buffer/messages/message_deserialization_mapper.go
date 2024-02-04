@@ -6,29 +6,38 @@ import (
 	"xeno/zohar/core/memory"
 )
 
-type MessageDeserializationHandler func(*memory.ByteBufferList, int64) message_buffer.INetMessage
+const (
+	INTERNAL_MSG_GRP_TYPE = int8(0)
+	EXTERNAL_MSG_GRP_TYPE = int8(1)
+)
+
+type MessageDeserializationHandler func(memory.IByteBuffer, int16, int64) (message_buffer.INetMessage, int64)
 
 type MessageDeserializationMapper struct {
-	_mapper [32768]MessageDeserializationHandler
+	_mappers [2][32768]MessageDeserializationHandler
 }
 
-func (ego *MessageDeserializationMapper) Deserialize(cmd int16, bufferList *memory.ByteBufferList, bodyLen int64) message_buffer.INetMessage {
+func (ego *MessageDeserializationMapper) DeserializationDispatch(buffer memory.IByteBuffer, mGrpID int8, cmd int16, logicLength int16, extLength int64) (message_buffer.INetMessage, int64) {
 	if cmd < 0 {
-		return nil
+		return nil, 0
 	}
-	if ego._mapper[cmd] != nil {
-		return ego._mapper[cmd](bufferList, bodyLen)
+	if ego._mappers[mGrpID][cmd] != nil {
+		return ego._mappers[mGrpID][cmd](buffer, logicLength, extLength)
 	}
-	return nil
+	return nil, 0
 }
 
-func (ego *MessageDeserializationMapper) Register(cmd int16, handler MessageDeserializationHandler) {
-	ego._mapper[cmd] = handler
+func (ego *MessageDeserializationMapper) Register(mGrpId int8, cmd int16, handler MessageDeserializationHandler) {
+	ego._mappers[mGrpId][cmd] = handler
 }
 
 func NeoMessageDeserializationMapper() *MessageDeserializationMapper {
 	m := MessageDeserializationMapper{}
-
+	for i := 0; i < len(m._mappers); i++ {
+		for j := 0; j < len(m._mappers[i]); j++ {
+			m._mappers[i][j] = nil
+		}
+	}
 	return &m
 }
 
@@ -43,6 +52,7 @@ func GetDefaultMessageBufferDeserializationMapper() *MessageDeserializationMappe
 }
 
 func init() {
-	GetDefaultMessageBufferDeserializationMapper().Register(KEEP_ALIVE_MESSAGE_ID, KeepAliveMessagePiecewiseDeserialize)
-	GetDefaultMessageBufferDeserializationMapper().Register(PROC_TEST_MESSAGE_ID, ProcTestMessagePiecewiseDeserialize)
+	GetDefaultMessageBufferDeserializationMapper().Register(INTERNAL_MSG_GRP_TYPE, KEEP_ALIVE_MESSAGE_ID, KeepAliveMessageDeserialize)
+	GetDefaultMessageBufferDeserializationMapper().Register(INTERNAL_MSG_GRP_TYPE, PROC_TEST_MESSAGE_ID, ProcTestMessageDeserialize)
+
 }

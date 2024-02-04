@@ -1,145 +1,95 @@
 package message_buffer_test
 
 import (
+	"fmt"
 	"sync"
-	"sync/atomic"
 	"testing"
-	"time"
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
-	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/inet/message_buffer/messages"
-	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/memory"
 )
 
-var gBufList *memory.ByteBufferList = memory.NeoByteBufferList()
-var gLock sync.Mutex
-var pCount atomic.Int64
-var cCount int64
-var TEST_COUNT int = 100
-var sCompleteState *message_buffer.CheckBufferCompletionState = message_buffer.NeoCheckBufferCompletionState()
+var sBuffer memory.IByteBuffer = memory.NeoLinkedListByteBuffer(datatype.SIZE_4K)
+var sLock sync.Mutex
+var sCount int64
+var sPM_TEST_COUNT int64 = 1000000
+var sw *chrono.StopWatch = chrono.NeoStopWatch()
 
-var totalCount int64 = 0
-var okCount int64 = 0
-
-func _addMessage(t *testing.T, m message_buffer.INetMessage) int64 {
-	sw := chrono.NeoStopWatch()
-	gLock.Lock()
-	defer gLock.Unlock()
-	sw.Begin()
-	totalLen, checkLen, rc := m.PiecewiseSerialize(gBufList)
+func _addMessage() {
+	sLock.Lock()
+	defer sLock.Unlock()
+	msg := messages.NeoProcTestMessage(false)
+	if msg == nil {
+		panic("create msg failed")
+	}
+	_, rc := msg.O1L15O1T15Serialize(sBuffer)
 	if core.Err(rc) {
-		t.Errorf("[P] : PiecewiseSerialize Failed")
+		panic("Serialize msg Failed")
 	}
-	if checkLen != m.BodyLength() {
-		t.Errorf("[P] : body len Check Failed")
-	}
-	if totalLen < checkLen {
-		t.Errorf("[P] : total len Check Failed")
-	}
-	cost := sw.Stop()
-	pCount.Add(1)
-
-	return cost
 }
 
-func _getMessage(t *testing.T, handler *transcomm.O1L15COT15CodecServerHandler) (message_buffer.INetMessage, int64, int32) {
-
-	sw := chrono.NeoStopWatch()
-
-	gLock.Lock()
-	defer gLock.Unlock()
-
-	//gCond.Wait()
-
-	if !sCompleteState.CouldTry(gBufList) {
-		return nil, -1, core.MkSuccess(0)
+func messageProducer(t *testing.T) {
+	for i := 0; i < int(sPM_TEST_COUNT); i++ {
+		_addMessage()
 	}
+	fmt.Printf("Producer Done")
+}
 
-	sw.Begin()
-	totalCount++
-	bodyLen, cmd, rc := handler.CheckCompletion(gBufList.Front())
+func _getMessage() (int64, bool) {
+	sLock.Lock()
+	defer sLock.Unlock()
+
+	_, _, ll, el, rc := messages.IsMessageComplete(sBuffer)
 	if core.Err(rc) {
-		sCompleteState.Update(false, gBufList.Back(), gBufList.Back().WritePos())
-		return nil, -1, core.MkSuccess(0)
-	}
-	sCompleteState.Update(true, gBufList.Back(), gBufList.Back().WritePos())
-	okCount++
-	rMsg := messages.GetDefaultMessageBufferDeserializationMapper().Deserialize(cmd, gBufList, bodyLen)
-	if rMsg == nil {
-		t.Errorf("[C] : Derialization Failed")
-		return nil, -1, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 1)
-	}
-	cost := sw.Stop()
-
-	cCount++
-	return rMsg, cost, core.MkSuccess(0)
-}
-
-func messageConsumer(t *testing.T) {
-	r := &transcomm.HandlerRegistration{}
-	handler := r.NeoO1L15COT15DecodeServerHandler(nil)
-
-	for {
-		msg, _, rc := _getMessage(t, handler)
-		if core.Err(rc) {
-			t.Errorf("[C] : Derialization Failed")
-		} else {
-			if msg != nil {
-				//t.Logf("[C] - message (%s) cost (%d)", msg.IdentifierString(), cost)
-			}
+		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+			return 0, false
 		}
+		panic("IsMessageComplete Failed")
 	}
+	msg, dataLength := messages.ProcTestMessageDeserialize(sBuffer, ll, el)
+	if msg == nil {
+		panic("Deser to create msg failed")
+	}
+
+	if !msg.(*messages.ProcTestMessage).Validate() {
+		panic("Data validation Failed")
+	}
+
+	return dataLength, true
 }
 
-func messageProducer2(t *testing.T) {
-	for i := 0; i < TEST_COUNT; i++ {
-		m := messages.NeoKeepAliveMessage(false)
-		if m == nil {
-			t.Errorf("[P] : Create Message Failed")
-		}
-		_ = _addMessage(t, m)
-		//t.Logf("[P] - message (%s) cost (%d)", m.IdentifierString(), rc)
-		time.Sleep(1 * time.Millisecond)
-	}
-}
-
-func messageProducer1(t *testing.T) {
-	for i := 0; i < TEST_COUNT; i++ {
-		m := messages.NeoProcTestMessage(false)
-		if m == nil {
-			t.Errorf("[P] : Create Message Failed")
-		}
-		_ = _addMessage(t, m)
-		//t.Logf("[P] - message (%s) cost (%d)", m.IdentifierString(), rc)
-		time.Sleep(1 * time.Millisecond)
-	}
-}
-
-var done bool = false
+var bsCount int64 = 0
 
 func Test_Serialization_Functional_Basic(t *testing.T) {
-	go messageConsumer(t)
-	go messageProducer1(t)
-	//go messageProducer2(t)
-	go messageProducer1(t)
-
+	//r := &transcomm.HandlerRegistration{}
+	//handler := r.NeoO1L15COT15DecodeServerHandler(nil)
+	go messageProducer(t)
+	var bsPrintNext int64 = 1
+	sw.Begin("x")
 	for {
-		gLock.Lock()
-		t.Logf("BL=%d pCount=%d cCount=%d, tCount=%d ocount=%d", gBufList.Count(), pCount.Load(), cCount, totalCount, okCount)
-		gLock.Unlock()
-		time.Sleep(1000 * time.Millisecond)
-		//if !done {
-		//	if pCount.Load() >= int64(TEST_COUNT) {
-		//		fmt.Printf("list:\n")
-		//		done = true
-		//
-		//		str := gBufList.String()
-		//		fmt.Printf(str)
-		//
-		//	}
-		//}
+		l, r := _getMessage()
+		if r {
+			bsCount += l
+			sCount++
+			if sCount == sPM_TEST_COUNT {
+				fmt.Printf("Done\n")
+				break
+			}
 
+			if sCount%1000000 == 0 {
+				fmt.Printf("Total: %d count\n", sCount)
+			}
+
+			if bsCount > bsPrintNext*1048576*1000 {
+				sw.Mark(".")
+				t := sw.GetRecordRecent()
+				avgspd := float64(bsCount) / 1048576.0 / (float64(t) / 1000000000.0)
+				fmt.Printf("Total: %.2f MB MeanSPD = %.2f MBPS\n", float64(bsCount)/1048576.0, avgspd)
+				bsPrintNext++
+			}
+
+		}
 	}
 }

@@ -1,12 +1,11 @@
 package message_buffer
 
-import "xeno/zohar/core/memory"
+import (
+	"xeno/zohar/core/inet/message_buffer/messages"
+)
 
-type INetMessage interface {
-	O1L15O1T15Serialize(memory.IByteBuffer) (int64, int32)
-	O1L15O1T15Deserialize(memory.IByteBuffer, int16, int64) (int64, int32)
-	Command() int16
+type INetDataEntity interface {
+	O1L15O1T15Serialize(*messages.O1L15O1T15SerializationHelper) (int64, int32)
+	O1L15O1T15Deserialize(*messages.O1L15O1T15DeserializationHelper) (int64, int32)
 	String() string
-	MsgGrpType() int8
-	IdentifierString() string
 }

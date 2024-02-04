@@ -62,7 +62,7 @@ type TLV struct {
 	_value   any
 }
 
-//func (ego *TLV) Deserialize(bb IByteBuffer) int32 {
+//func (ego *TLV) DeserializationDispatch(bb IByteBuffer) int32 {
 //
 //}
 

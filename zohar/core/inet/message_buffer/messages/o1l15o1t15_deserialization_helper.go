@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"xeno/zohar/core"
@@ -9,50 +10,45 @@ import (
 	"xeno/zohar/core/memory"
 )
 
-func IsMessageComplete(buffer memory.IByteBuffer) (bool, int16, int16, int64, int32) {
+func IsMessageComplete(buffer memory.IByteBuffer) (int8, int16, int16, int64, int32) {
 	lenAndO1, rc := buffer.PeekInt16(0)
 	if core.Err(rc) {
-		return false, -1, -1, -1, rc
+		return -1, -1, -1, -1, rc
 	}
 	cmdAndO2, rc := buffer.PeekInt16(2)
 	if core.Err(rc) {
-		return false, -1, -1, -1, rc
+		return -1, -1, -1, -1, rc
 	}
 	o1 := lenAndO1>>15&0x1 == 1
-	isInternal := cmdAndO2>>15&0x1 == 1
+	mGrpId := int8(cmdAndO2 >> 15 & 0x1)
 	cmd := int16(cmdAndO2 & 0x7FFF)
 	l := int16(lenAndO1 & 0x7FFF)
-	if isInternal {
-		panic("internal")
-	}
-	if cmd != 1 {
-		panic("cmd")
-	}
+
 	if !o1 {
 		if buffer.ReadAvailable() >= message_buffer.O1L15O1T15_HEADER_SIZE+int64(l) {
-			return isInternal, cmd, l, 0, core.MkSuccess(0)
+			return mGrpId, cmd, l, 0, core.MkSuccess(0)
 		} else {
-			return isInternal, -1, -1, -1, core.MkErr(core.EC_TRY_AGAIN, 1)
+			return mGrpId, -1, -1, -1, core.MkErr(core.EC_TRY_AGAIN, 1)
 		}
 	} else {
 		off := message_buffer.O1L15O1T15_HEADER_SIZE + int64(l)
 		if buffer.ReadAvailable() < off+8 {
-			return isInternal, -1, -1, -1, core.MkErr(core.EC_TRY_AGAIN, 2)
+			return mGrpId, -1, -1, -1, core.MkErr(core.EC_TRY_AGAIN, 2)
 		}
 		eLen, rc := buffer.PeekInt64(off)
 		if core.Err(rc) {
-			return isInternal, -1, -1, -1, core.MkErr(core.EC_INCOMPLETE_DATA, 3)
+			return mGrpId, -1, -1, -1, core.MkErr(core.EC_INCOMPLETE_DATA, 3)
 		}
 		if buffer.ReadAvailable() < off+8+eLen {
-			return isInternal, -1, -1, -1, core.MkErr(core.EC_TRY_AGAIN, 4)
+			return mGrpId, -1, -1, -1, core.MkErr(core.EC_TRY_AGAIN, 4)
 		}
-		return isInternal, cmd, l, eLen, core.MkSuccess(0)
+		return mGrpId, cmd, l, eLen, core.MkSuccess(0)
 	}
 }
 
 type O1L15O1T15DeserializationHelper struct {
+	_msgGrpId        int8
 	_command         int16
-	_isInternal      bool
 	_logicDataLength int16
 	_extDataLength   int64
 	_buffer          memory.IByteBuffer
@@ -71,14 +67,18 @@ func O1L15O1T15DeserializationHelperCreator() any {
 
 var sO1L15O1T15DeserializationHelperCache *memory.ObjectCache[O1L15O1T15DeserializationHelper] = memory.NeoObjectCache[O1L15O1T15DeserializationHelper](16, O1L15O1T15DeserializationHelperCreator)
 
-func (ego *O1L15O1T15DeserializationHelper) _init(buffer memory.IByteBuffer, isInternal bool, cmd int16, logicLength int16, extraLength int64) int32 {
+func (ego *O1L15O1T15DeserializationHelper) _init(buffer memory.IByteBuffer, mGrpId int8, cmd int16, logicLength int16, extraLength int64) int32 {
 	ego._command = cmd
-	ego._isInternal = isInternal
+	ego._msgGrpId = mGrpId
 	ego._logicDataLength = logicLength
 	ego._extDataLength = extraLength
 	ego._buffer = buffer
 	ego._buffer.ReadInt32()
 	return core.MkSuccess(0)
+}
+
+func (ego *O1L15O1T15DeserializationHelper) DataLength() int64 {
+	return ego._extDataLength + int64(ego._logicDataLength)
 }
 
 func (ego *O1L15O1T15DeserializationHelper) BufferRemain() int64 {
@@ -87,8 +87,8 @@ func (ego *O1L15O1T15DeserializationHelper) BufferRemain() int64 {
 
 func (ego *O1L15O1T15DeserializationHelper) String() string {
 	var ss strings.Builder
-	ss.WriteString("\nIsInternal=")
-	ss.WriteString(strconv.FormatBool(ego._isInternal))
+	ss.WriteString("\nMsgGrpId=")
+	ss.WriteString(fmt.Sprintf("%d", ego._msgGrpId))
 	ss.WriteString("\nLogicDataLength=")
 	ss.WriteString(strconv.Itoa(int(ego._logicDataLength)))
 	ss.WriteString("\nExtDataLength=")
@@ -96,9 +96,16 @@ func (ego *O1L15O1T15DeserializationHelper) String() string {
 	return ss.String()
 }
 
-func InitializeDeserialization(buffer memory.IByteBuffer, isInternal bool, cmd int16, logicLength int16, extLength int64) (*O1L15O1T15DeserializationHelper, int32) {
+func InitializeDeserialization(buffer memory.IByteBuffer, mGrpId int8, cmd int16, logicLength int16, extLength int64) (*O1L15O1T15DeserializationHelper, int32) {
 	helper := sO1L15O1T15DeserializationHelperCache.Get()
-	return helper, helper._init(buffer, isInternal, cmd, logicLength, extLength)
+	if helper == nil {
+		return nil, core.MkErr(core.EC_NULL_VALUE, 1)
+	}
+	rc := helper._init(buffer, mGrpId, cmd, logicLength, extLength)
+	if core.Err(rc) {
+		return nil, rc
+	}
+	return helper, core.MkSuccess(0)
 }
 
 func (ego *O1L15O1T15DeserializationHelper) Finalize() int32 {

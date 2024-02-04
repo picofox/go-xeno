@@ -143,9 +143,9 @@ func (ego *O1L15COT15CodecClientHandler) OnReceive(connection *TCPClientConnecti
 		return nil, rc
 	}
 
-	msg := messages.GetDefaultMessageBufferDeserializationMapper().Deserialize(cmd, ego._connection._recvBufferList, bodyLen)
+	msg := messages.GetDefaultMessageBufferDeserializationMapper().DeserializationDispatch(cmd, ego._connection._recvBufferList, bodyLen)
 	if msg == nil {
-		connection._client.Log(core.LL_ERR, "Deserialize Message (CMD:%d) error.", cmd)
+		connection._client.Log(core.LL_ERR, "DeserializationDispatch Message (CMD:%d) error.", cmd)
 		return nil, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
 	}
 

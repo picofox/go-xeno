@@ -1,17 +1,19 @@
 package messages
 
 import (
-	"bytes"
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 	"xeno/zohar/core"
 	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
+	"xeno/zohar/core/strs"
 )
+
+var sLongText string = strs.CreateSampleString(1024*32, "@", "$")
+var sMD5 [16]byte = md5.Sum([]byte(sLongText))
 
 type ProcTestMessage struct {
 	TimeStamp     int64    `json:"Timestamp"`
@@ -41,340 +43,6 @@ type ProcTestMessage struct {
 
 func (ego *ProcTestMessage) IdentifierString() string {
 	return ego.Str0
-}
-
-func (ego *ProcTestMessage) BodyLength() int64 {
-	var sz int = 0
-	var idx int = 0
-	var tmpLen int = 0
-
-	sz += 8 //TimeStamp
-	sz += 4
-	sz += len(ego.Str0) //Str0
-	sz += 4
-	sz += len(ego.StrEmpty) //StrEmpty
-	sz += 1
-	sz += 1
-	sz += 2
-	sz += 2
-	sz += 4
-	sz += 4
-	sz += 8
-	sz += 8
-	sz += 1
-	sz += 4
-	sz += 8
-	sz += 1
-	sz += 2
-	sz += 4
-	sz += 8
-
-	sz += 4
-	tmpLen = len(ego.StrSlice)
-	if ego.StrSlice != nil {
-		for idx = 0; idx < tmpLen; idx++ {
-			sz += 4
-			sz += len(ego.StrSlice[idx])
-		}
-	}
-
-	sz += 4
-	tmpLen = len(ego.StrSliceNull)
-	if ego.StrSliceNull != nil {
-		for idx = 0; idx < tmpLen; idx++ {
-			sz += 4
-			sz += len(ego.StrSliceNull[idx])
-		}
-	}
-
-	sz += 4
-	tmpLen = len(ego.StrSliceEmpty)
-	if ego.StrSliceEmpty != nil {
-		for idx = 0; idx < tmpLen; idx++ {
-			sz += 4
-			sz += len(ego.StrSliceEmpty[idx])
-		}
-	}
-
-	sz += 4
-	sz += len(ego.MD5)
-
-	sz += 4
-	sz += len(ego.TextLong)
-	return int64(sz)
-}
-
-func (ego *ProcTestMessage) PiecewiseDeserialize(bufferList *memory.ByteBufferList, bodyLength int64) (int64, int32) {
-	var rc int32 = 0
-	var logicPacketLength int64 = message_buffer.MAX_PACKET_BODY_SIZE
-
-	rc = SkipHeader(bufferList)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
-	}
-
-	ego.TimeStamp, logicPacketLength, bodyLength, rc = DeserializeI64Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.Str0, logicPacketLength, bodyLength, rc = DeserializeStringType(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.StrEmpty, logicPacketLength, bodyLength, rc = DeserializeStringType(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.I80, logicPacketLength, bodyLength, rc = DeserializeI8Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-	ego.I81, logicPacketLength, bodyLength, rc = DeserializeI8Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.I160, logicPacketLength, bodyLength, rc = DeserializeI16Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-	ego.I161, logicPacketLength, bodyLength, rc = DeserializeI16Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.I320, logicPacketLength, bodyLength, rc = DeserializeI32Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-	ego.I321, logicPacketLength, bodyLength, rc = DeserializeI32Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.I640, logicPacketLength, bodyLength, rc = DeserializeI64Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-	ego.I641, logicPacketLength, bodyLength, rc = DeserializeI64Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.IsServer, logicPacketLength, bodyLength, rc = DeserializeBoolType(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.F32, logicPacketLength, bodyLength, rc = DeserializeF32Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.F64, logicPacketLength, bodyLength, rc = DeserializeF64Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.U80, logicPacketLength, bodyLength, rc = DeserializeU8Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.U160, logicPacketLength, bodyLength, rc = DeserializeU16Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.U320, logicPacketLength, bodyLength, rc = DeserializeU32Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.U640, logicPacketLength, bodyLength, rc = DeserializeU64Type(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.StrSlice, logicPacketLength, bodyLength, rc = DeserializeStringsType(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.StrSliceNull, logicPacketLength, bodyLength, rc = DeserializeStringsType(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.StrSliceEmpty, logicPacketLength, bodyLength, rc = DeserializeStringsType(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.MD5, logicPacketLength, bodyLength, rc = DeserializeBytesType(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	ego.TextLong, logicPacketLength, bodyLength, rc = DeserializeStringType(bufferList, logicPacketLength, bodyLength)
-	if core.Err(rc) {
-		return bodyLength, core.MkErr(core.EC_DESERIALIZE_FIELD_FAIELD, 0)
-	}
-
-	GetAvailableBufferNode(bufferList)
-
-	return bodyLength, core.MkSuccess(0)
-}
-
-func (ego *ProcTestMessage) PiecewiseSerialize(bufferList *memory.ByteBufferList) (int64, int64, int32) {
-	var totalIndex int64 = 0
-	var bodyLenCheck int64 = 0
-	var rc int32 = 0
-	var curNode *memory.ByteBufferNode = nil
-	var preCalBodyLen int64 = 0
-	var logicPacketCount int64 = 0
-	var logicPacketRemain int64 = 0
-	var lastPackBytes int64 = 0
-	var headers []*message_buffer.MessageHeader = nil
-	var headerIdx int = 0
-
-	preCalBodyLen = ego.BodyLength()
-	logicPacketCount = (preCalBodyLen / message_buffer.MAX_PACKET_BODY_SIZE) + 1
-	lastPackBytes = preCalBodyLen % message_buffer.MAX_PACKET_BODY_SIZE
-	headers = AllocHeaders(logicPacketCount, lastPackBytes, ego.Command())
-	logicPacketRemain = 0
-
-	//for i := 0; i < len(headers); i++ {
-	//	fmt.Printf("->: %s\n", headers[i].String())
-	//}
-
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI64Type(ego.TimeStamp, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) { //lm:32756 bl:8
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeStringType(ego.Str0, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) { //lm:32735 bl:29
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeStringType(ego.StrEmpty, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) { //lm:32731 bl:33
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI8Type(ego.I80, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) { //lm:32730 bl:34
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI8Type(ego.I81, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) { //lm:32729 bl:35
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI16Type(ego.I160, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) { //lm:32727 bl:33
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI16Type(ego.I161, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI32Type(ego.I320, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI32Type(ego.I321, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI64Type(ego.I640, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeI64Type(ego.I641, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeBoolType(ego.IsServer, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeF32Type(ego.F32, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeF64Type(ego.F64, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeU8Type(ego.U80, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeU16Type(ego.U160, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeU32Type(ego.U320, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeU64Type(ego.U640, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeStringsType(ego.StrSlice, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeStringsType(ego.StrSliceNull, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeStringsType(ego.StrSliceEmpty, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeBytesType(ego.MD5, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-	rc, curNode, headerIdx, totalIndex, logicPacketRemain, bodyLenCheck = SerializeStringType(ego.TextLong, logicPacketRemain, totalIndex, bodyLenCheck, headers, headerIdx, bufferList, curNode)
-	if core.Err(rc) {
-		FreeHeaders(headers)
-		return totalIndex, bodyLenCheck, rc
-	}
-
-	if ego.BodyLength() != bodyLenCheck {
-		FreeHeaders(headers)
-		return -1, -1, core.MkErr(core.EC_INCOMPLETE_DATA, 1)
-	}
-
-	FreeHeaders(headers)
-
-	return totalIndex, bodyLenCheck, core.MkSuccess(0)
 }
 
 func (ego *ProcTestMessage) String() string {
@@ -478,144 +146,231 @@ func (ego *ProcTestMessage) Validate() bool {
 		return false
 	}
 
-	md5 := md5.Sum([]byte(ego.TextLong))
-	if bytes.Compare(md5[:], ego.MD5) != 0 {
-		panic("StrSliceEmpty failed.")
-		return false
-	}
-
 	return true
 }
 
-func (ego *ProcTestMessage) Serialize(byteBuf memory.IByteBuffer) int64 {
-	hdrPos := byteBuf.WritePos()
-	byteBuf.WriteInt16(-1)
-	byteBuf.WriteInt16(ego.Command())
-	byteBuf.WriteInt64(ego.TimeStamp)
-	byteBuf.WriteString(ego.Str0)
-	byteBuf.WriteString(ego.StrEmpty)
-	byteBuf.WriteInt8(ego.I80)
-	byteBuf.WriteInt8(ego.I81)
-	byteBuf.WriteInt16(ego.I160)
-	byteBuf.WriteInt16(ego.I161)
-	byteBuf.WriteInt32(ego.I320)
-	byteBuf.WriteInt32(ego.I321)
-	byteBuf.WriteInt64(ego.I640)
-	byteBuf.WriteInt64(ego.I641)
-	byteBuf.WriteBool(ego.IsServer)
-	byteBuf.WriteFloat32(ego.F32)
-	byteBuf.WriteFloat64(ego.F64)
-	byteBuf.WriteUInt8(ego.U80)
-	byteBuf.WriteUInt16(ego.U160)
-	byteBuf.WriteUInt32(ego.U320)
-	byteBuf.WriteUInt64(ego.U640)
-	byteBuf.WriteStrings(ego.StrSlice)
-	byteBuf.WriteStrings(ego.StrSliceNull)
-	byteBuf.WriteStrings(ego.StrSliceEmpty)
-	byteBuf.WriteBytes(ego.MD5)
-	byteBuf.WriteString(ego.TextLong)
-	curPos := byteBuf.WritePos()
-	var len64 int64 = curPos - hdrPos - message_buffer.O1L15O1T15_HEADER_SIZE
-	if len64 <= message_buffer.MAX_PACKET_BODY_SIZE {
-		byteBuf.WriterSeek(memory.BUFFER_SEEK_SET, hdrPos)
-		byteBuf.WriteInt16(int16(len64))
-		byteBuf.WriterSeek(memory.BUFFER_SEEK_SET, curPos)
-	}
-	return len64 + message_buffer.O1L15O1T15_HEADER_SIZE
-}
-
-func (ego *ProcTestMessage) Deserialize(buffer memory.IByteBuffer) int32 {
-	var rc = int32(0)
-	ts, _ := buffer.ReadInt64()
-	ego.TimeStamp = ts
-	if ego.Str0, rc = buffer.ReadString(); core.Err(rc) {
-		return rc
-	}
-	if ego.StrEmpty, rc = buffer.ReadString(); core.Err(rc) {
-		return rc
-	}
-	if ego.I80, rc = buffer.ReadInt8(); core.Err(rc) {
-		return rc
-	}
-	if ego.I81, rc = buffer.ReadInt8(); core.Err(rc) {
-		return rc
-	}
-	if ego.I160, rc = buffer.ReadInt16(); core.Err(rc) {
-		return rc
-	}
-	if ego.I161, rc = buffer.ReadInt16(); core.Err(rc) {
-		return rc
-	}
-	if ego.I320, rc = buffer.ReadInt32(); core.Err(rc) {
-		return rc
-	}
-	if ego.I321, rc = buffer.ReadInt32(); core.Err(rc) {
-		return rc
-	}
-	if ego.I640, rc = buffer.ReadInt64(); core.Err(rc) {
-		return rc
-	}
-	if ego.I641, rc = buffer.ReadInt64(); core.Err(rc) {
-		return rc
-	}
-	if ego.IsServer, rc = buffer.ReadBool(); core.Err(rc) {
-		return rc
-	}
-	if ego.F32, rc = buffer.ReadFloat32(); core.Err(rc) {
-		return rc
-	}
-	if ego.F64, rc = buffer.ReadFloat64(); core.Err(rc) {
-		return rc
-	}
-	if ego.U80, rc = buffer.ReadUInt8(); core.Err(rc) {
-		return rc
-	}
-	if ego.U160, rc = buffer.ReadUInt16(); core.Err(rc) {
-		return rc
-	}
-	if ego.U320, rc = buffer.ReadUInt32(); core.Err(rc) {
-		return rc
-	}
-	if ego.U640, rc = buffer.ReadUInt64(); core.Err(rc) {
-		return rc
-	}
-	if ego.StrSlice, rc = buffer.ReadStrings(); core.Err(rc) {
-		return rc
-	}
-	if ego.StrSliceNull, rc = buffer.ReadStrings(); core.Err(rc) {
-		return rc
-	}
-	if ego.StrSliceEmpty, rc = buffer.ReadStrings(); core.Err(rc) {
-		return rc
-	}
-	if ego.MD5, rc = buffer.ReadBytes(); core.Err(rc) {
-		return rc
-	}
-	if ego.TextLong, rc = buffer.ReadString(); core.Err(rc) {
-		return rc
-	}
-
-	return rc
-}
-
-func ProcTestMessageDeserialize(buffer memory.IByteBuffer) message_buffer.INetMessage {
-	m := ProcTestMessage{}
-	rc := m.Deserialize(buffer)
+func (ego *ProcTestMessage) O1L15O1T15Serialize(byteBuf memory.IByteBuffer) (int64, int32) {
+	sHelper, rc := InitializeSerialization(byteBuf, ego.MsgGrpType(), ego.Command())
 	if core.Err(rc) {
-		return nil
+		return 0, rc
 	}
-	return &m
+	defer sHelper.Finalize()
+
+	rc = sHelper.WriteInt64(ego.TimeStamp)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteString(ego.Str0)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+
+	rc = sHelper.WriteString(ego.StrEmpty)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+
+	rc = sHelper.WriteInt8(ego.I80)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteInt8(ego.I81)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteInt16(ego.I160)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteInt16(ego.I161)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteInt32(ego.I320)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteInt32(ego.I321)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteInt64(ego.I640)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteInt64(ego.I641)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteBool(ego.IsServer)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteFloat32(ego.F32)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteFloat64(ego.F64)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+
+	rc = sHelper.WriteUInt8(ego.U80)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteUInt16(ego.U160)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteUInt32(ego.U320)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteUInt64(ego.U640)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+
+	rc = sHelper.WriteStrings(ego.StrSlice)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteStrings(ego.StrSliceNull)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteStrings(ego.StrSliceEmpty)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteBytes(ego.MD5)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+	rc = sHelper.WriteString(ego.TextLong)
+	if core.Err(rc) {
+		return sHelper.DataLength(), rc
+	}
+
+	return sHelper.DataLength(), rc
 }
 
-func ProcTestMessagePiecewiseDeserialize(bufferList *memory.ByteBufferList, bodyLength int64) message_buffer.INetMessage {
-	m := ProcTestMessage{}
-	_, rc := m.PiecewiseDeserialize(bufferList, bodyLength)
+func (ego *ProcTestMessage) O1L15O1T15Deserialize(buffer memory.IByteBuffer, length int16, extraLength int64) (int64, int32) {
+	dHelper, rc := InitializeDeserialization(buffer, ego.MsgGrpType(), ego.Command(), length, extraLength)
 	if core.Err(rc) {
-		_, em := core.ExErr(rc)
-		fmt.Printf("mark = %d\n", em)
-		return nil
+		return 0, rc
 	}
-	return &m
+	defer dHelper.Finalize()
+	origLength := dHelper.DataLength()
+
+	ego.TimeStamp, rc = dHelper.ReadInt64()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.Str0, rc = dHelper.ReadString()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.StrEmpty, rc = dHelper.ReadString()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+
+	ego.I80, rc = dHelper.ReadInt8()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.I81, rc = dHelper.ReadInt8()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.I160, rc = dHelper.ReadInt16()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.I161, rc = dHelper.ReadInt16()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.I320, rc = dHelper.ReadInt32()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.I321, rc = dHelper.ReadInt32()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.I640, rc = dHelper.ReadInt64()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.I641, rc = dHelper.ReadInt64()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.IsServer, rc = dHelper.ReadBool()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.F32, rc = dHelper.ReadFloat32()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.F64, rc = dHelper.ReadFloat64()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.U80, rc = dHelper.ReadUInt8()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.U160, rc = dHelper.ReadUInt16()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.U320, rc = dHelper.ReadUInt32()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.U640, rc = dHelper.ReadUInt64()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.StrSlice, rc = dHelper.ReadStrings()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.StrSliceNull, rc = dHelper.ReadStrings()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.StrSliceEmpty, rc = dHelper.ReadStrings()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.MD5, rc = dHelper.ReadBytes()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+	ego.TextLong, rc = dHelper.ReadString()
+	if core.Err(rc) {
+		return origLength - dHelper.DataLength(), rc
+	}
+
+	if dHelper.DataLength() != 0 {
+		return origLength - dHelper.DataLength(), core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+	}
+	return origLength, core.MkSuccess(0)
+}
+
+func ProcTestMessageDeserialize(buffer memory.IByteBuffer, length int16, extraLength int64) (message_buffer.INetMessage, int64) {
+	m := ProcTestMessage{}
+	dataLength, rc := m.O1L15O1T15Deserialize(buffer, length, extraLength)
+	if core.Err(rc) {
+		return nil, dataLength
+	}
+	return &m, dataLength
 }
 
 func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
@@ -642,13 +397,9 @@ func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
 		StrSliceEmpty: make([]string, 0),
 		IsServer:      isClient,
 	}
-	var ss strings.Builder
-	for i := 0; i < 1024*16-12; i++ {
-		ss.WriteString("@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*")
-	}
-	m.TextLong = ss.String()
-	ba := md5.Sum([]byte(m.TextLong))
-	m.MD5 = ba[:]
+
+	m.TextLong = sLongText
+	m.MD5 = sMD5[:]
 
 	for i := 0; i < 11; i++ {
 		m.StrSlice[i] = fmt.Sprintf("StrSlice_%d", v)
@@ -662,6 +413,10 @@ func NeoProcTestMessage(isClient bool) message_buffer.INetMessage {
 
 func (ego *ProcTestMessage) Command() int16 {
 	return PROC_TEST_MESSAGE_ID
+}
+
+func (ego *ProcTestMessage) MsgGrpType() int8 {
+	return 0
 }
 
 var _ message_buffer.INetMessage = &ProcTestMessage{}

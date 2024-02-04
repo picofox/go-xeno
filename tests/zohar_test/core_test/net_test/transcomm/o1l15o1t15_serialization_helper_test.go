@@ -28,7 +28,7 @@ func genOne(idx int64) {
 	//fmt.Printf("%d\n", idx)
 
 	strL := rand.Intn(sAllSizeLen)
-	sHelper, rc := messages.InitializeSerialization(buffer, false, 1)
+	sHelper, rc := messages.InitializeSerialization(buffer, 0, 1)
 	if core.Err(rc) {
 		panic("InitializeSerialization Failed")
 	}
@@ -189,7 +189,7 @@ func gen() {
 var ci int64 = 0
 
 func baseTestOne() int64 {
-	var isInternal bool
+	var mGrpId int8
 	var cmd int16
 	var ll int16
 	var el int64
@@ -197,7 +197,7 @@ func baseTestOne() int64 {
 	var sz int64
 	tmplock.Lock()
 	defer tmplock.Unlock()
-	isInternal, cmd, ll, el, rc = messages.IsMessageComplete(buffer)
+	mGrpId, cmd, ll, el, rc = messages.IsMessageComplete(buffer)
 	if core.Err(rc) {
 		if !core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			panic("comple failed")
@@ -212,7 +212,7 @@ func baseTestOne() int64 {
 		sz += 8
 	}
 
-	dHelper, r := messages.InitializeDeserialization(buffer, isInternal, cmd, ll, el)
+	dHelper, r := messages.InitializeDeserialization(buffer, mGrpId, cmd, ll, el)
 	if core.Err(r) {
 		panic("create dHelper failed")
 	}

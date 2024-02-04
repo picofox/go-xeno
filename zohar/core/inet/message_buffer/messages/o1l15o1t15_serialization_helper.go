@@ -11,6 +11,7 @@ import (
 )
 
 type O1L15O1T15SerializationHelper struct {
+	_msgGrpId        int8
 	_command         int16
 	_logicDataLength int16
 	_extDataLength   int64
@@ -21,8 +22,21 @@ type O1L15O1T15SerializationHelper struct {
 	_temp            []byte
 }
 
+func (ego *O1L15O1T15SerializationHelper) BufferLength() int64 {
+	if ego._extDataLength > 0 {
+		return ego._extDataLength + int64(ego._logicDataLength) + 12
+	} else {
+		return int64(ego._logicDataLength) + 4
+	}
+}
+
+func (ego *O1L15O1T15SerializationHelper) DataLength() int64 {
+	return ego._extDataLength + int64(ego._logicDataLength)
+}
+
 func O1L15O1T15SerializationHelperCreator() any {
 	return &O1L15O1T15SerializationHelper{
+		_msgGrpId:        0,
 		_command:         -1,
 		_logicDataLength: 0,
 		_extDataLength:   0,
@@ -39,13 +53,14 @@ func (ego *O1L15O1T15SerializationHelper) ReadableBytes() int64 {
 
 var sO1L15O1T15SerializationHelperCache *memory.ObjectCache[O1L15O1T15SerializationHelper] = memory.NeoObjectCache[O1L15O1T15SerializationHelper](16, O1L15O1T15SerializationHelperCreator)
 
-func (ego *O1L15O1T15SerializationHelper) _init(buffer memory.IByteBuffer, isInternal bool, cmd int16) int32 {
+func (ego *O1L15O1T15SerializationHelper) _init(buffer memory.IByteBuffer, mGrpId int8, cmd int16) int32 {
+	ego._msgGrpId = mGrpId
 	ego._command = cmd
 	ego._logicDataLength = 0
 	ego._extDataLength = 0
 	ego._headerPos = buffer.WritePos()
 	ego._extraLengthPos = -1
-	ego.SetHeader(false, isInternal, 0)
+	ego.InitHeader(false)
 	ego._buffer = buffer
 	rc := buffer.WriteRawBytes(ego._headerData[:], 0, message_buffer.O1L15O1T15_HEADER_SIZE)
 	if core.Err(rc) {
@@ -77,14 +92,14 @@ func (ego *O1L15O1T15SerializationHelper) SetHeaderOptAndLength(o0 bool, length 
 	ego._headerData[1] = byte((lenAndO0 & 0xFF) & 0xFF)
 }
 
-func (ego *O1L15O1T15SerializationHelper) SetHeader(o0 bool, o1 bool, length int16) {
-	var lenAndO0 int16 = length
+func (ego *O1L15O1T15SerializationHelper) InitHeader(o0 bool) {
+	var lenAndO0 int16 = 0
 	var cmdAndO1 int16 = ego._command
 	if o0 {
 		iv := 1 << 15
-		lenAndO0 = length | int16(iv)
+		lenAndO0 = 0 | int16(iv)
 	}
-	if o1 {
+	if ego._msgGrpId != 0 {
 		iv := 1 << 15
 		cmdAndO1 = ego._command | int16(iv)
 	}
@@ -109,9 +124,14 @@ func (ego *O1L15O1T15SerializationHelper) String() string {
 	return ss.String()
 }
 
-func InitializeSerialization(buffer memory.IByteBuffer, isInternal bool, cmd int16) (*O1L15O1T15SerializationHelper, int32) {
+func InitializeSerialization(buffer memory.IByteBuffer, mGrpId int8, cmd int16) (*O1L15O1T15SerializationHelper, int32) {
 	helper := sO1L15O1T15SerializationHelperCache.Get()
-	return helper, helper._init(buffer, isInternal, cmd)
+	rc := helper._init(buffer, mGrpId, cmd)
+	if core.Err(rc) {
+		sO1L15O1T15SerializationHelperCache.Put(helper)
+		return nil, rc
+	}
+	return helper, rc
 }
 
 func (ego *O1L15O1T15SerializationHelper) Finalize() int32 {
