@@ -30,34 +30,17 @@
 			}
 		}
 	},
-	"Network" : {
-		"Client" : {
-			"TCP" : {
-				"Default" : {
-					"ServerEndPoints" : ["192.168.0.100:9998", "192.168.0.100:9999"],
-					"Count" : 10,
-					"Codec" : "O1L15COT15DecodeClientHandler",
-					"AutoReconnect" : true,
-					"NoDelay" : true,
-					"KeepAlive" : {
-						"Enable": false,
-						"TimeoutMillis": 10000,
-						"MaxTries": 3,
-						"IntervalMillis": 60000
-					}
-				}
-			}
-		},
+	"Network" : {		
 		"Server" : {
 			"TCP" : {
 				"Defaut"  : {
 					"ListenerEndPoints" : ["0.0.0.0:9999"],
 					"PublicConnectingEndPoints" : ["192.168.0.20:9999"],
 					"PrivateConnectingEndPoints" : ["192.168.0.20:9999"],
-					"Codec" : "O1L15COT15DecodeServerHandler",
+					"Codec" : "DefaultServerMessageRouter",
 					"NoDelay" : true,
 					"KeepAlive" : {
-						"Enable": false,
+						"Enable": true,
 						"TimeoutMillis": 2000,
 						"MaxTries": 3,
 						"IntervalMillis": 12000

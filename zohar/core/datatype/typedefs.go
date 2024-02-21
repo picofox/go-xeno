@@ -3,8 +3,11 @@ package datatype
 var EmptyByteSlice []byte = make([]byte, 0)
 
 const (
-	INT32_MAX = 0x7FFFFFFF
-	INT64_MAX = 1<<63 - 1
+	INT32_MAX  = 0x7FFFFFFF
+	INT64_MAX  = 1<<63 - 1
+	UINT16_MAX = 0xFFFF
+
+	UINT16_CAPACITY = 0x10000
 
 	INT64_SIZE    = 8
 	INT32_SIZE    = 4
@@ -19,6 +22,7 @@ const (
 	TASK_EXEC_EXECUTOR_POOL   = uint8(0)
 	TASK_EXEC_CURRENT_ROUTINE = uint8(1)
 	TASK_EXEC_NEO_ROUTINE     = uint8(2)
+	TASK_EXEC_OVERRIDE        = uint8(3)
 )
 
 const TaskCancel = 1

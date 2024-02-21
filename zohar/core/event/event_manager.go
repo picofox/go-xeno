@@ -8,18 +8,18 @@ import (
 )
 
 type EventManager struct {
-	_events map[string]*list.List
+	_events map[int32]*list.List
 	_lock   sync.RWMutex
 }
 
-func (ego *EventManager) Register(eventName string, e uint8, f datatype.TaskFuncType, a any) {
+func (ego *EventManager) Register(eventName int32, e uint8, f datatype.TaskFuncType, a any) {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
 	t := NeoTask(e, f, a)
 	ego.registerTask(eventName, t)
 }
 
-func (ego *EventManager) registerTask(eventName string, task *Task) {
+func (ego *EventManager) registerTask(eventName int32, task *Task) {
 	tq, ok := ego._events[eventName]
 	if !ok {
 		tq = list.New()
@@ -30,7 +30,7 @@ func (ego *EventManager) registerTask(eventName string, task *Task) {
 	}
 }
 
-func (ego *EventManager) Unregister(eventName string, f datatype.TaskFuncType) bool {
+func (ego *EventManager) Unregister(eventName int32, f datatype.TaskFuncType) bool {
 	ego._lock.Lock()
 	defer ego._lock.Unlock()
 	tq, ok := ego._events[eventName]
@@ -50,7 +50,7 @@ func (ego *EventManager) Unregister(eventName string, f datatype.TaskFuncType) b
 	return false
 }
 
-func (ego *EventManager) Fire(eventName string, overrideExecutor uint8) bool {
+func (ego *EventManager) Fire(eventName int32, overrideExecutor uint8, overrideArg bool, arg any) bool {
 	var tq *list.List = nil
 	var ok bool = false
 	ego._lock.Lock()
@@ -60,7 +60,10 @@ func (ego *EventManager) Fire(eventName string, overrideExecutor uint8) bool {
 		return false
 	}
 	for i := tq.Front(); i != nil; i = i.Next() {
-		if i.Value != nil {
+		if i.Value != nil && i.Value.(*Task) != nil {
+			if overrideArg {
+				i.Value.(*Task).SetArg(arg)
+			}
 			if overrideExecutor > datatype.TASK_EXEC_NEO_ROUTINE {
 				i.Value.(*Task).Execute()
 			} else {
@@ -84,7 +87,7 @@ func GetDefaultEventManager() *EventManager {
 
 func NeoEventManager() *EventManager {
 	evm := EventManager{
-		_events: make(map[string]*list.List),
+		_events: make(map[int32]*list.List),
 	}
 	return &evm
 }

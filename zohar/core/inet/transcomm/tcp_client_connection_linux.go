@@ -21,7 +21,7 @@ type TCPClientConnection struct {
 	_remoteEndPoint inet.IPV4EndPoint
 	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
-	_codec          IClientCodecHandler
+	_codec          IClientMessageRouter
 	_client         *TCPClient
 	_stateCode      uint8
 	_reactorIndex   uint32
@@ -341,7 +341,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 	if core.Err(rc) {
 		return nil
 	}
-	h := output[0].Interface().(IClientCodecHandler)
+	h := output[0].Interface().(IClientMessageRouter)
 	c._codec = h
 
 	return &c

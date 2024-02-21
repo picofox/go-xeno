@@ -2,6 +2,7 @@ package messages
 
 import (
 	"sync"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/memory"
 )
@@ -11,23 +12,20 @@ const (
 	EXTERNAL_MSG_GRP_TYPE = int8(1)
 )
 
-type MessageDeserializationHandler func(memory.IByteBuffer, int16, int64) (message_buffer.INetMessage, int64)
+type MessageDeserializationHandler func(memory.IByteBuffer, memory.ISerializationHeader) (message_buffer.INetMessage, int64)
 
 type MessageDeserializationMapper struct {
-	_mappers [2][32768]MessageDeserializationHandler
+	_mappers [2][datatype.UINT16_CAPACITY]MessageDeserializationHandler
 }
 
-func (ego *MessageDeserializationMapper) DeserializationDispatch(buffer memory.IByteBuffer, mGrpID int8, cmd int16, logicLength int16, extLength int64) (message_buffer.INetMessage, int64) {
-	if cmd < 0 {
-		return nil, 0
+func (ego *MessageDeserializationMapper) DeserializationDispatch(buffer memory.IByteBuffer, header *memory.O1L31C16Header) (message_buffer.INetMessage, int64) {
+	if ego._mappers[header.GroupType()][header.Command()] != nil {
+		return ego._mappers[header.GroupType()][header.Command()](buffer, header)
 	}
-	if ego._mappers[mGrpID][cmd] != nil {
-		return ego._mappers[mGrpID][cmd](buffer, logicLength, extLength)
-	}
-	return nil, 0
+	return nil, -1
 }
 
-func (ego *MessageDeserializationMapper) Register(mGrpId int8, cmd int16, handler MessageDeserializationHandler) {
+func (ego *MessageDeserializationMapper) Register(mGrpId int8, cmd uint16, handler MessageDeserializationHandler) {
 	ego._mappers[mGrpId][cmd] = handler
 }
 

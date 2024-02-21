@@ -18,7 +18,7 @@ type TCPServerConnection struct {
 	_remoteEndPoint inet.IPV4EndPoint
 	_recvBuffer     *memory.RingBuffer
 	_sendBuffer     *memory.LinearBuffer
-	_codec          IServerCodecHandler
+	_codec          IServerMessageRouterHandler
 	_lock           sync.Mutex
 	_server         *TCPServer
 	_reactorIndex   uint32
@@ -168,9 +168,9 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 }
 
 //func (ego *TCPServerConnection) handlerExecuteInbound() {
-//	ll := len(ego._codec)
+//	ll := len(ego._router)
 //	if ll > 0 {
-//		rc := ego._codec[0].Inbound(ego._codec, 0, ego, ego._recvBuffer, nil)
+//		rc := ego._router[0].Inbound(ego._router, 0, ego, ego._recvBuffer, nil)
 //		if core.Err(rc) {
 //			et, em := core.ExErr(rc)
 //			ego._server.Log(core.LL_ERR, "connnection_%s : handler pipeline[%d] failed: (%s) ", ego._remoteEndPoint.EndPointString(), em, core.ErrStr(et))
@@ -269,7 +269,7 @@ func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int
 //		_recvBuffer:     memory.NeoRingBuffer(1024),
 //		_sendBuffer:     memory.NeoLinearBuffer(1024),
 //		_server:         tcpServer,
-//		_codec:       make([]IServerCodecHandler, 0),
+//		_router:       make([]IServerMessageRouterHandler, 0),
 //	}
 //
 //	var output []reflect.Value = make([]reflect.Value, 0, 1)
@@ -278,8 +278,8 @@ func (ego *TCPServerConnection) Send(ba []byte, offset int64, length int64) (int
 //		if core.Err(rc) {
 //			panic(fmt.Sprintf("Install Handler Failed %s", elem.Name))
 //		}
-//		h := output[0].Interface().(IServerCodecHandler)
-//		tsc._codec = append(tsc._codec, h)
+//		h := output[0].Interface().(IServerMessageRouterHandler)
+//		tsc._router = append(tsc._router, h)
 //	}
 //	return &tsc
 //}

@@ -3,14 +3,18 @@ package transcomm
 import (
 	"fmt"
 	"net"
+	"reflect"
 	"sync"
 	"xeno/zohar/core"
+	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/inet/nic"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/memory"
+	"xeno/zohar/core/mp"
 )
 
 type TCPServer struct {
@@ -20,13 +24,49 @@ type TCPServer struct {
 	_logger        logging.ILogger
 	_listeners     sync.Map
 	_connectionMap sync.Map
+	_router        IServerMessageRouter
+}
+
+func (ego *TCPServer) BroadCastMessage(message message_buffer.INetMessage, bFlush bool) int32 {
+	ego._connectionMap.Range(func(key, value any) bool {
+		c := value.(*TCPServerConnection)
+		c.SendMessage(message, bFlush)
+		return true
+	})
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPServer) OnKeepAliveMessage(conn *TCPServerConnection, message message_buffer.INetMessage) int32 {
+	var pkam *messages.KeepAliveMessage = message.(*messages.KeepAliveMessage)
+	if pkam.IsServer() {
+		ts := chrono.GetRealTimeMilli()
+		delta := ts - pkam.TimeStamp()
+		conn.OnKeepAlive(ts, int32(delta))
+	} else {
+		conn.SendMessage(message, true)
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPServer) OnProcTestMessage(conn *TCPServerConnection, message message_buffer.INetMessage) int32 {
+	m := message.(*messages.ProcTestMessage)
+	if m.IsServer {
+		if core.Err(m.Validate()) {
+			panic("invalid msg")
+		}
+	} else {
+		rc := conn.SendMessage(m, true)
+		if core.Err(rc) {
+			panic("echo proc test failed")
+		}
+	}
+	return core.MkSuccess(0)
 }
 
 func (ego *TCPServer) OnPeerClosed(connection *TCPServerConnection) int32 {
 	ego.Log(core.LL_SYS, "Connection Peer <%s> Closed.", connection.String())
 	ego._connectionMap.Delete(connection.Identifier())
 	ego._poller.SubReactorEnded(connection.Identifier())
-	connection.Close()
 	return core.MkSuccess(0)
 }
 
@@ -34,7 +74,6 @@ func (ego *TCPServer) OnDisconnected(connection *TCPServerConnection) int32 {
 	ego.Log(core.LL_SYS, "Connection Peer <%s> Disconnected.", connection.String())
 	ego._connectionMap.Delete(connection.Identifier())
 	ego._poller.SubReactorEnded(connection.Identifier())
-	connection.Close()
 	return core.MkSuccess(0)
 }
 
@@ -54,9 +93,9 @@ func (ego *TCPServer) Listeners() *sync.Map {
 	return &ego._listeners
 }
 
-func (ego *TCPServer) OnIncomingMessage(conn IConnection, msg message_buffer.INetMessage, param any) {
-	fmt.Printf("Got msg [%v] \n", msg.String())
-	//conn.(*TCPServerConnection).SendMessage(msg, true)
+func (ego *TCPServer) OnIncomingMessage(conn *TCPServerConnection, msg message_buffer.INetMessage) int32 {
+
+	return ego._router.OnIncomingMessage(conn, msg)
 }
 
 func (ego *TCPServer) Initialize() int32 {
@@ -139,7 +178,17 @@ func NeoTcpServer(name string, tcpConfig *config.NetworkServerTCPConfig, logger 
 		_poller: GetDefaultPoller(),
 		_config: tcpConfig,
 		_logger: logger,
+		_router: nil,
 	}
 
+	var output []reflect.Value = make([]reflect.Value, 0, 1)
+	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Reflect"+tcpConfig.Codec, &tcpServer)
+	if core.Err(rc) {
+		panic(fmt.Sprintf("Install Handler Failed %s", tcpConfig.Codec))
+	}
+	h := output[0].Interface().(IServerMessageRouter)
+	tcpServer._router = h
+	tcpServer._router.RegisterHandler(messages.INTERNAL_MSG_GRP_TYPE, messages.KEEP_ALIVE_MESSAGE_ID, tcpServer.OnKeepAliveMessage)
+	tcpServer._router.RegisterHandler(messages.INTERNAL_MSG_GRP_TYPE, messages.PROC_TEST_MESSAGE_ID, tcpServer.OnProcTestMessage)
 	return &tcpServer
 }

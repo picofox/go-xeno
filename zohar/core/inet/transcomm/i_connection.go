@@ -4,7 +4,6 @@ import (
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
-	"xeno/zohar/core/memory"
 )
 
 type IConnection interface {
@@ -24,8 +23,7 @@ type IConnection interface {
 	SendMessage(msg message_buffer.INetMessage, bFlush bool) int32
 	KeepAliveConfig() *intrinsic.KeepAliveConfig
 	Pulse(ts int64)
-	BufferBlockList() *memory.ByteBufferList
-	FlushSendingBuffer() (int64, int32)
+	FlushSendingBuffer() int32
 }
 
 const (

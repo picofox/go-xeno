@@ -3,13 +3,14 @@ package transcomm
 import (
 	"sync"
 	"xeno/zohar/core"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/inet/message_buffer"
 )
 
 type MessageHandler func(connection IConnection, message message_buffer.INetMessage) int32
 
 type MessageHandlerMapper struct {
-	_mapper [32768]MessageHandler
+	_mapper [datatype.UINT16_CAPACITY]MessageHandler
 }
 
 func (ego *MessageHandlerMapper) Handle(connection IConnection, message message_buffer.INetMessage) int32 {
@@ -20,7 +21,7 @@ func (ego *MessageHandlerMapper) Handle(connection IConnection, message message_
 	}
 }
 
-func (ego *MessageHandlerMapper) Register(cmd int16, handler MessageHandler) {
+func (ego *MessageHandlerMapper) Register(cmd uint16, handler MessageHandler) {
 	ego._mapper[cmd] = handler
 }
 

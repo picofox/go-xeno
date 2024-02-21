@@ -89,6 +89,78 @@ type LinkedListByteBuffer struct {
 	_list      *list.List
 }
 
+func (ego *LinkedListByteBuffer) SetUInt32(pos int64, uv uint32) int32 {
+	node, begPos := ego.findNode(pos)
+	if node == nil {
+		return core.MkErr(core.EC_REACH_LIMIT, 1)
+	}
+	return ego.SetUInt32ByNode(node, begPos, uv)
+}
+
+func (ego *LinkedListByteBuffer) SetUInt32ByNode(node *list.Element, pos int64, uv uint32) int32 {
+	remainSpaceInCurBlock := ego._pieceSize - pos
+	if remainSpaceInCurBlock >= datatype.INT32_SIZE {
+		UInt32IntoBytesBE(uv, node.Value.(*[]byte), pos)
+		return core.MkSuccess(0)
+	} else {
+		UInt32IntoBytesBE(uv, &ego._cache, 0)
+		return ego.SetRawBytesByNode(node, pos, ego._cache, 0, datatype.INT32_SIZE)
+	}
+}
+
+func (ego *LinkedListByteBuffer) SetUInt64(i int64, u uint64) int32 {
+	return ego.SetInt64(i, int64(u))
+}
+
+func (ego *LinkedListByteBuffer) SetUInt64ByNode(element *list.Element, i int64, u uint64) int32 {
+	return ego.SetInt64ByNode(element, i, int64(u))
+}
+
+func (ego *LinkedListByteBuffer) InternalDataForReading() []byte {
+	if ego._beginPos >= ego.PieceSize() {
+		panic("beginpos  > picedeSize")
+	}
+	if ego._length <= 0 {
+		return nil
+	}
+	begNode := ego._list.Front()
+	if begNode == nil {
+		return nil
+	}
+	rLen := min(ego._length, ego._pieceSize-ego._beginPos)
+	if rLen <= 0 {
+		return nil
+	}
+	return (*(begNode.Value.(*[]byte)))[ego._beginPos : ego._beginPos+rLen]
+}
+
+func (ego *LinkedListByteBuffer) IterateNodes(lastVisitedNode *list.Element, vPos int64, vLen int64) (*list.Element, int64, int64, []byte) {
+	if lastVisitedNode == nil {
+		if ego._beginPos >= ego.PieceSize() {
+			panic("beginpos  > picedeSize")
+		}
+		if ego._length <= 0 {
+			return nil, ego._beginPos, 0, nil
+		}
+		begNode := ego._list.Front()
+		if begNode == nil {
+			return nil, -1, -1, nil
+		}
+		rLen := min(ego._length, ego._pieceSize-ego._beginPos)
+		return begNode, ego._beginPos + rLen, ego._length - rLen, (*(begNode.Value.(*[]byte)))[ego._beginPos : ego._beginPos+rLen]
+	} else {
+		if vLen <= 0 {
+			return nil, vPos, 0, nil
+		}
+		node := lastVisitedNode.Next()
+		if node != nil {
+			rLen := min(vLen, ego._pieceSize-vPos)
+			return node, vPos + rLen, vLen - rLen, (*(node.Value.(*[]byte)))[vPos : vPos+rLen]
+		}
+	}
+
+	return nil, -1, -1, nil
+}
 func (ego *LinkedListByteBuffer) SetInt64(pos int64, iv int64) int32 {
 	if pos+datatype.INT64_SIZE > ego._beginPos+ego._length {
 		return core.MkErr(core.EC_REACH_LIMIT, 1)
@@ -246,6 +318,14 @@ func (ego *LinkedListByteBuffer) _clearFront() int32 {
 		fmt.Printf("list null\n")
 	}
 	return core.MkErr(core.EC_NULL_VALUE, 1)
+}
+
+func (ego *LinkedListByteBuffer) InternalDataForWriting() []byte {
+	pBuf, beg := ego.bufferForWriting()
+	if pBuf == nil {
+		return nil
+	}
+	return (*pBuf)[beg:ego.PieceSize()]
 }
 
 func (ego *LinkedListByteBuffer) bufferForWriting() (*[]byte, int64) {
@@ -1170,7 +1250,7 @@ func (ego *LinkedListByteBuffer) WriteInt64(i int64) int32 {
 }
 
 func (ego *LinkedListByteBuffer) PeekUInt64(srcOff int64) (uint64, int32) {
-	v, r := ego.PeekInt32(srcOff)
+	v, r := ego.PeekInt64(srcOff)
 	return uint64(v), r
 }
 
@@ -1193,29 +1273,13 @@ func (ego *LinkedListByteBuffer) WritePos() int64 {
 
 func (ego *LinkedListByteBuffer) WriterSeek(whence int, offset int64) int32 {
 	if whence == BUFFER_SEEK_CUR {
-		if ego._list == nil {
-			return core.MkErr(core.EC_NULL_VALUE, 1)
-		}
-		if offset < 0 {
-			return core.MkErr(core.EC_REACH_LIMIT, 1)
-		} else if offset == 0 {
-			return core.MkSuccess(0)
-		}
-
-		avail := ego._pieceSize - ego._beginPos - ego._length
-		if offset < avail {
-			ego._length += offset
-			if ego._list.Len() == 0 {
-				ego.addNode()
-			}
-		} else {
-			curTurnBytes := avail
-			for offset > 0 {
-				ego.addNode()
-				offset -= curTurnBytes
-				curTurnBytes = ego._pieceSize
-			}
-			ego._length += offset
+		ego._length += offset
+		wp := ego._beginPos + ego._length
+		curNodeCount := wp / ego._pieceSize
+		needNodes := curNodeCount + 1 - int64(ego._list.Len())
+		for needNodes > 0 {
+			ego.addNode()
+			needNodes--
 		}
 		return core.MkSuccess(0)
 	}

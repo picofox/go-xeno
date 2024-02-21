@@ -63,13 +63,41 @@ type IByteBuffer interface {
 	ReadStrings() ([]string, int32)
 	WriteBytess([][]byte) int32
 	ReadBytess() ([][]byte, int32)
+	WriteInt8s([]int8) int32
+	WriteUInt8s([]uint8) int32
+	WriteInt16s([]int16) int32
+	WriteUInt16s([]uint16) int32
+	WriteInt32s([]int32) int32
+	WriteUInt32s([]uint32) int32
+	WriteInt64s([]int64) int32
+	WriteUInt64s([]uint64) int32
+	WriteFloat32s([]float32) int32
+	WriteFloat64s([]float64) int32
+	WriteBools([]bool) int32
+
+	ReadInt8s() ([]int8, int32)
+	ReadUInt8s() ([]uint8, int32)
+	ReadInt16s() ([]int16, int32)
+	ReadUInt16s() ([]uint16, int32)
+	ReadInt32s() ([]int32, int32)
+	ReadUInt32s() ([]uint32, int32)
+	ReadInt64s() ([]int64, int32)
+	ReadUInt64s() ([]uint64, int32)
+	ReadFloat32s() ([]float32, int32)
+	ReadFloat64s() ([]float64, int32)
+	ReadBools() ([]bool, int32)
 
 	SetRawBytes(int64, []byte, int64, int64) int32
 	SetRawBytesByNode(*list.Element, int64, []byte, int64, int64) int32
 
 	SetInt32(int64, int32) int32
 	SetInt32ByNode(*list.Element, int64, int32) int32
+	SetUInt32(int64, uint32) int32
+	SetUInt32ByNode(*list.Element, int64, uint32) int32
 
 	SetInt64(int64, int64) int32
 	SetInt64ByNode(*list.Element, int64, int64) int32
+
+	SetUInt64(int64, uint64) int32
+	SetUInt64ByNode(*list.Element, int64, uint64) int32
 }

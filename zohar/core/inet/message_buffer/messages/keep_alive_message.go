@@ -13,6 +13,63 @@ type KeepAliveMessage struct {
 	TT uint64 `json:"TT"`
 }
 
+func (ego *KeepAliveMessage) Command() uint16 {
+	return KEEP_ALIVE_MESSAGE_ID
+}
+
+func (ego *KeepAliveMessage) GroupType() int8 {
+	return INTERNAL_MSG_GRP_TYPE
+}
+
+func (ego *KeepAliveMessage) Serialize(header memory.ISerializationHeader, buffer memory.IByteBuffer) (int64, int32) {
+	var sPos int64 = buffer.WritePos()
+	var rc int32 = core.MkSuccess(0)
+	if header != nil {
+		sPos, _, rc = header.BeginSerializing(buffer)
+		if core.Err(rc) {
+			return buffer.WritePos() - sPos, rc
+		}
+	}
+	rc = buffer.WriteUInt64(ego.TT)
+	if core.Err(rc) {
+		return buffer.WritePos() - sPos, rc
+	}
+	if header != nil {
+		_, rc = header.EndSerializing(buffer, sPos, buffer.WritePos()-sPos-header.HeaderLength())
+		if core.Err(rc) {
+			return buffer.WritePos() - sPos, rc
+		}
+	}
+
+	return buffer.WritePos() - sPos, rc
+}
+
+func (ego *KeepAliveMessage) Deserialize(header memory.ISerializationHeader, buffer memory.IByteBuffer) (int64, int32) {
+	var sPos int64 = buffer.ReadPos()
+	var rc int32
+	if header != nil {
+		_, rc = header.BeginDeserializing(buffer, true)
+		if core.Err(rc) {
+			return buffer.ReadPos() - sPos, rc
+		}
+	}
+	ego.TT, rc = buffer.ReadUInt64()
+	if core.Err(rc) {
+		return buffer.ReadPos() - sPos, rc
+	}
+	if header != nil {
+		rc = header.EndDeserializing(buffer)
+		if core.Err(rc) {
+			return buffer.ReadPos() - sPos, rc
+		}
+	}
+	return buffer.ReadPos() - sPos, core.MkSuccess(0)
+}
+
+func (ego *KeepAliveMessage) Validate() int32 {
+	return core.MkSuccess(0)
+}
+
 func (ego *KeepAliveMessage) IdentifierString() string {
 	return strconv.FormatInt(int64(ego.TT), 10)
 }
@@ -49,40 +106,9 @@ func (ego *KeepAliveMessage) String() string {
 	return string(data)
 }
 
-func (ego *KeepAliveMessage) O1L15O1T15Serialize(byteBuf memory.IByteBuffer) (int64, int32) {
-	sHelper, rc := InitializeSerialization(byteBuf, ego.MsgGrpType(), ego.Command())
-	if core.Err(rc) {
-		return 0, rc
-	}
-	defer sHelper.Finalize()
-	rc = sHelper.WriteUInt64(ego.TT)
-	if core.Err(rc) {
-		return sHelper.DataLength(), rc
-	}
-	return sHelper.DataLength(), rc
-}
-
-func (ego *KeepAliveMessage) O1L15O1T15Deserialize(buffer memory.IByteBuffer, length int16, extraLength int64) (int64, int32) {
-	dHelper, rc := InitializeDeserialization(buffer, ego.MsgGrpType(), ego.Command(), length, extraLength)
-	if core.Err(rc) {
-		return 0, rc
-	}
-	defer dHelper.Finalize()
-	origLength := dHelper.DataLength()
-
-	ego.TT, rc = dHelper.ReadUInt64()
-	if core.Err(rc) {
-		return origLength - dHelper.DataLength(), rc
-	}
-	if dHelper.DataLength() != 0 {
-		return origLength - dHelper.DataLength(), core.MkErr(core.EC_INCOMPLETE_DATA, 1)
-	}
-	return origLength, core.MkSuccess(0)
-}
-
-func KeepAliveMessageDeserialize(buffer memory.IByteBuffer, length int16, extraLength int64) (message_buffer.INetMessage, int64) {
+func KeepAliveMessageDeserialize(buffer memory.IByteBuffer, header memory.ISerializationHeader) (message_buffer.INetMessage, int64) {
 	m := KeepAliveMessage{}
-	l, rc := m.O1L15O1T15Deserialize(buffer, length, extraLength)
+	l, rc := m.Deserialize(header, buffer)
 	if core.Err(rc) {
 		return nil, l
 	}
@@ -103,14 +129,6 @@ func NeoKeepAliveMessage(isServer bool) *KeepAliveMessage {
 	}
 
 	return &m
-}
-
-func (ego *KeepAliveMessage) Command() int16 {
-	return KEEP_ALIVE_MESSAGE_ID
-}
-
-func (ego *KeepAliveMessage) MsgGrpType() int8 {
-	return 0
 }
 
 var _ message_buffer.INetMessage = &KeepAliveMessage{}

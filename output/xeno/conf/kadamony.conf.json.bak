@@ -35,27 +35,16 @@
 			"TCP" : {
 				"Default" : {
 					"ServerEndPoints" : ["192.168.0.100:9999"],
-					"Count" : 1,
-					"Codec" : "O1L15COT15DecodeClientHandler",
+					"Count" : 3,
+					"Codec" : "DefaultClientMessageRouter",
 					"AutoReconnect" : true,
 					"NoDelay" : true,
 					"KeepAlive" : {
-						"Enable": true,
-						"TimeoutMillis": 2000,
+						"Enable": false,
+						"TimeoutMillis": 1000,
 						"MaxTries": 3,
 						"IntervalMillis": 6000
 					}
-				}
-			}
-		},
-		"Server" : {
-			"TCP" : {
-				"Default"  : {
-					"ListenerEndPoints" : ["0.0.0.0:9998", "0.0.0.0:9999"],
-					"PublicConnectingEndPoints" : ["192.168.0.20:9998", "192.168.0.20:9999"],
-					"PrivateConnectingEndPoints" : ["192.168.0.20:9998", "192.168.0.20:9999"],
-					"Codec" : "O1L15COT15DecodeServerHandler",
-					"NoDelay" : true
 				}
 			}
 		}

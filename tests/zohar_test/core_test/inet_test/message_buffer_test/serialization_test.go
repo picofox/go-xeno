@@ -2,6 +2,7 @@ package message_buffer_test
 
 import (
 	"fmt"
+	"math/rand"
 	"sync"
 	"testing"
 	"xeno/zohar/core"
@@ -14,17 +15,19 @@ import (
 var sBuffer memory.IByteBuffer = memory.NeoLinkedListByteBuffer(datatype.SIZE_4K)
 var sLock sync.Mutex
 var sCount int64
-var sPM_TEST_COUNT int64 = 1000000
+var sPM_TEST_COUNT int64 = 10000000
 var sw *chrono.StopWatch = chrono.NeoStopWatch()
 
 func _addMessage() {
 	sLock.Lock()
 	defer sLock.Unlock()
+
+	hdr := memory.NeoO1L31C16Header(0, 0)
 	msg := messages.NeoProcTestMessage(false)
 	if msg == nil {
 		panic("create msg failed")
 	}
-	_, rc := msg.O1L15O1T15Serialize(sBuffer)
+	_, rc := msg.Serialize(hdr, sBuffer)
 	if core.Err(rc) {
 		panic("Serialize msg Failed")
 	}
@@ -41,19 +44,20 @@ func _getMessage() (int64, bool) {
 	sLock.Lock()
 	defer sLock.Unlock()
 
-	_, _, ll, el, rc := messages.IsMessageComplete(sBuffer)
+	hdr, rc := memory.O1L31C16HeaderFromBuffer(sBuffer)
 	if core.Err(rc) {
 		if core.IsErrType(rc, core.EC_TRY_AGAIN) {
 			return 0, false
 		}
 		panic("IsMessageComplete Failed")
 	}
-	msg, dataLength := messages.ProcTestMessageDeserialize(sBuffer, ll, el)
+	sBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, 6)
+	msg, dataLength := messages.ProcTestMessageDeserialize(sBuffer, hdr)
 	if msg == nil {
 		panic("Deser to create msg failed")
 	}
 
-	if !msg.(*messages.ProcTestMessage).Validate() {
+	if core.Err(msg.(*messages.ProcTestMessage).Validate()) {
 		panic("Data validation Failed")
 	}
 
@@ -62,9 +66,26 @@ func _getMessage() (int64, bool) {
 
 var bsCount int64 = 0
 
+func debugBuffer() {
+	var bytesFlushed int64 = 0
+	for {
+		buf := sBuffer.(*memory.LinkedListByteBuffer).InternalDataForReading()
+		if buf != nil {
+			fmt.Printf("Get Buffer Len:%d\n", len(buf))
+			bytesFlushed += int64(len(buf))
+			if !sBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, int64(len(buf))) {
+				panic("error")
+			}
+		} else {
+			fmt.Printf("end buffer_len:%d\n", sBuffer.ReadAvailable())
+			return
+		}
+	}
+}
+
 func Test_Serialization_Functional_Basic(t *testing.T) {
-	//r := &transcomm.HandlerRegistration{}
-	//handler := r.NeoO1L15COT15DecodeServerHandler(nil)
+	rand.Seed(0)
+
 	go messageProducer(t)
 	var bsPrintNext int64 = 1
 	sw.Begin("x")
