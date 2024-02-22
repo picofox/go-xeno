@@ -11,6 +11,11 @@ type O1L31C16Header struct {
 	_command uint16
 }
 
+func (ego *O1L31C16Header) SetByBytes(bs []byte) {
+	ego._oAndLen = BytesToUInt32BE(&bs, 0)
+	ego._command = BytesToUInt16BE(&bs, 4)
+}
+
 func (ego *O1L31C16Header) Set(groupType int8, length int32, cmd uint16) {
 	ego._oAndLen = uint32(groupType)<<31 | (uint32(length) & 0x7FFFFFFF)
 	ego._command = cmd

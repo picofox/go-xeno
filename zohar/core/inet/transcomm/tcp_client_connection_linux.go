@@ -2,61 +2,90 @@ package transcomm
 
 import (
 	"fmt"
-	"reflect"
 	"sync"
 	"syscall"
 	"xeno/zohar/core"
+	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/config/intrinsic"
+	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/transcomm/prof"
 	"xeno/zohar/core/memory"
-	"xeno/zohar/core/mp"
 )
 
 type TCPClientConnection struct {
-	_index          int
-	_fd             int
-	_localEndPoint  inet.IPV4EndPoint
-	_remoteEndPoint inet.IPV4EndPoint
-	_recvBuffer     *memory.RingBuffer
-	_sendBuffer     *memory.LinearBuffer
-	_codec          IClientMessageRouter
-	_client         *TCPClient
-	_stateCode      uint8
-	_reactorIndex   uint32
-	_packetHeader   message_buffer.MessageHeader
-	_profiler       *prof.ConnectionProfiler
-	_ev             EPoolEventDataSubReactor
-	_sendBufferList *memory.ByteBufferList
-	_lock           sync.Mutex
+	_index                    int
+	_fd                       int
+	_localEndPoint            inet.IPV4EndPoint
+	_remoteEndPoint           inet.IPV4EndPoint
+	_client                   *TCPClient
+	_lastPulseTs              int64
+	_stateCode                uint8
+	_reactorIndex             uint32
+	_profiler                 *prof.ConnectionProfiler
+	_ev                       EPoolEventDataSubReactor
+	_sendBuffer               *memory.LinkedListByteBuffer
+	_recvBuffer               *memory.LinkedListByteBuffer
+	_outgoingHeader           *memory.O1L31C16Header
+	_incomingHeaderBuffer     [6]byte
+	_incomingHeaderBufferRIdx int64
+	_incomingHeader           memory.O1L31C16Header
+	_keepalive                *KeepAlive
+	_sendLock                 sync.Mutex
 }
 
-func (ego *TCPClientConnection) FlushSendingBuffer() {
+func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoint) *TCPClientConnection {
+	c := TCPClientConnection{
+		_index:                    index,
+		_fd:                       -1,
+		_localEndPoint:            inet.NeoIPV4EndPointByIdentifier(-1),
+		_remoteEndPoint:           rAddr,
+		_client:                   client,
+		_stateCode:                Initialized,
+		_reactorIndex:             0xFFFFFFFF,
+		_profiler:                 prof.NeoConnectionProfiler(),
+		_sendBuffer:               memory.NeoLinkedListByteBuffer(datatype.SIZE_4K),
+		_recvBuffer:               memory.NeoLinkedListByteBuffer(datatype.SIZE_4K),
+		_outgoingHeader:           memory.NeoO1L31C16Header(0, 0),
+		_incomingHeaderBufferRIdx: 0,
+	}
+
+	if c.KeepAliveConfig().Enable {
+		c._keepalive = NeoKeepAlive(c.KeepAliveConfig(), false)
+	}
+	return &c
+}
+
+func (ego *TCPClientConnection) FlushSendingBuffer() int32 {
 	for {
-		bb := ego._sendBufferList.PopFront()
-		if bb == nil {
-			return
-		}
-		ba, _ := bb.Buffer().BytesRef(-1)
-		if ba == nil || len(ba) == 0 {
-			return
-		}
-		nSent, rc := inet.SysWriteN(ego._fd, ba)
-		if core.Err(rc) {
-			return
+		buf := ego._sendBuffer.InternalDataForReading()
+		if buf != nil {
+			nDone, rc := inet.SysWriteN(ego._fd, buf)
+			ego._profiler.OnBytesSent(int64(nDone))
+			if nDone > 0 {
+				if !ego._sendBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, int64(nDone)) {
+					return core.MkErr(core.EC_INCOMPLETE_DATA, 1)
+				}
+			}
+			if core.Err(rc) {
+				return rc
+			}
 		} else {
-			bb.Buffer().ReaderSeek(memory.BUFFER_SEEK_CUR, nSent)
+			return core.MkSuccess(0)
 		}
 	}
 }
 
-func (ego *TCPClientConnection) BufferBlockList() *memory.ByteBufferList {
-	return ego._sendBufferList
-}
-
 func (ego *TCPClientConnection) Pulse(ts int64) {
-	ego._codec.Pulse(ego, ts)
+	if ego._keepalive != nil {
+		rc := ego._keepalive.Pulse(ego, ts)
+		if core.IsErrType(rc, core.EC_TCP_CONNECT_ERROR) {
+			ego.OnConnectingFailed()
+		}
+	}
+	strProf := ego._profiler.String()
+	ego._client.Log(core.LL_INFO, strProf)
 }
 
 func (ego *TCPClientConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
@@ -71,47 +100,42 @@ func (ego *TCPClientConnection) SetReactorIndex(u uint32) {
 	ego._reactorIndex = u
 }
 
-func (ego *TCPClientConnection) reset() {
-	ego._client._poller.OnConnectionRemove(ego)
-	if ego._codec != nil {
-		ego._codec.Reset()
-	}
+func (ego *TCPClientConnection) Close() {
 	err := syscall.Close(ego._fd)
 	if err != nil {
-		ego._client.Log(core.LL_SYS, "Close Old Connection <%s> Error", ego.String())
+		ego._client.Log(core.LL_ERR, "Close connection <%s> Failed. %s", ego.String(), err.Error())
 	}
-	ego._client.Log(core.LL_SYS, "Reconnect to <%s>", ego._remoteEndPoint.EndPointString())
+	ego.reset()
+}
+
+func (ego *TCPClientConnection) reset() {
 	ego._stateCode = Closed
 	ego._fd = -1
 	ego._recvBuffer.Clear()
 	ego._sendBuffer.Clear()
 	ego._profiler.Reset()
+	ego._incomingHeaderBufferRIdx = 0
+
 }
 
 func (ego *TCPClientConnection) OnDisconnected() int32 {
-	ego.reset()
 	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Disconnected.", ego.String())
-	if ego._client._config.AutoReconnect {
-		return ego.Connect()
-	}
+	ego._client.OnDisconnected(ego)
+	ego.Close()
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) OnConnectingFailed() int32 {
-	ego.reset()
-	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Disconnected.", ego.String())
-	if ego._client._config.AutoReconnect {
-		return ego.Connect()
-	}
+	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Connecting Failed.", ego.String())
+	ego._client.OnDisconnected(ego)
+	ego.Close()
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) OnPeerClosed() int32 {
-	ego.reset()
-	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Disconnected.", ego.String())
-	if ego._client._config.AutoReconnect {
-		return ego.Connect()
-	}
+	ego._client.Log(core.LL_WARN, "TCPClientConnection <%s> Peer Closed.", ego.String())
+	ego._client.OnDisconnected(ego)
+	ego.Close()
 	return core.MkSuccess(0)
 }
 
@@ -164,25 +188,37 @@ func (ego *TCPClientConnection) Connect() (rc int32) {
 	ego._client._poller.OnIncomingConnection(ego)
 	return core.MkSuccess(0)
 }
-func (ego *TCPClientConnection) checkRecvBufferCapacity() int32 {
-	if ego._recvBuffer.WriteAvailable() > 0 {
-		return core.MkSuccess(0)
-	}
 
-	if ego._recvBuffer.Capacity() < message_buffer.MAX_BUFFER_MAX_CAPACITY {
-		neoSz := ego._recvBuffer.Capacity() * 2
-		if neoSz > message_buffer.MAX_BUFFER_MAX_CAPACITY {
-			neoSz = message_buffer.MAX_BUFFER_MAX_CAPACITY
-		}
-		if ego._recvBuffer.ResizeTo(neoSz) > 0 {
-			return core.MkSuccess(0)
-		}
-	}
-
-	return core.MkErr(core.EC_REACH_LIMIT, 1)
-}
 func (ego *TCPClientConnection) OnIncomingData() int32 {
+	var nDone int64 = 0
+	var err error
+	var rc int32 = 0
+	var nowTs = chrono.GetRealTimeMilli()
+
+	if nowTs-ego._lastPulseTs > int64(intrinsic.GetIntrinsicConfig().Poller.SubReactorPulseInterval) {
+		ego.Pulse(nowTs)
+		ego._lastPulseTs = nowTs
+	}
+
 	for {
+		if ego._incomingHeaderBufferRIdx < ego._incomingHeader.HeaderLength() {
+			nDone, rc = inet.SysRead(ego._fd, ego._incomingHeaderBuffer[ego._incomingHeaderBufferRIdx:ego._incomingHeader.HeaderLength()])
+			ego._profiler.OnBytesReceived(nDone)
+			if core.Err(rc) {
+				return rc
+			}
+			ego._incomingHeaderBufferRIdx += nDone
+			if ego._incomingHeaderBufferRIdx == 6 {
+				ego._incomingHeader.SetByBytes(ego._incomingHeaderBuffer[:])
+			}
+
+		} else if ego._incomingHeaderBufferRIdx == ego._incomingHeader.HeaderLength() {
+			rAvail := ego._recvBuffer.ReadAvailable()
+
+		} else {
+			panic("[SNH] too long header index found!")
+		}
+
 		rc := ego.checkRecvBufferCapacity()
 		if core.IsErrType(rc, core.EC_REACH_LIMIT) {
 			return core.MkErr(core.EC_REACH_LIMIT, 1) //TODO close connection
@@ -213,6 +249,8 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 			ego._client.OnIncomingMessage(ego, m.(message_buffer.INetMessage))
 		}
 	}
+
+	return core.MkSuccess(0)
 }
 
 func (ego *TCPClientConnection) GetEV() *EPoolEventDataSubReactor {
@@ -251,100 +289,6 @@ func (ego *TCPClientConnection) SendMessage(msg message_buffer.INetMessage, bFlu
 		return core.MkErr(core.EC_MESSAGE_HANDLING_ERROR, 1)
 	}
 	return core.MkSuccess(0)
-}
-
-func (ego *TCPClientConnection) sendNImmediately(ba []byte, offset int64, length int64) (int64, int32) {
-	if ego._stateCode != Connected {
-		return 0, core.MkErr(core.EC_NOOP, 0)
-	}
-	var totalRemain int64 = offset + length
-	if length < 0 {
-		totalRemain = int64(len(ba))
-	}
-
-	if totalRemain <= 0 {
-		return totalRemain, core.MkSuccess(0)
-	}
-
-	n, err := syscall.Write(ego._fd, ba[offset:totalRemain])
-	if err != nil {
-		ego._client.Log(core.LL_ERR, "Socket Write Error: %s", err.Error())
-		if err == syscall.EAGAIN || err == syscall.EWOULDBLOCK {
-			return totalRemain, core.MkErr(core.EC_TRY_AGAIN, 0)
-		}
-		ego.reset()
-		return totalRemain, core.MkErr(core.EC_TCP_SEND_FAILED, 1)
-	}
-	totalRemain -= int64(n)
-	offset += int64(n)
-
-	return totalRemain, core.MkSuccess(0)
-}
-
-func (ego *TCPClientConnection) sendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
-	//if ego._sendBuffer.WritePos()+length >= message_buffer.MAX_BUFFER_MAX_CAPACITY {
-	//	ego.flush()
-	//}
-	nLeft, rc := ego.sendNImmediately(ba, offset, length)
-	if core.Err(rc) {
-		return length - nLeft, rc
-	}
-	return length - nLeft, core.MkSuccess(0)
-}
-
-func (ego *TCPClientConnection) SendImmediately(ba []byte, offset int64, length int64) (int64, int32) {
-	ego._lock.Lock()
-	defer ego._lock.Unlock()
-	return ego.sendImmediately(ba, offset, length)
-}
-
-func (ego *TCPClientConnection) Send(ba []byte, offset int64, length int64) (int64, int32) {
-	return ego.sendImmediately(ba, offset, length)
-}
-
-func (ego *TCPClientConnection) flushN() (int64, int32) {
-	if ego._sendBuffer.ReadAvailable() <= 0 {
-		return 0, core.MkSuccess(0)
-	}
-	ba, _ := ego._sendBuffer.BytesRef(-1)
-	n, err := inet.SysWriteN(ego._fd, ba)
-	if core.Err(err) {
-		if n > 0 {
-			ego._sendBuffer.ReaderSeek(memory.BUFFER_SEEK_CUR, int64(n))
-		}
-		if core.IsErrType(err, core.EC_TRY_AGAIN) {
-			return int64(n), core.MkErr(core.EC_TRY_AGAIN, 0)
-		}
-		return int64(n), core.MkErr(core.EC_TCP_SEND_FAILED, 0)
-	}
-	ego._sendBuffer.Clear()
-	return int64(n), core.MkSuccess(0)
-}
-
-func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoint) *TCPClientConnection {
-	c := TCPClientConnection{
-		_index:          index,
-		_fd:             -1,
-		_localEndPoint:  inet.NeoIPV4EndPointByIdentifier(-1),
-		_remoteEndPoint: rAddr,
-		_recvBuffer:     memory.NeoRingBuffer(1024),
-		_sendBuffer:     memory.NeoLinearBuffer(1024),
-		_codec:          nil,
-		_client:         client,
-		_stateCode:      Initialized,
-		_packetHeader:   message_buffer.NeoMessageHeader(),
-		_profiler:       prof.NeoConnectionProfiler(),
-		_sendBufferList: memory.NeoByteBufferList(),
-	}
-	var output = make([]reflect.Value, 0, 1)
-	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Neo"+c._client._config.Codec, &c)
-	if core.Err(rc) {
-		return nil
-	}
-	h := output[0].Interface().(IClientMessageRouter)
-	c._codec = h
-
-	return &c
 }
 
 var _ IConnection = &TCPClientConnection{}

@@ -101,3 +101,18 @@ func NeoTCPClient(name string, poller *Poller, config *config.NetworkClientTCPCo
 
 	return c
 }
+
+func (ego *TCPClient) OnDisconnected(connection *TCPClientConnection) int32 {
+	ego._poller.OnConnectionRemove(connection)
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPClient) OnPeerClosed(connection *TCPClientConnection) int32 {
+	ego._poller.OnConnectionRemove(connection)
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPClient) OnIOError(connection *TCPClientConnection) int32 {
+	ego._poller.OnConnectionRemove(connection)
+	return core.MkSuccess(0)
+}
