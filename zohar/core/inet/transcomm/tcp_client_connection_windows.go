@@ -34,6 +34,7 @@ type TCPClientConnection struct {
 	_outgoingHeader           *memory.O1L31C16Header
 	_incomingHeaderBuffer     [6]byte
 	_incomingHeaderBufferRIdx int
+	_incomingDataIndex        int64
 	_incomingHeader           *memory.O1L31C16Header
 	_keepalive                *KeepAlive
 }
@@ -50,6 +51,7 @@ func (ego *TCPClientConnection) reset() {
 	ego._recvBuffer.Clear()
 	ego._outgoingHeader = nil
 	ego._incomingHeaderBufferRIdx = 0
+	ego._incomingDataIndex = 0
 	ego._incomingHeader = nil
 }
 
@@ -212,8 +214,7 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 				ego._incomingHeaderBufferRIdx = 0
 			}
 		} else {
-			rAvail := ego._recvBuffer.ReadAvailable()
-			bytesToRead := ego._incomingHeader.BodyLength() - rAvail
+			bytesToRead := ego._incomingHeader.BodyLength() - ego._incomingDataIndex
 			if bytesToRead <= 0 {
 				msg, rLen := messages.GetDefaultMessageBufferDeserializationMapper().DeserializationDispatch(ego._recvBuffer, ego._incomingHeader)
 				if msg != nil {
@@ -230,6 +231,7 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 				}
 				ego._client.Log(core.LL_DEBUG, "Cli-Conn [%x] Got msg [%d-%d] l:%d \n", ego.Identifier(), msg.GroupType(), msg.Command(), ego._incomingHeader.BodyLength())
 				ego._incomingHeader = nil
+				ego._incomingDataIndex = 0
 			} else { //not enough data
 				buf := ego._recvBuffer.InternalDataForWriting()
 				if buf == nil {
@@ -238,6 +240,7 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 				realLenToRead := min(int(bytesToRead), len(buf))
 				nDone, err = ego._conn.Read(buf[:realLenToRead])
 				ego._profiler.OnBytesReceived(int64(nDone))
+				ego._incomingDataIndex += int64(nDone)
 				if err != nil {
 					if errors.Is(err, os.ErrDeadlineExceeded) {
 						return core.MkErr(core.EC_TRY_AGAIN, 1)
@@ -297,6 +300,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_outgoingHeader:           memory.NeoO1L31C16Header(0, 0),
 		_incomingHeader:           nil,
 		_incomingHeaderBufferRIdx: 0,
+		_incomingDataIndex:        0,
 	}
 
 	if c.KeepAliveConfig().Enable {
