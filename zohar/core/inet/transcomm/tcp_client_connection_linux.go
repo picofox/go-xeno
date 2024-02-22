@@ -10,6 +10,7 @@ import (
 	"xeno/zohar/core/datatype"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/inet/transcomm/prof"
 	"xeno/zohar/core/memory"
 )
@@ -30,6 +31,7 @@ type TCPClientConnection struct {
 	_outgoingHeader           *memory.O1L31C16Header
 	_incomingHeaderBuffer     [6]byte
 	_incomingHeaderBufferRIdx int64
+	_incomingDataIndex        int64
 	_incomingHeader           memory.O1L31C16Header
 	_keepalive                *KeepAlive
 	_sendLock                 sync.Mutex
@@ -49,6 +51,7 @@ func NeoTCPClientConnection(index int, client *TCPClient, rAddr inet.IPV4EndPoin
 		_recvBuffer:               memory.NeoLinkedListByteBuffer(datatype.SIZE_4K),
 		_outgoingHeader:           memory.NeoO1L31C16Header(0, 0),
 		_incomingHeaderBufferRIdx: 0,
+		_incomingDataIndex:        0,
 	}
 
 	if c.KeepAliveConfig().Enable {
@@ -115,6 +118,7 @@ func (ego *TCPClientConnection) reset() {
 	ego._sendBuffer.Clear()
 	ego._profiler.Reset()
 	ego._incomingHeaderBufferRIdx = 0
+	ego._incomingDataIndex = 0
 
 }
 
@@ -213,7 +217,25 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 			}
 
 		} else if ego._incomingHeaderBufferRIdx == ego._incomingHeader.HeaderLength() {
-			rAvail := ego._recvBuffer.ReadAvailable()
+			bytesToRead := ego._incomingHeader.BodyLength() - ego._incomingDataIndex
+			if bytesToRead <= 0 {
+				msg, rLen := messages.GetDefaultMessageBufferDeserializationMapper().DeserializationDispatch(ego._recvBuffer, &ego._incomingHeader)
+				if msg != nil {
+					rc := ego._client.OnIncomingMessage(ego, msg)
+					if core.Err(rc) {
+						ego._client.Log(core.LL_WARN, "msg %s routing failed err:%s", ego._incomingHeader.String(), core.ErrStr(rc))
+					}
+				} else {
+					if rLen == -1 {
+						ego._client.Log(core.LL_WARN, "msg %s not found", ego._incomingHeader.String())
+					} else {
+						ego._client.Log(core.LL_ERR, "msg %s Deserialize Failed", ego._incomingHeader.String())
+					}
+				}
+				ego._client.Log(core.LL_DEBUG, "Cli-Conn [%x] Got msg [%d-%d] l:%d \n", ego.Identifier(), msg.GroupType(), msg.Command(), ego._incomingHeader.BodyLength())
+				ego._incomingHeaderBufferRIdx = 0
+
+			}
 
 		} else {
 			panic("[SNH] too long header index found!")
