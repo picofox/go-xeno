@@ -1,22 +1,26 @@
 package transcomm
 
 import (
-	"sync/atomic"
+	"reflect"
 	"time"
 	"xeno/zohar/core"
+	"xeno/zohar/core/chrono"
 	"xeno/zohar/core/config"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/logging"
+	"xeno/zohar/core/mp"
 )
 
 type TCPClient struct {
-	_name        string
-	_config      *config.NetworkClientTCPConfig
-	_connections []*TCPClientConnection
-	_logger      logging.ILogger
-	_poller      *Poller
-	_index       atomic.Int32
+	_name            string
+	_config          *config.NetworkClientTCPConfig
+	_connections     []*TCPClientConnection
+	_logger          logging.ILogger
+	_poller          *Poller
+	_router          IClientMessageRouter
+	_lastSendConnIdx int
 }
 
 func (ego *TCPClient) Initialize() int32 {
@@ -31,21 +35,54 @@ func (ego *TCPClient) Initialize() int32 {
 	return core.MkSuccess(0)
 }
 
-func (ego *TCPClient) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {
-	idx := ego._index.Add(1)
-	idx = idx % int32(len(ego._connections))
-	return ego._connections[idx].SendMessage(msg, bFlush)
+func (ego *TCPClient) SendMessageWithConnection(idxConn int, msg message_buffer.INetMessage, bFlush bool) int32 {
+	if ego._connections[idxConn] != nil {
+		return ego._connections[idxConn].SendMessage(msg, bFlush)
+	} else {
+		ego.Log(core.LL_SYS, "Connection <idx:%d> Invalid", idxConn)
+	}
+	return core.MkErr(core.EC_NULL_VALUE, 1)
+}
 
+func (ego *TCPClient) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {
+	if len(ego._connections) == 1 {
+		return ego._connections[0].SendMessage(msg, bFlush)
+	}
+	if ego._connections[ego._lastSendConnIdx] != nil {
+		rc := ego._connections[ego._lastSendConnIdx].SendMessage(msg, bFlush)
+		ego._lastSendConnIdx++
+		if ego._lastSendConnIdx >= len(ego._connections) {
+			ego._lastSendConnIdx = 0
+		}
+		return rc
+	} else {
+		startIdx := ego._lastSendConnIdx
+		for ego._connections[ego._lastSendConnIdx] == nil {
+			ego._lastSendConnIdx++
+			if ego._lastSendConnIdx >= len(ego._connections) {
+				ego._lastSendConnIdx = 0
+			}
+			if ego._lastSendConnIdx == startIdx {
+				return core.MkErr(core.EC_NULL_VALUE, 1)
+			}
+		}
+		rc := ego._connections[ego._lastSendConnIdx].SendMessage(msg, bFlush)
+		if ego._lastSendConnIdx >= len(ego._connections) {
+			ego._lastSendConnIdx = 0
+		}
+		return rc
+	}
 }
 
 func (ego *TCPClient) OnIncomingMessage(conn *TCPClientConnection, message message_buffer.INetMessage) int32 {
-
-	return core.MkSuccess(0)
+	return ego._router.OnIncomingMessage(conn, message)
 }
 
 func (ego *TCPClient) Stop() int32 {
 	for i := 0; i < len(ego._connections); i++ {
-		ego._connections[i].reset()
+		ego._poller.OnConnectionRemove(ego._connections[i])
+		ego._connections[i].Close()
+		ego._connections[i] = nil
 	}
 	return core.MkSuccess(0)
 }
@@ -91,28 +128,68 @@ func (ego *TCPClient) LogFixedWidth(lv int, leftLen int, ok bool, failStr string
 
 func NeoTCPClient(name string, poller *Poller, config *config.NetworkClientTCPConfig, logger logging.ILogger) *TCPClient {
 	c := &TCPClient{
-		_name:   name,
-		_config: config,
-		_logger: logger,
-		_poller: poller,
+		_name:            name,
+		_config:          config,
+		_logger:          logger,
+		_poller:          poller,
+		_router:          nil,
+		_lastSendConnIdx: 0,
 	}
 
-	c._index.Store(0)
+	var output = make([]reflect.Value, 0, 1)
+	rc := mp.GetDefaultObjectInvoker().Invoke(&output, "smh", "Reflect"+config.Codec, c)
+	if core.Err(rc) {
+		return nil
+	}
+	h := output[0].Interface().(IClientMessageRouter)
+	c._router = h
+
+	c._router.RegisterHandler(messages.INTERNAL_MSG_GRP_TYPE, messages.KEEP_ALIVE_MESSAGE_ID, c.OnKeepAliveMessage)
+	c._router.RegisterHandler(messages.INTERNAL_MSG_GRP_TYPE, messages.PROC_TEST_MESSAGE_ID, c.OnProcTestMessage)
 
 	return c
 }
 
+func (ego *TCPClient) OnKeepAliveMessage(conn *TCPClientConnection, message message_buffer.INetMessage) int32 {
+	var pkam *messages.KeepAliveMessage = message.(*messages.KeepAliveMessage)
+	if pkam.IsServer() {
+		conn.SendMessage(message, true)
+	} else {
+		ts := chrono.GetRealTimeMilli()
+		delta := ts - pkam.TimeStamp()
+		conn.OnKeepAlive(ts, int32(delta))
+	}
+	return core.MkSuccess(0)
+}
+
+func (ego *TCPClient) OnProcTestMessage(conn *TCPClientConnection, message message_buffer.INetMessage) int32 {
+	var m *messages.ProcTestMessage = message.(*messages.ProcTestMessage)
+	if m.IsServer {
+		conn.SendMessage(message, true)
+	} else {
+		if core.Err(m.Validate()) {
+			panic("invalid msg")
+		}
+	}
+	return core.MkSuccess(0)
+}
+
 func (ego *TCPClient) OnDisconnected(connection *TCPClientConnection) int32 {
 	ego._poller.OnConnectionRemove(connection)
+	ego._connections[connection._index] = nil
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClient) OnPeerClosed(connection *TCPClientConnection) int32 {
+
 	ego._poller.OnConnectionRemove(connection)
+	ego._connections[connection._index] = nil
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClient) OnIOError(connection *TCPClientConnection) int32 {
+
 	ego._poller.OnConnectionRemove(connection)
+	ego._connections[connection._index] = nil
 	return core.MkSuccess(0)
 }

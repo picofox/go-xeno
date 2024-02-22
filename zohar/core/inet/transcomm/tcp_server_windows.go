@@ -81,7 +81,6 @@ func (ego *TCPServer) OnIOError(connection *TCPServerConnection) int32 {
 	ego.Log(core.LL_SYS, "Connection IO <%s> Error.", connection.String())
 	ego._connectionMap.Delete(connection.Identifier())
 	ego._poller.SubReactorEnded(connection.Identifier())
-	connection.Close()
 	return core.MkSuccess(0)
 }
 

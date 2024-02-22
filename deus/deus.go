@@ -2,11 +2,9 @@ package main
 
 import (
 	"fmt"
-	"time"
 	"xeno/deus/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
-	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/framework"
@@ -44,14 +42,14 @@ func main() {
 	db.GetPoolManager().Initialize(cfg)
 	db.GetPoolManager().ConnectDatabase()
 
-	for i := 0; i < 100000000; i++ {
-		m := messages.NeoProcTestMessage(false)
-		rc = svr.BroadCastMessage(m, true)
-		if core.Err(rc) {
-			panic("xxxx")
-		}
-		time.Sleep(100 * time.Millisecond)
-	}
+	//for i := 0; i < 100000000; i++ {
+	//	m := messages.NeoProcTestMessage(false)
+	//	rc = svr.BroadCastMessage(m, true)
+	//	if core.Err(rc) {
+	//		panic("xxxx")
+	//	}
+	//	time.Sleep(100 * time.Millisecond)
+	//}
 
 	framework.WaitAll()
 

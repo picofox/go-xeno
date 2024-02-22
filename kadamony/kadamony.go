@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"math/bits"
-	"time"
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
-	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/sched/timer"
@@ -75,14 +73,14 @@ func main() {
 	rc = cli.Initialize()
 	rc = cli.Start()
 
-	for i := 0; i < 100000000; i++ {
-		m := messages.NeoProcTestMessage(false)
-		rc = cli.SendMessage(m, true)
-		if core.Err(rc) {
-			panic("xxxx")
-		}
-		time.Sleep(100 * time.Millisecond)
-	}
+	//for i := 0; i < 100000000; i++ {
+	//	m := messages.NeoProcTestMessage(false)
+	//	rc = cli.SendMessage(m, true)
+	//	if core.Err(rc) {
+	//		panic("xxxx")
+	//	}
+	//	time.Sleep(100 * time.Millisecond)
+	//}
 
 	cfg := &config.GetKadamonyConfig().DB
 	db.GetPoolManager().Initialize(cfg)

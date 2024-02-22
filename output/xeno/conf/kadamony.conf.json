@@ -34,16 +34,16 @@
 		"Client" : {
 			"TCP" : {
 				"Default" : {
-					"ServerEndPoints" : ["192.168.0.100:9999"],
+					"ServerEndPoints" : ["192.168.0.20:9999"],
 					"Count" : 3,
 					"Codec" : "DefaultClientMessageRouter",
 					"AutoReconnect" : true,
 					"NoDelay" : true,
 					"KeepAlive" : {
 						"Enable": true,
-						"TimeoutMillis": 1000,
+						"TimeoutMillis": 2500,
 						"MaxTries": 3,
-						"IntervalMillis": 6000
+						"IntervalMillis": 3000
 					}
 				}
 			}

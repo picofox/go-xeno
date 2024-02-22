@@ -11,7 +11,7 @@ type IConnection interface {
 	OnIncomingData() int32
 	OnPeerClosed() int32
 	OnDisconnected() int32
-	OnConnectingFailed() int32
+	OnIOError() int32
 	Identifier() int64
 	String() string
 	PreStop()
