@@ -33,7 +33,7 @@
 	},
 	"Poller": {
 		"SubReactorCount" : -1,
-		"SubReactorPulseInterval" : 2000 
+		"SubReactorPulseInterval" : 500 
 	},
 	"IntrinsicService": {
 		"Cron": {

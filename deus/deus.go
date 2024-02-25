@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"time"
 	"xeno/deus/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
+	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/framework"
@@ -42,14 +44,30 @@ func main() {
 	db.GetPoolManager().Initialize(cfg)
 	db.GetPoolManager().ConnectDatabase()
 
-	//for i := 0; i < 100000000; i++ {
-	//	m := messages.NeoProcTestMessage(false)
-	//	rc = svr.BroadCastMessage(m, true)
-	//	if core.Err(rc) {
-	//		panic("xxxx")
-	//	}
-	//	time.Sleep(100 * time.Millisecond)
-	//}
+	for {
+		fmt.Printf("wait\n")
+		cnt := svr.ConnectedConnectionCount()
+		if cnt > 0 {
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	svr.Log(core.LL_SYS, "ready to send")
+	for i := 0; i < 2000000; i++ {
+		m := messages.NeoProcTestMessage(true)
+		rc = svr.BroadCastMessage(m, true)
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				fmt.Printf("again\n")
+			} else {
+				panic(fmt.Sprintf("%s", core.ErrStr(rc)))
+
+			}
+		}
+		time.Sleep(0)
+		//time.Sleep(500 * time.Millisecond)
+	}
 
 	framework.WaitAll()
 

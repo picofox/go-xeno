@@ -27,10 +27,14 @@ type Poller struct {
 }
 
 func (ego *Poller) OnIncomingConnection(connection IConnection) {
-	idx := ego._subReactorIndex.Add(1) % uint32(len(ego._subReactors))
-	connection.SetReactorIndex(idx)
+	if connection.ReactorIndex() == 0xFFFFFFFF {
+		idx := ego._subReactorIndex.Add(1) % uint32(len(ego._subReactors))
+		connection.SetReactorIndex(idx)
+		ego._subReactors[idx].AddConnection(connection)
+	} else {
+		ego._subReactors[connection.ReactorIndex()].AddConnection(connection)
+	}
 
-	ego._subReactors[idx].AddConnection(connection)
 }
 
 func (ego *Poller) OnConnectionRemove(connection IConnection) {

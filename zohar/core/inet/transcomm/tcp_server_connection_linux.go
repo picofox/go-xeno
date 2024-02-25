@@ -10,6 +10,7 @@ import (
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/inet/transcomm/prof"
+	"xeno/zohar/core/logging"
 	"xeno/zohar/core/memory"
 )
 
@@ -33,10 +34,18 @@ type TCPServerConnection struct {
 	_stateCode                uint8
 }
 
+func (ego *TCPServerConnection) Logger() logging.ILogger {
+	return ego._server._logger
+}
+
 func (ego *TCPServerConnection) OnIOError() int32 {
 	rc := ego._server.OnIOError(ego)
 	ego.Close()
 	return rc
+}
+
+func (ego *TCPServerConnection) Log(lv int, fmt string, arg ...any) {
+	ego._server.Log(lv, fmt, arg...)
 }
 
 func (ego *TCPServerConnection) _flushSendingBuffer() int32 {
@@ -171,7 +180,7 @@ func (ego *TCPServerConnection) LocalEndPoint() *inet.IPV4EndPoint {
 }
 
 func (ego *TCPServerConnection) String() string {
-	return fmt.Sprintf("%s->%s[%d]", ego._remoteEndPoint.EndPointString(), ego._localEndPoint.EndPointString(), ego.Identifier())
+	return fmt.Sprintf("[%x]: <%s> --(%s)--> <%s> ", ego.Identifier(), ego._remoteEndPoint.EndPointString(), ConnStateCodeToString(ego._stateCode), ego._localEndPoint.EndPointString())
 }
 
 func (ego *TCPServerConnection) OnIncomingData() int32 {
@@ -181,6 +190,7 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 	for {
 		if ego._incomingHeaderBufferRIdx < ego._incomingHeader.HeaderLength() {
 			nDone, rc = inet.SysRead(ego._fd, ego._incomingHeaderBuffer[ego._incomingHeaderBufferRIdx:ego._incomingHeader.HeaderLength()])
+			//ego.Log(core.LL_DEBUG, "header read %d", nDone)
 			ego._profiler.OnBytesReceived(nDone)
 			if core.Err(rc) {
 				return rc
@@ -188,13 +198,16 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 			ego._incomingHeaderBufferRIdx += nDone
 			if ego._incomingHeaderBufferRIdx == 6 {
 				ego._incomingHeader.SetByBytes(ego._incomingHeaderBuffer[:])
+				//ego.Log(core.LL_DEBUG, "read %d bs, got header %s", nDone, ego._incomingHeader.String())
 			}
 
 		} else if ego._incomingHeaderBufferRIdx == ego._incomingHeader.HeaderLength() {
 			bytesToRead := ego._incomingHeader.BodyLength() - ego._incomingDataIndex
 			if bytesToRead == 0 {
+				//ego.Log(core.LL_DEBUG, "byte to read %d <=0, hdr %s", bytesToRead, ego._incomingHeader.String())
 				msg, rLen := messages.GetDefaultMessageBufferDeserializationMapper().DeserializationDispatch(ego._recvBuffer, &ego._incomingHeader)
 				if msg != nil {
+					//ego._server.Log(core.LL_DEBUG, "Svr-Conn [%x] Got msg [%d-%d] l:%d \n", ego.Identifier(), msg.GroupType(), msg.Command(), ego._incomingHeader.BodyLength())
 					rc := ego._server.OnIncomingMessage(ego, msg)
 					if core.Err(rc) {
 						ego._server.Log(core.LL_WARN, "msg %s routing failed err:%s", ego._incomingHeader.String(), core.ErrStr(rc))
@@ -206,7 +219,7 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 						ego._server.Log(core.LL_ERR, "msg %s Deserialize Failed", ego._incomingHeader.String())
 					}
 				}
-				ego._server.Log(core.LL_DEBUG, "Cli-Conn [%x] Got msg [%d-%d] l:%d \n", ego.Identifier(), msg.GroupType(), msg.Command(), ego._incomingHeader.BodyLength())
+
 				ego._incomingDataIndex = 0
 				ego._incomingHeaderBufferRIdx = 0
 			} else if bytesToRead > 0 { //not enough data
@@ -216,6 +229,7 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 				}
 				realLenToRead := min(int(bytesToRead), len(buf))
 				nDone, rc = inet.SysRead(ego._fd, buf[:realLenToRead])
+				//ego.Log(core.LL_DEBUG, "read %d bytes data, hdr %s", nDone, ego._incomingHeader.String())
 				ego._profiler.OnBytesReceived(nDone)
 				ego._incomingDataIndex += nDone
 				if core.Err(rc) {
@@ -234,11 +248,12 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 	return core.MkSuccess(0)
 }
 func (ego *TCPServerConnection) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {
+	ego._sendLock.Lock()
+	defer ego._sendLock.Unlock()
+
 	if ego._stateCode != Connected {
 		return core.MkErr(core.EC_NOOP, 0)
 	}
-	ego._sendLock.Lock()
-	defer ego._sendLock.Unlock()
 
 	ego._outgoingHeader.SetGroupType(msg.GroupType())
 	ego._outgoingHeader.SetCommand(msg.Command())
@@ -247,10 +262,7 @@ func (ego *TCPServerConnection) SendMessage(msg message_buffer.INetMessage, bFlu
 		return core.MkErr(core.EC_SERIALIZE_FIELD_FAIELD, 1)
 	}
 	if bFlush {
-		rc = ego._flushSendingBuffer()
-		if core.Err(rc) {
-			return core.MkErr(core.EC_TCP_SEND_FAILED, 1)
-		}
+		return ego._flushSendingBuffer()
 	}
 	return core.MkSuccess(0)
 }

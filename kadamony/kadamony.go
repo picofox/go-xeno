@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"math/bits"
+	"math/rand"
+	"time"
 	"xeno/kadamony/config"
 	"xeno/zohar/core"
 	"xeno/zohar/core/db"
+	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/inet/transcomm"
 	"xeno/zohar/core/logging"
 	"xeno/zohar/core/sched/timer"
@@ -73,14 +76,21 @@ func main() {
 	rc = cli.Initialize()
 	rc = cli.Start()
 
-	//for i := 0; i < 100000000; i++ {
-	//	m := messages.NeoProcTestMessage(false)
-	//	rc = cli.SendMessage(m, true)
-	//	if core.Err(rc) {
-	//		panic("xxxx")
-	//	}
-	//	time.Sleep(100 * time.Millisecond)
-	//}
+	rand.Seed(0)
+	for i := 0; i < 20000000; i++ {
+		m := messages.NeoProcTestMessage(false)
+		//cli.Log(core.LL_DEBUG, "send msg %d", i)
+		rc = cli.SendMessage(m, true)
+		if core.Err(rc) {
+			if !core.IsErrType(rc, core.EC_TRY_AGAIN) {
+				fmt.Printf("error %s\n", core.ErrStr(rc))
+				panic("xxxx")
+			}
+
+		}
+		time.Sleep(0)
+		//time.Sleep(600 * time.Millisecond)
+	}
 
 	cfg := &config.GetKadamonyConfig().DB
 	db.GetPoolManager().Initialize(cfg)

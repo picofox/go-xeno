@@ -11,7 +11,9 @@ import (
 	"xeno/zohar/core/inet/message_buffer"
 	"xeno/zohar/core/inet/message_buffer/messages"
 	"xeno/zohar/core/inet/transcomm/prof"
+	"xeno/zohar/core/logging"
 	"xeno/zohar/core/memory"
+	"xeno/zohar/core/sched/timer"
 )
 
 type TCPClientConnection struct {
@@ -34,6 +36,10 @@ type TCPClientConnection struct {
 	_incomingHeader           memory.O1L31C16Header
 	_keepalive                *KeepAlive
 	_sendLock                 sync.Mutex
+}
+
+func (ego *TCPClientConnection) Logger() logging.ILogger {
+	return ego._client._logger
 }
 
 func (ego *TCPClientConnection) OnIOError() int32 {
@@ -92,14 +98,17 @@ func (ego *TCPClientConnection) FlushSendingBuffer() int32 {
 }
 
 func (ego *TCPClientConnection) Pulse(ts int64) {
-	if ego._keepalive != nil {
-		rc := ego._keepalive.Pulse(ego, ts)
-		if core.IsErrType(rc, core.EC_TCP_CONNECT_ERROR) {
-			ego.OnConnectingFailed()
+	if ts-ego._lastPulseTs > ego._client._config.PulseInterval {
+		if ego._keepalive != nil {
+			rc := ego._keepalive.Pulse(ego, ts)
+			if core.IsErrType(rc, core.EC_TCP_CONNECT_ERROR) {
+				ego.OnDisconnected()
+			}
 		}
+		strProf := ego._profiler.String()
+		ego._client.Log(core.LL_INFO, strProf)
+		ego._lastPulseTs = ts
 	}
-	strProf := ego._profiler.String()
-	ego._client.Log(core.LL_INFO, strProf)
 }
 
 func (ego *TCPClientConnection) KeepAliveConfig() *intrinsic.KeepAliveConfig {
@@ -114,22 +123,36 @@ func (ego *TCPClientConnection) SetReactorIndex(u uint32) {
 	ego._reactorIndex = u
 }
 
+func doReconnect(s any) int32 {
+	conn := s.(*timer.Timer).Object().(*TCPClientConnection)
+	conn._client.Log(core.LL_SYS, "Reconnect %s", conn.String())
+	conn.Connect()
+	return 0
+}
+
 func (ego *TCPClientConnection) Close() {
 	err := syscall.Close(ego._fd)
 	if err != nil {
 		ego._client.Log(core.LL_ERR, "Close connection <%s> Failed. %s", ego.String(), err.Error())
 	}
+	ego._stateCode = Closed
 	ego.reset()
+
+	if ego._client._config.AutoReconnect {
+		timer.GetDefaultTimerManager().AddRelTimerMilli(3000, 1, 3000, datatype.TASK_EXEC_EXECUTOR_POOL, doReconnect, ego)
+	}
 }
 
 func (ego *TCPClientConnection) reset() {
-	ego._stateCode = Closed
 	ego._fd = -1
 	ego._recvBuffer.Clear()
 	ego._sendBuffer.Clear()
 	ego._profiler.Reset()
 	ego._incomingHeaderBufferRIdx = 0
 	ego._incomingDataIndex = 0
+	if ego._keepalive != nil {
+		ego._keepalive.Reset()
+	}
 
 }
 
@@ -174,6 +197,7 @@ func (ego *TCPClientConnection) Type() int8 {
 }
 
 func (ego *TCPClientConnection) Connect() (rc int32) {
+	ego._client.Log(core.LL_SYS, "Connect %s", ego.String())
 	ego._stateCode = Connecting
 	ego._fd, rc = inet.Socket(syscall.AF_INET, syscall.SOCK_STREAM, 0)
 	if core.Err(rc) {
@@ -209,7 +233,6 @@ func (ego *TCPClientConnection) OnKeepAlive(ts int64, delta int32) {
 		ego._keepalive.OnRoundTripBack(ts)
 		if delta >= 0 {
 			ego._profiler.GetRTTProf().OnUpdate(delta)
-			ego._client.Log(core.LL_DEBUG, "conn %s prof: %s", ego.String(), ego._profiler.String())
 		}
 	}
 }
@@ -246,7 +269,7 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 						ego._client.Log(core.LL_ERR, "msg %s Deserialize Failed", ego._incomingHeader.String())
 					}
 				}
-				ego._client.Log(core.LL_DEBUG, "Cli-Conn [%x] Got msg [%d-%d] l:%d \n", ego.Identifier(), msg.GroupType(), msg.Command(), ego._incomingHeader.BodyLength())
+				//ego._client.Log(core.LL_DEBUG, "Cli-Conn [%x] Got msg [%d-%d] l:%d \n", ego.Identifier(), msg.GroupType(), msg.Command(), ego._incomingHeader.BodyLength())
 				ego._incomingDataIndex = 0
 				ego._incomingHeaderBufferRIdx = 0
 			} else if bytesToRead > 0 { //not enough data
@@ -283,7 +306,7 @@ func (ego *TCPClientConnection) Identifier() int64 {
 }
 
 func (ego *TCPClientConnection) String() string {
-	return fmt.Sprintf("<%s> -> <%s>", ego._localEndPoint.EndPointString(), ego._remoteEndPoint.EndPointString())
+	return fmt.Sprintf("[%x]: <%s> --(%s)--> <%s>", ego.Identifier(), ego._localEndPoint.EndPointString(), ConnStateCodeToString(ego._stateCode), ego._remoteEndPoint.EndPointString())
 }
 
 func (ego *TCPClientConnection) PreStop() {
@@ -299,10 +322,11 @@ func (ego *TCPClientConnection) LocalEndPoint() *inet.IPV4EndPoint {
 }
 
 func (ego *TCPClientConnection) SendMessage(msg message_buffer.INetMessage, bFlush bool) int32 {
+	ego._sendLock.Lock()
+
 	if ego._stateCode != Connected {
 		return core.MkErr(core.EC_NOOP, 0)
 	}
-	ego._sendLock.Lock()
 	defer ego._sendLock.Unlock()
 
 	ego._outgoingHeader.SetGroupType(msg.GroupType())
@@ -311,11 +335,10 @@ func (ego *TCPClientConnection) SendMessage(msg message_buffer.INetMessage, bFlu
 	if core.Err(rc) {
 		return core.MkErr(core.EC_SERIALIZE_FIELD_FAIELD, 1)
 	}
+
 	if bFlush {
 		rc = ego._flushSendingBuffer()
-		if core.Err(rc) {
-			return core.MkErr(core.EC_TCP_SEND_FAILED, 1)
-		}
+		return rc
 	}
 	return core.MkSuccess(0)
 }

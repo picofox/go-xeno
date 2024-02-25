@@ -202,7 +202,7 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 			if bytesToRead <= 0 {
 				msg, rLen := messages.GetDefaultMessageBufferDeserializationMapper().DeserializationDispatch(ego._recvBuffer, ego._incomingHeader)
 				if msg != nil {
-					ego._server.Log(core.LL_DEBUG, "Got msg %s", ego._incomingHeader.String())
+					//ego._server.Log(core.LL_DEBUG, "Got msg %s", ego._incomingHeader.String())
 					rc := ego._server.OnIncomingMessage(ego, msg)
 					if core.Err(rc) {
 						ego._server.Log(core.LL_WARN, "msg %s routing failed err:%s", ego._incomingHeader.String(), core.ErrStr(rc))
@@ -214,7 +214,7 @@ func (ego *TCPServerConnection) OnIncomingData() int32 {
 						ego._server.Log(core.LL_ERR, "msg %s Deserialize Failed", ego._incomingHeader.String())
 					}
 				}
-				ego._server.Log(core.LL_DEBUG, "Svr-Conn [%x] Got msg [%d-%d] l:%d \n", ego.Identifier(), msg.GroupType(), msg.Command(), ego._incomingHeader.BodyLength())
+				//ego._server.Log(core.LL_DEBUG, "Svr-Conn [%x] Got msg [%d-%d] l:%d \n", ego.Identifier(), msg.GroupType(), msg.Command(), ego._incomingHeader.BodyLength())
 				ego._incomingHeader = nil
 				ego._incomingDataIndex = 0
 			} else { //not enough data
@@ -298,6 +298,10 @@ func NeoTCPServerConnection(conn *net.TCPConn, listener *ListenWrapper) *TCPServ
 	c._conn.SetNoDelay(c._server._config.NoDelay)
 
 	return &c
+}
+
+func (ego *TCPServerConnection) Logger() logging.ILogger {
+	return ego._server._logger
 }
 
 var _ IConnection = &TCPServerConnection{}

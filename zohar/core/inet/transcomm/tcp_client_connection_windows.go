@@ -111,10 +111,8 @@ func (ego *TCPClientConnection) SendMessage(msg message_buffer.INetMessage, bFlu
 		return core.MkErr(core.EC_SERIALIZE_FIELD_FAIELD, 1)
 	}
 	if bFlush {
-		rc = ego._flushSendingBuffer()
-		if core.Err(rc) {
-			return core.MkErr(core.EC_TCP_SEND_FAILED, 1)
-		}
+		return ego._flushSendingBuffer()
+
 	}
 	return core.MkSuccess(0)
 }
@@ -229,7 +227,7 @@ func (ego *TCPClientConnection) OnIncomingData() int32 {
 						ego._client.Log(core.LL_ERR, "msg %s Deserialize Failed", ego._incomingHeader.String())
 					}
 				}
-				ego._client.Log(core.LL_DEBUG, "Cli-Conn [%x] Got msg [%d-%d] l:%d \n", ego.Identifier(), msg.GroupType(), msg.Command(), ego._incomingHeader.BodyLength())
+				//ego._client.Log(core.LL_DEBUG, "Cli-Conn [%x] Got msg [%d-%d] l:%d \n", ego.Identifier(), msg.GroupType(), msg.Command(), ego._incomingHeader.BodyLength())
 				ego._incomingHeader = nil
 				ego._incomingDataIndex = 0
 			} else { //not enough data

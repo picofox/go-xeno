@@ -52,15 +52,13 @@ func (ego *SubReactor) onPullIn(evt *inet.EPollEvent) {
 
 func (ego *SubReactor) onPullOut(evt *inet.EPollEvent) {
 	p := ExtractSubReactorEventData(unsafe.Pointer(&evt.Data))
-	if p.Connection.Type() == CONNTYPE_TCP_CLIENT {
-		rc := p.Connection.OnWritable()
-		if rc == 0 {
-			ego._connections.Store(p.Connection.Identifier(), p.Connection)
-		}
+
+	rc := p.Connection.OnWritable()
+	if rc == 0 {
+		ego._connections.Store(p.Connection.Identifier(), p.Connection)
 	}
 
 	p.Connection.FlushSendingBuffer()
-
 }
 func (ego *SubReactor) onPullHup(evt *inet.EPollEvent) {
 
@@ -74,14 +72,14 @@ func (ego *SubReactor) onPullErr(evt *inet.EPollEvent) {
 }
 
 func (ego *SubReactor) HandlerEvent(evt *inet.EPollEvent) {
-	if (evt.Events & syscall.EPOLLIN) != 0 {
+	if (evt.Events & syscall.EPOLLERR) != 0 {
+		ego.onPullErr(evt)
+	} else if (evt.Events & syscall.EPOLLIN) != 0 {
 		ego.onPullIn(evt)
 	} else if (evt.Events & syscall.EPOLLOUT) != 0 {
 		ego.onPullOut(evt)
 	} else if (evt.Events & syscall.EPOLLRDHUP) != 0 {
 		ego.onPullHup(evt)
-	} else if (evt.Events & syscall.EPOLLERR) != 0 {
-		ego.onPullErr(evt)
 	}
 }
 
@@ -101,10 +99,10 @@ func (ego *SubReactor) Loop() int32 {
 	defer ego._poller._waitGroup.Done()
 	var nReady int = 0
 	var err error = nil
+	//var lastPulseTS int64 = chrono.GetRealTimeMilli()
 	//var msec = 1000
 
 	for {
-
 		select {
 		case m := <-ego._commandChannel:
 			if m.Id() == cms.CMSID_FINALIZE {
@@ -115,11 +113,22 @@ func (ego *SubReactor) Loop() int32 {
 
 		}
 
+		//nowTs := chrono.GetRealTimeMilli()
+		//if nowTs - lastPulseTS > 3000 {
+		//	ego._connections.Range(
+		//		func(key, value any) bool {
+		//			value.(IConnection).Pulse(chrono.GetRealTimeMilli())
+		//			return true
+		//		})
+		//
+		//}
+
 		if nReady == ego._size && ego._size < 128*1024 {
 			ego.ResetEvent(ego._size << 1)
 		}
 
 		nReady, err = inet.EpollWait(ego._epollDescriptor, ego._events, intrinsic.GetIntrinsicConfig().Poller.SubReactorPulseInterval)
+
 		if err != nil && err != syscall.EINTR {
 			return core.MkErr(core.EC_EPOLL_WAIT_ERROR, 1)
 		}
@@ -169,6 +178,7 @@ func (ego *SubReactor) AddConnection(conn IConnection) {
 	if conn.Type() == CONNTYPE_TCP_SERVER {
 		fd = conn.(*TCPServerConnection)._fd
 		conn.(*TCPServerConnection).GetEV().Connection = conn
+		conn.(*TCPServerConnection)._stateCode = Connected
 		BindSubReactorEventData(unsafe.Pointer(&ev.Data), conn.(*TCPServerConnection).GetEV())
 		ego._connections.Store(conn.Identifier(), conn)
 	} else if conn.Type() == CONNTYPE_TCP_CLIENT {

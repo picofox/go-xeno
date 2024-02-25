@@ -4,6 +4,7 @@ import (
 	"xeno/zohar/core/config/intrinsic"
 	"xeno/zohar/core/inet"
 	"xeno/zohar/core/inet/message_buffer"
+	"xeno/zohar/core/logging"
 )
 
 type IConnection interface {
@@ -24,6 +25,7 @@ type IConnection interface {
 	KeepAliveConfig() *intrinsic.KeepAliveConfig
 	Pulse(ts int64)
 	FlushSendingBuffer() int32
+	Logger() logging.ILogger
 }
 
 const (

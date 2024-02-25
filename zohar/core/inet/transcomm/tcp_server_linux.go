@@ -80,10 +80,30 @@ func (ego *TCPServer) LogFixedWidth(lv int, leftLen int, ok bool, failStr string
 	}
 }
 
+func (ego *TCPServer) ConnectedConnectionCount() int {
+	var count int = 0
+	ego._connectionMap.Range(func(key, value any) bool {
+		c := value.(*TCPServerConnection)
+		if c._stateCode == Connected {
+			count++
+		}
+
+		return true
+	})
+	return count
+}
+
 func (ego *TCPServer) BroadCastMessage(message message_buffer.INetMessage, bFlush bool) int32 {
 	ego._connectionMap.Range(func(key, value any) bool {
 		c := value.(*TCPServerConnection)
-		c.SendMessage(message, bFlush)
+		rc := c.SendMessage(message, bFlush)
+		if core.Err(rc) {
+			if core.IsErrType(rc, core.EC_TRY_AGAIN) {
+
+			} else {
+				panic(fmt.Sprintf("%d", core.ErrStr(rc)))
+			}
+		}
 		return true
 	})
 	return core.MkSuccess(0)
@@ -116,11 +136,14 @@ func (ego *TCPServer) OnKeepAliveMessage(conn *TCPServerConnection, message mess
 		ts := chrono.GetRealTimeMilli()
 		delta := ts - pkam.TimeStamp()
 		conn.OnKeepAlive(ts, int32(delta))
+		ego.Log(core.LL_DEBUG, "Got KA back")
 	} else {
 		conn.SendMessage(message, true)
 	}
 	return core.MkSuccess(0)
 }
+
+var s_sproctestCount int = 0
 
 func (ego *TCPServer) OnProcTestMessage(conn *TCPServerConnection, message message_buffer.INetMessage) int32 {
 	m := message.(*messages.ProcTestMessage)
@@ -128,10 +151,19 @@ func (ego *TCPServer) OnProcTestMessage(conn *TCPServerConnection, message messa
 		if core.Err(m.Validate()) {
 			panic("invalid msg")
 		}
+		s_sproctestCount++
+		if s_sproctestCount%1000 == 0 {
+			ego.Log(core.LL_DEBUG, "Got Pro Message %d", s_sproctestCount)
+		}
 	} else {
+		//ego.Log(core.LL_DEBUG, "echo proc test mesg")
 		rc := conn.SendMessage(m, true)
 		if core.Err(rc) {
-			panic("echo proc test failed")
+			if !core.IsErrType(rc, core.EC_TRY_AGAIN) {
+
+				panic(fmt.Sprintf("echo proc test msg failed. %s", core.ErrStr(rc)))
+
+			}
 		}
 	}
 	return core.MkSuccess(0)

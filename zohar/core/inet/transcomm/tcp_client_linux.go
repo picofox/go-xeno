@@ -24,10 +24,10 @@ type TCPClient struct {
 }
 
 func (ego *TCPClient) Initialize() int32 {
-	for idx, targetStr := range ego._config.ServerEndPoints {
+	for _, targetStr := range ego._config.ServerEndPoints {
 		rAddr := inet.NeoIPV4EndPointByEPStr(inet.EP_PROTO_TCP, 0, 0, targetStr)
 		for i := int32(0); i < ego._config.Count; i++ {
-			c := NeoTCPClientConnection(idx, ego, rAddr)
+			c := NeoTCPClientConnection(int(i), ego, rAddr)
 			ego._connections = append(ego._connections, c)
 		}
 	}
@@ -158,9 +158,12 @@ func (ego *TCPClient) OnKeepAliveMessage(conn *TCPClientConnection, message mess
 		ts := chrono.GetRealTimeMilli()
 		delta := ts - pkam.TimeStamp()
 		conn.OnKeepAlive(ts, int32(delta))
+		ego.Log(core.LL_DEBUG, "Got KA back")
 	}
 	return core.MkSuccess(0)
 }
+
+var s_proctestCount int = 0
 
 func (ego *TCPClient) OnProcTestMessage(conn *TCPClientConnection, message message_buffer.INetMessage) int32 {
 	var m *messages.ProcTestMessage = message.(*messages.ProcTestMessage)
@@ -170,26 +173,27 @@ func (ego *TCPClient) OnProcTestMessage(conn *TCPClientConnection, message messa
 		if core.Err(m.Validate()) {
 			panic("invalid msg")
 		}
+		s_proctestCount++
+		if s_proctestCount%1000 == 0 {
+			ego.Log(core.LL_DEBUG, "Got Pro Message %d", s_proctestCount)
+		}
+
 	}
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClient) OnDisconnected(connection *TCPClientConnection) int32 {
 	ego._poller.OnConnectionRemove(connection)
-	ego._connections[connection._index] = nil
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClient) OnPeerClosed(connection *TCPClientConnection) int32 {
 
 	ego._poller.OnConnectionRemove(connection)
-	ego._connections[connection._index] = nil
 	return core.MkSuccess(0)
 }
 
 func (ego *TCPClient) OnIOError(connection *TCPClientConnection) int32 {
-
 	ego._poller.OnConnectionRemove(connection)
-	ego._connections[connection._index] = nil
 	return core.MkSuccess(0)
 }
